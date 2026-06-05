@@ -68,6 +68,22 @@ $$
 $$
 То есть это максимальное число линно независимых векторов, выбираемых из набора.
 
+Пр.: $\mathrm{rank} (v_1, \dots, v_n)$ всегда совпадает с максимальной ЛНС векторов среди $\{v_i\}^n$
+
+$\triangleright$
+
+$$
+Let \; \{v_{ij}\}^n - \max \text{ЛНС, состоящая в-в набора} \; v_1, \dots, v_n \\
+
+(!): <v_{ij}>^l = V \\
+
+v \in V \Rightarrow v_{i1}, \dots, v_{il}, v - \text{ЛНС} \Rightarrow \\
+
+\Rightarrow v \in <v_{ij}>^l \Rightarrow v_{ij} - \text{базис} V
+
+\tag*{$\blacksquare$}
+$$
+
 Для матрицы $A\in K^{n\times m}$:
 
 - столбцовый ранг — ранг набора столбцов $\{A[,j]\}_{j=1}^m$;
@@ -109,6 +125,10 @@ $$
 K^k\xrightarrow{B}K^n\xrightarrow{A}K^m,
 $$
 а образ композиции не может иметь размерность больше образа первого отображения.
+
+Сл.: $U \in \mathrm{GL}_n(K) \Rightarrow \mathrm{rank}(UA) = \mathrm{rank}(A)$
+
+Пр.: $U \in M_n(K) \Rightarrow (U \in \mathrm{GL}_n(K) \Leftrightarrow \mathrm{rank}A = n)$
 
 PDQ-разложение:
 $$
