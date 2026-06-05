@@ -10,6 +10,10 @@ $$
 
 ## 1. Свойства матриц перехода между базисами
 
+Опр.: $\varepsilon $ - базис $\Leftrightarrow$ $f_{\varepsilon}$ - биекция
+
+$[v]_{\varepsilon} = f_{\varepsilon}^{-1} (v)$
+
 Пусть $e=(e_1,\dots,e_n)$, $f=(f_1,\dots,f_n)$ — базисы $V$. Матрица перехода $\mathcal{M}_{e\to f}$ определяется равенством
 $$
 f=e\mathcal{M}_{e\to f}.
