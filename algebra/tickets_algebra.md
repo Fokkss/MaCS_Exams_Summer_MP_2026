@@ -278,15 +278,77 @@ $$
 u_1+\dots+u_k=0,\quad u_i\in U_i,
 $$
 то все $u_i=0$.
+
 3.
 $$
 U_i\cap\sum_{j\ne i}U_j=\{0\}.
 $$
+
 4. Отображение
 $$
 U_1\oplus\dots\oplus U_k\to V,\quad (u_1,\dots,u_k)\mapsto u_1+\dots+u_k
 $$
 является изоморфизмом.
+
+Доказательство. $\triangleright$
+
+$1 \Rightarrow 2$
+
+Очевидно, что у 0 - единственное разложение - 0
+
+$2 \Rightarrow 1$
+
+Пусть не так, 
+
+$\exists v: $
+
+$$v = w_1 + w_2 + \dots + w_n$$
+
+$$v = w'_1 + w'_2 + \dots + w'_n$$
+
+$$w_i \neq w'_i$$
+
+$\Rightarrow$
+
+$$0 = (w_1 - w'_1) + \dots + (w_n - w'_n)$$
+
+Противоречие.
+
+$1 \Rightarrow 3$
+
+Пусть не так $\exists x \in W_k \cap \underset{i \neq k} \sum W_i $
+
+$$x = x + 0 + \dots + 0$$
+
+$$x = \underset {i \neq k} \sum w_k$$
+
+Противоречие.
+
+$3 \Rightarrow 1$
+
+Пусть не так 
+
+$\exists v : $
+
+$$v = w_1 + w_2 + \dots + w_n$$
+
+$$v = w'_1 + w'_2 + \dots + w'_n$$
+
+Оставим только ненулевые
+
+$$ 
+0 = \underset{\neq 0} \sum (w_i - w'_i) 
+$$ 
+
+Сумма по оставшимся (их $\ge$ 2, выразим одну разность через другие $\neq0$)
+
+$$w_i - w'_i = \underset{v_j \in W_j} \sum v_j$$
+
+$\Rightarrow W_i \cap \underset{j \neq i} \sum W_j \neq 0$
+
+Противоречие.
+
+$$\tag*{$\blacksquare$}$$
 
 ---
 
