@@ -429,7 +429,7 @@ v_1,v_2 \in \ker A \Rightarrow A( \lambda_1 v_1 + \lambda_2 v_2) = \lambda_1 A(v
 
 0 \in \Im A: 0 = A(0) \\
 
-v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A
+v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A \\
 \tag*{$\blacksquare$}
 $$
 
@@ -450,23 +450,81 @@ k_1,\dots,k_s,w_1,\dots,w_r.
 $$
 Тогда $L(w_1),\dots,L(w_r)$ — базис образа. Они порождают образ, потому что $L(k_i)=0$. Они независимы: если $\sum a_iL(w_i)=0$, то $\sum a_iw_i\in\ker L$, что противоречит независимости полного базиса, если не все $a_i=0$.
 
-Для однородной системы $Ax=0$, где $A:K^n\to K^m$:
+T: Для однородной системы $Ax=0$, где $A:K^n\to K^m$:
 $$
 \dim\{x:Ax=0\}=n-\mathrm{rank} A.
 $$
+
+$\triangleright$
+
+$$
+X = \{
+        \begin{pmatrix}
+        x_1 \\
+        \vdots \\
+        x_n
+        \end{pmatrix} \; | \; A \cdot 
+        \begin{pmatrix}
+            x_1 \\
+            \vdots \\
+            x_n
+        \end{pmatrix} = 
+        \begin{pmatrix}
+            0 \\
+            \vdots \\
+            0
+        \end{pmatrix} 
+    \} = \ker (A: K^n \longrightarrow K^m) \\
+
+\dim X = \sim K^n - \dim \Im (A) = n - \dim <A[,j]>_{i=1}^n = n - \mathrm{rank} A
+\tag*{$\blacksquare$}
+$$
+
+
 
 ---
 
 ## 14. Инъективные и сюръективные линейные отображения. Принцип Дирихле для линейных операторов
 
+Пр.:
+
 $$
 L\text{ инъективно}\iff \ker L=\{0\}.
 $$
+
+$\triangleright$
+
+$$
+\Rightarrow: \\
+
+|A^{-1} (0)| \leq 1; 0 \in \ker A \Rightarrow \\
+
+\ker A = 0
+
+\Leftarrow: \\
+
+\text{Let} \; A v_1 = A v_2, A(v_1 - v_2) = Av_1 - A v_2 = 0 \Rightarrow \\
+
+\Rightarrow v_1 - v_2 \in \ker A = 0 \Rightarrow \
+
+\Rightarrow v_1 = v_2 \Rightarrow A \in \mathrm{Inj} (V, W)
+\tag*{$\blacksquare$}
+$$
+
+
 $$
 L\text{ сюръективно}\iff \Im L=V.
 $$
 
-Если $\dim U=\dim V<\infty$, то
+Пр.: $A \in \mathcal{L} (V, W); (e_i)^n_{i=1} - \text{базис} V \Rightarrow$
+
+1. $A \in \mathcal{Inj} \Leftrightarrow \{Ae_i\}^n - \text{ЛНС} \; W$
+
+2. $A \in \mathcal{Surj} \Leftrightarrow \{Ae_i\}^n - \text{СО} \; W$
+
+3. $A \in \mathcal{Bij} \Leftrightarrow \{Ae_i\}^n - \text{базис} \; W$
+
+T (Принцип Дирихле для ВП): Если $\dim U=\dim V<\infty$, то
 $$
 L\text{ инъективно}\iff L\text{ сюръективно}.
 $$
