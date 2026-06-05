@@ -243,7 +243,7 @@ $$
 
 $\Rightarrow$
 
-Совместна $\Rightarrow \ \exist x : $
+Совместна $\Rightarrow \ \exists x : $
 
 $$A[, 1] \cdot x_1 + A[, 2] \cdot x_2 + \dots + A[, n] \cdot x_n = b$$
 
@@ -253,7 +253,7 @@ $\Leftarrow$
 
 $\mathrm{rk} A = \mathrm{rk} (A \ | \ b) \ \Rightarrow$
 
-$$b \in \mathrm{Lin} \{A[, i] \} \Rightarrow \exist x : $$
+$$b \in \mathrm{Lin} \{A[, i] \} \Rightarrow \exists x : $$
 
 $$Ax = b$$
 
