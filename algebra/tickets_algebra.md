@@ -196,7 +196,7 @@ $$
 
 ### BETTER
 
-Теорема: $A \in K^{m \times n}, \mathrm{rank} A = r \Rightarrow \exists M \subseteq AA \neq 0 \text{порядка} r \; \And \; \not\exists M \subseteq A \text{порядка} > r$
+Теорема: $A \in K^{m \times n}, \mathrm{rank} A = r \Rightarrow \exists M \subseteq A \neq 0 \; \text{порядка} \; r \; \And \; \not\exists M \subseteq A \; \text{порядка} \, > r$
 
 $\triangleright$
 
@@ -418,7 +418,22 @@ $$
 $$
 \Im L=\{Lx:x\in U\}.
 $$
-Они являются подпространствами.
+Они являются подпространствами $V$ и $W$ соотв. ($A : V \rightarrow W$)
+
+$\triangleright$
+
+$$
+v \in \ker A: \\
+
+v_1,v_2 \in \ker A \Rightarrow A( \lambda_1 v_1 + \lambda_2 v_2) = \lambda_1 A(v_1) + \lambda_2 A(v_2) = \lambda_1 0 + \lambda_2 0 = 0 \\
+
+0 \in \Im A: 0 = A(0) \\
+
+v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A
+\tag*{$\blacksquare$}
+$$
+
+Зам: $\mathrm{Iso(V,W)} \subset \mathrm{Hom}(V,W) \supset \mathcal{L} (V,W) $
 
 ---
 
