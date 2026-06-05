@@ -194,6 +194,27 @@ $$
 
 Доказательство. Пусть $\mathrm{rank} A=r$. Тогда среди $\{A[,j]\}_{j=1}^m$ есть $r$ линейно независимых столбцов. В подматрице из этих столбцов есть $r$ линейно независимых строк. Соответствующая квадратная $r\times r$-матрица имеет ранг $r$, значит её определитель ненулевой. Если бы был ненулевой минор порядка $s>r$, то соответствующая подматрица имела бы ранг $s$, значит $\mathrm{rank} A\ge s$, противоречие.
 
+### BETTER
+
+Теорема: $A \in K^{m \times n}, \mathrm{rank} A = r \Rightarrow \exists M \subseteq AA \neq 0 \text{порядка} r \; \And \; \not\exists M \subseteq A \text{порядка} > r$
+
+$\triangleright$
+
+$$
+\mathrm{rank} A = r \Rightarrow \exists j_1, \dots, j_r: A[,j_1], \dots, A[,j_r] - \text{ЛНС} \\
+
+\text{Let} \; A' \leftrightharpoons A[,j_k]_{k=1}^r \in K^{m \times r}, \text{ее столбцы - ЛНС} \Rightarrow \\
+
+\Rightarrow \mathrm{rank} A' = r \Rightarrow |A'| \neq 0 = |A'[i_1, \dots, i_r]| - \text{один из миноров }\, A \, \text{порядка} \; r \\
+
+\text{Let} \; s > r, \diamond s = \max (m,n) \Rightarrow \text{Let} \; B = A[i_1, \dots, i_s; j_1, \dots j_s] \\
+
+A[,j_1], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow \\
+
+\Rightarrow B \text{- ЛЗС (все столбцы)} \Rightarrow \mathrm{rank} B \leq s \Rightarrow |B| = 0 
+\tag*{$\blacksquare$}
+$$
+
 ---
 
 ## 8. Теорема Кронекера-Капелли
