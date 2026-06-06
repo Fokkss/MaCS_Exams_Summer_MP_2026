@@ -952,10 +952,10 @@ $$
 
 $\triangleright$
 $$
-\text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ij}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
+\text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ii}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
 $$
 $$
-= x^n - (\sum^n a_{ii}) x^{n-1} + f, \quad \deg f \leq n - 2
+= x^n - (\sum^n a_{ii}) x^{n-1} + f), \quad \deg f \leq n - 2
 $$
 $$
 (1)^n \chi_A (0) = |0 \cdot E_n - A| = |-A| = (-1)^n |A|
@@ -981,7 +981,20 @@ $$
 
 ## 24. Связь между алгебраической и геометрической кратностями собственного значения
 
-Для собственного значения $\lambda$:
+Опр.: кратность $\lambda$ наз. алг. кратностью
+
+Пр.: $A \in \mathrm{End} V; \; W - A-$инв., $\leq V; \; A_1 \leftrightharpoons A|_{w} \in \mathrm{End} W \Rightarrow \chi_{A_1} | \chi_{A}$
+$\triangleright$
+$$
+\chi_A = |[A - X \varepsilon]_E|; \; [A]_E = \begin{pmatrix} A_1 & * \\ 0 & B\end{pmatrix} \Rightarrow
+$$
+$$
+\Rightarrow \begin{pmatrix} A_1 - X E_m & * \\ 0 & B - X E_m \end{pmatrix} = \underset{\chi_{A_1}}{\underbrace{|A_1 - XE_m|}} |B - XE_m|
+\tag*{$\blacksquare$}
+$$
+Зам.: Аналог, если $V = W_1 \oplus W_2,$ если они $A-$инв. $\Rightarrow \chi_A = \chi_{A|_{W_1}} \cdot \chi_{A|_{W_2}}$
+
+Сл.: Для собственного значения $\lambda$:
 $$
 1\le g_\lambda\le a_\lambda.
 $$
@@ -1034,7 +1047,7 @@ $$
 $$
 g_\lambda=a_\lambda.
 $$
-
+$\triangleright$
 Если $A$ диагонализируем, то на диагонали стоят собственные значения, и кратность $\lambda$ на диагонали равна и алгебраической, и геометрической кратности.
 
 Обратно:
@@ -1042,6 +1055,9 @@ $$
 \sum_\lambda g_\lambda=\sum_\lambda a_\lambda=n,
 $$
 значит собственных векторов хватает на базис.
+$$
+\tag*{$\blacksquare$}
+$$
 
 Примеры недиагонализируемых:
 
@@ -1054,6 +1070,8 @@ $$
 не диагонализируема, так как $g_1<a_1$.
 
 Поворот плоскости на $90^\circ$ над $\mathbb R$ не диагонализируем, потому что $\chi(t)=t^2+1$ не раскладывается над $\mathbb R$.
+
+Сл.: $\chi_A$ раскл. на линейные множители и все корни – простые $\Rightarrow A$ – диагн.
 
 ---
 
@@ -1079,6 +1097,18 @@ $$
 Жорданова форма единственна с точностью до перестановки блоков.
 
 Оператор диагонализируем тогда и только тогда, когда все жордановы блоки имеют размер $1$.
+
+Опр.: $A \in \mathrm{End} V, E$ пр. $V$ наз. Жордановым базисом, если $[A]_E$ - Ж.ф.
+
+T.: $\chi_A$ раскладывается на лин. мн-ли $\Rightarrow$
+	1. $\diamond$ выбрать Ж. базис $V$
+	2. $E, E'$ - Ж. базисы $V$, то $[A]_E \; \And \; [A]_{E'}$ отличаются только порядком блоков
+
+Зам.: $[A]_E = \mathrm{diag}(J_1( \mu_1), \dots, J_k (\mu_k)), \mu_1, \dots, \mu_k$ не обяхательно различны $\Rightarrow \chi_A = \pm \prod (x- \mu_i)^{k_i}$, т.о. $\chi_A$ раскладывается на линейные множители.
+
+Сл.: $A \in M_n(K); \; \chi_A$ раскл. на лин. мн-ли, $\Rightarrow$
+	1. $\exists U \in \mathrm{GL}_n(K): UAU^{-1} -$ ж.
+	2. две жордановы матрицы подобны $\Leftrightarrow$ они различнаются только порядком клеток
 
 ---
 
@@ -1106,6 +1136,58 @@ $$
 A^rv=a_0v+\dots+a_{r-1}A^{r-1}v,
 $$
 то эти $r$ векторов образуют базис $Z(v)$.
+
+Опр.: $\dim V = n < \infty, \; A \in \mathrm{End} V, \; v \in V, C_v = \bigcap W; \; W - A-$инв., $C_v \leq V; \; w \in C_v , \forall w - A-$инв.  $\Rightarrow Aw \in W, C_v$
+
+Опр.: $K[x] \longrightarrow \mathrm{End} V; \; f \longrightarrow f(A)$ – гом. колец
+
+Пр.: $I_v \leftrightharpoons \{f \in K[x] \; | \; f(A)(v) = 0\} -$ идеал
+$\triangleright$
+$$
+f, g \in I_v \Rightarrow (f + g)(A)(v) = 0
+$$
+$$
+f, g \in I_v \Rightarrow (fg)(A)(v) = 0
+$$
+$$
+v, Av, A^2v, \dots - \text{ЛЗС} \Rightarrow
+$$
+$$
+\Rightarrow \sum^k \alpha_i A^i v = 0 = f(A)(v)
+$$
+$$
+K[x] - \text{ОГИ} \Rightarrow I_v = (\mu_{v, A}), \mu - \min \text{аннулятор} \; v
+\tag*{$\blacksquare$}
+$$
+
+Пр.: Степень $\deg \mu = d \Rightarrow v, Av, A^2v. \dots -$ базис
+$\triangleright$
+$$
+v, Av, A^2v, \dots \in C_v; \; W = <vA^i>^m \Rightarrow
+$$
+$$
+\Rightarrow A(A^{d-1}v) = A^d v = - \beta_{d-1}A^{d-1} - \dots - \beta_0 v \in W \Rightarrow W = C_v; \;
+$$
+$$
+(vA^i)^n - \text{ЛНС} \Rightarrow f(A)(v) = \sum \lambda_i A^i v = 0 \Rightarrow
+$$
+$$
+\Rightarrow f(A)(v), f \in I_V \Rightarrow
+$$
+$$
+\Rightarrow \mu | f \Rightarrow f = 0
+\tag*{$\blacksquare$}
+$$
+Опр.:
+$$
+[A|_{C_v}] = \begin{pmatrix}0 & 0 & 0 & \dots & -\beta_0 \\ 1 & 0 & 0 & \dots & -\beta_1 \\ \vdots & \vdots & \vdots & \vdots & \vdots \\ 0& 0 & 0 & \dots & -\beta_{d-1} \end{pmatrix}
+$$
+$$
+\Xi_{A|_{C_v}} = \det \begin{pmatrix} -x & 0 & \dots & - \beta_0 \\ \vdots & \vdots & \vdots & \vdots \\ 0 & \dots & \dots & - \beta_{d-1} - x\end{pmatrix} =
+$$
+$$
+= \sum^d (-1)^{d-k} \beta_k x^k = \pm \mu_{v, A}
+$$
 
 ---
 
