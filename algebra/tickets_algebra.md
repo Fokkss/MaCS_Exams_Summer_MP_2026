@@ -2481,7 +2481,7 @@ $$p \mid k_0 \Rightarrow$$
 
 $$ghg^{1} = h$$
 
-$$\Rightarrow |Z(G)| \le \# \text{Орбит размера 1}$$
+$$\Rightarrow |Z(G)| \ge \# \text{Орбит размера 1}$$
 
 $$|Z(G) \ge p|$$
 
