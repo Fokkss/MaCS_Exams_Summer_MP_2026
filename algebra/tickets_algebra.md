@@ -738,7 +738,39 @@ $[A_1]_{e_1, \dots, e_m} =B; [A_2]_{e_{m+1}, \dots, e_n} =C, A_2$ - индуци
 $$
 A|_U:U\to U.
 $$
-Пр.: В базисе, начинающемся с базиса $U$, матрица $A$ имеет блочно-верхнетреугольный вид.
+Пр. В базисе, начинающемся с базиса $U$, матрица $A$ имеет блочно-верхнетреугольный вид.
+
+Доказательство.
+
+Для $u \in U$
+
+$$Au \in U$$
+
+$$Au = A \mid _U u = \begin{pmatrix}
+        0 \\
+        A \mid _U u
+        \end{pmatrix}$$
+
+Для
+$
+v = u + u' : i \in U, \ u' \in U \backslash V
+$:
+
+$$Av = A \mid _Uu + A u' = \begin{pmatrix}
+        u'' \in U \\
+        u''' \in U \backslash U
+        \end{pmatrix}$$
+
+Итого:
+
+$$A = \begin{pmatrix}
+        A \mid _U & * \\
+        0 & *
+        \end{pmatrix}$$
+
+
+
+
 
 ---
 
