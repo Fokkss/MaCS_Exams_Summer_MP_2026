@@ -845,7 +845,14 @@ $$
 
 $\triangleright$
 $$
-
+\text{Let} \; v = \sum^k v_i = \sum^k v_i'; v_i, v_i' \in V_\lambda \Rightarrow
+$$
+$$
+\Rightarrow \sum^k (v_i - v_i') = 0; v_i - v_i' \in V_\lambda \Rightarrow
+$$
+$$
+\Rightarrow v_i - v_i' = 0
+\tag*{$\blacksquare$}
 $$
 
 ---
