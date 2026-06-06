@@ -1217,6 +1217,25 @@ J_m(\lambda)=\lambda E+N,\qquad N^m=0.
 $$
 В характеристическом многочлене есть множитель $(t-\lambda)^m$, который зануляет соответствующий блок. Поэтому вся жорданова форма зануляется характеристическим многочленом.
 
+Another one:
+$\triangleright$
+$$
+v \in V; \; (\chi_A |_{C_v} = \pm \mu) \; | \; {\chi_A}
+$$
+$$
+\chi_A(A)v = \chi_A(A)|_{C_v}(v) = \chi_A(A|_{C_v})v =
+$$
+$$
+= g(A|_{C_v}) \circ \chi_{A|_{C_v}} (A|_{C_v})v = 0
+\tag*{$\blacksquare$}
+$$
+Сл.: $A \in M_n(K); \; \chi_A(A) = 0$
+
+Опр.: (Сопровождающая матрица) $f = x^n - \sum^{n-1} \lambda_k x^k$
+$$
+L_f = \begin{pmatrix} 0 & 0 & 0 & \dots & - \lambda_0 \\ 1 & 0 & 0 & \dots & \vdots \\ 0 & 1 & 0 & \ddots & \vdots \\ \vdots & \vdots & \ddots & \dots & \vdots \\ 0 & 0 & 0 & \dots & -\lambda_{d-1} \end{pmatrix}
+$$
+
 ---
 
 ## 29. Порядки элементов и циклические подгруппы
