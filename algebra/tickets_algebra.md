@@ -1416,6 +1416,14 @@ gng^{-1}\in N
 $$
 для всех $g\in G,\ n\in N$.
 
+Доказывается тривиально через 5 эквивалентных утверждений для нормальной подгруппы $H \triangleleft G:$
+	1. $\forall g \in G, h \in H: gh = h'g, h' \in H$
+	2. $\forall g \in G, h \in H: ghg^{-1} \in H$
+	3. $\forall g \in G: gH = Hg$
+	4. $\forall g \in G: gHg^{-1} \subset H$
+	5. $\forall g \in G: gHg^{-1} = H$
+1->2->4->5->3->1
+
 Примеры:
 
 - $\{e\}$ и $G$;
@@ -1427,6 +1435,18 @@ $$
 $$
 \varphi(gkg^{-1})=\varphi(g)\varphi(k)\varphi(g)^{-1}=e.
 $$
+Л.: $[G:H]= 2 \Rightarrow H \triangleleft G$
+$\triangleright$
+$$
+g \in G, g \in H \Rightarrow gH = H = Hg
+$$
+$$
+g \notin H \Rightarrow gH \neq H \Rightarrow gH = G \setminus H = Hg
+\tag*{$\blacksquare$}
+$$
+
+Пр-ры:
+$S_3, H = <(12)> \not\triangleleft G$
 
 ---
 
