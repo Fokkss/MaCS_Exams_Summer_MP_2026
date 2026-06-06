@@ -1137,6 +1137,58 @@ A^rv=a_0v+\dots+a_{r-1}A^{r-1}v,
 $$
 то эти $r$ векторов образуют базис $Z(v)$.
 
+Опр.: $\dim V = n < \infty, \; A \in \mathrm{End} V, \; v \in V, C_v = \bigcap W; \; W - A-$инв., $C_v \leq V; \; w \in C_v , \forall w - A-$инв.  $\Rightarrow Aw \in W, C_v$
+
+Опр.: $K[x] \longrightarrow \mathrm{End} V; \; f \longrightarrow f(A)$ – гом. колец
+
+Пр.: $I_v \leftrightharpoons \{f \in K[x] \; | \; f(A)(v) = 0\} -$ идеал
+$\triangleright$
+$$
+f, g \in I_v \Rightarrow (f + g)(A)(v) = 0
+$$
+$$
+f, g \in I_v \Rightarrow (fg)(A)(v) = 0
+$$
+$$
+v, Av, A^2v, \dots - \text{ЛЗС} \Rightarrow
+$$
+$$
+\Rightarrow \sum^k \alpha_i A^i v = 0 = f(A)(v)
+$$
+$$
+K[x] - \text{ОГИ} \Rightarrow I_v = (\mu_{v, A}), \mu - \min \text{аннулятор} \; v
+\tag*{$\blacksquare$}
+$$
+
+Пр.: Степень $\deg \mu = d \Rightarrow v, Av, A^2v. \dots -$ базис
+$\triangleright$
+$$
+v, Av, A^2v, \dots \in C_v; \; W = <vA^i>^m \Rightarrow
+$$
+$$
+\Rightarrow A(A^{d-1}v) = A^d v = - \beta_{d-1}A^{d-1} - \dots - \beta_0 v \in W \Rightarrow W = C_v; \;
+$$
+$$
+(vA^i)^n - \text{ЛНС} \Rightarrow f(A)(v) = \sum \lambda_i A^i v = 0 \Rightarrow
+$$
+$$
+\Rightarrow f(A)(v), f \in I_V \Rightarrow
+$$
+$$
+\Rightarrow \mu | f \Rightarrow f = 0
+\tag*{$\blacksquare$}
+$$
+Опр.:
+$$
+[A|_{C_v}] = \begin{pmatrix}0 & 0 & 0 & \dots & -\beta_0 \\ 1 & 0 & 0 & \dots & -\beta_1 \\ \vdots & \vdots & \vdots & \vdots & \vdots \\ 0& 0 & 0 & \dots & -\beta_{d-1} \end{pmatrix}
+$$
+$$
+\Xi_{A|_{C_v}} = \det \begin{pmatrix} -x & 0 & \dots & - \beta_0 \\ \vdots & \vdots & \vdots & \vdots \\ 0 & \dots & \dots & - \beta_{d-1} - x\end{pmatrix} =
+$$
+$$
+= \sum^d (-1)^{d-k} \beta_k x^k = \pm \mu_{v, A}
+$$
+
 ---
 
 ## 28. Теорема Гамильтона — Кэли
