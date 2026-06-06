@@ -859,11 +859,50 @@ $$
 
 ## 22. Диагонализируемые операторы. Критерий диагонализируемости в терминах геометрических кратностей
 
-Оператор диагонализируем, если существует базис из собственных векторов.
+Опр.: Оператор диагонализируем, если существует базис из собственных векторов.
 
-Геометрическая кратность:
+Опр.: Геометрическая кратность ($g_\lambda \geq 1$):
 $$
 g_\lambda=\dim\ker(A-\lambda E).
+$$
+Сл.: $\dim V = n; \{\lambda_i\}^n - \text{с.з.з} \; A \Rightarrow \sum^k g_{\lambda_i} \leq n$
+
+Л.: $[A]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{\lambda_1, \dots , \lambda_1,}} \dots , \underset{m_k \, \text{раз}}{\underbrace{\lambda_k, \dots , \lambda_k}}); \; g_{\lambda_i} = m_i; \; i \in [k]$
+
+Л.: $A \in \mathrm{End} V, E = (e_1, \dots, e_n) -$ базис V; $[A]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{\lambda_1, \dots , \lambda_1,}} \dots , \underset{m_k \, \text{раз}}{\underbrace{\lambda_k, \dots , \lambda_k}}) \Rightarrow$ все лямбды – с.з.з A, $g_{\lambda_i} = m_i; \; i \in [k]$
+
+$\triangleright$
+$$
+\lambda \neq \lambda_1, \dots, \lambda_k
+$$
+$$
+[A- \lambda \varepsilon]_E = [A]_E - \lambda E_n = \mathrm{diag} (\lambda_1', \dots, \lambda_k') \Rightarrow
+$$
+$$
+\Rightarrow \ker (A - \lambda \varepsilon) = 0 \Rightarrow
+$$
+$$
+\Rightarrow \lambda - \text{не с.з.з.} \; A
+$$
+$$
+\text{Let} \; \lambda = \lambda_j; \; \text{для определенности} \, j=1
+$$
+$$
+v \in \ker(A - \lambda_1 \varepsilon)
+; \; v = \sum^n \alpha_i e_i
+$$
+$$
+(A - \lambda_1 \varepsilon) v = \sum^k_{j=1} \sum^{m_j}_{i=1} (A - \lambda_1 \varepsilon) \alpha_{\sum_{t=1}^{j-1+i} m_t} e_{\sum_{t=1}^{j-1+i} m_t} = \sum^k - //-
+$$
+$$
+/ [A- \lambda_1 \varepsilon]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{0, \dots , 0,}} \dots , \underset{m_2 \, \text{раз}}{\underbrace{\lambda_2 - \lambda_1, \dots , \lambda_2 - \lambda_1,}} \dots, \underset{m_k \, \text{раз}}{\underbrace{\lambda_k - \lambda_1, \dots , \lambda_k - \lambda_1}}) /
+$$
+$$
+(A - \lambda_1 \varepsilon)v = 0 \Leftrightarrow \forall \alpha_{j \geq 2} = 0 \Rightarrow
+$$
+$$
+\Rightarrow V_{\lambda_1} = \mathrm{Lin} (e_1, \dots, e_{m_1}); \; g_{\lambda_1} = m_1
+\tag*{$\blacksquare$}
 $$
 
 Критерий:
@@ -875,7 +914,7 @@ $$
 \sum_\lambda g_\lambda=\dim V.
 $$
 
-Доказательство: если есть базис из собственных векторов, группируем его по собственным значениям. Обратно, если сумма размерностей собственных подпространств равна $\dim V$, берём базис в каждом $V_\lambda$; их объединение — базис всего пространства.
+Доказательство: если есть базис из собственных векторов, группируем его по собственным значениям. Обратно, если сумма размерностей собственных подпространств равна $\dim V$ (через внешнюю прямую сумму выводим равенство $V$), берём базис в каждом $V_\lambda$; их объединение — базис всего пространства.
 
 ---
 
