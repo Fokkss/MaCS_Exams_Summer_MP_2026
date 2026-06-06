@@ -558,6 +558,17 @@ L(x)=L(e[x]_e)=L(e)[x]_e.
 $$
 Переходя к координатам в базисе $f$, получаем нужную формулу.
 
+Пр.: $[A]_{E,F} = A; v \in V \Rightarrow [Av]_{F} = A[v]_E$
+
+$\triangleright$
+$$
+v=E[v]_E \Rightarrow Av = (AE)[v]_E=(FA)[v]_E = F(A[v]_E) \Rightarrow
+$$
+$$
+\Rightarrow [Av]_F = A[v]_E
+\tag*{$\blacksquare$}
+$$
+
 ---
 
 ## 16. Матрица линейного отображения. Матрица композиции
@@ -567,18 +578,29 @@ $$
 [L]^e_f[,j]=[L(e_j)]_f,\qquad j=1,\dots,n.
 $$
 
-Если
+Пр.: Если
 $$
-U\xrightarrow{L}V\xrightarrow{M}W,
+U\xrightarrow{A}V\xrightarrow{B}W,
 $$
+
+$e,f,g -$ базисы $U,V,W$
 то
 $$
-[M\circ L]^e_g=[M]^f_g[L]^e_f.
+[B\circ A]^e_g=[B]^f_g[A]^e_f.
 $$
 
 Доказательство:
 $$
-[(M\circ L)(x)]_g=[M(Lx)]_g=[M]^f_g[Lx]_f=[M]^f_g[L]^e_f[x]_e.
+Ae = f[A]_{e,f} \Rightarrow (BA)e = (BF)[A]_{e.f} = g[B]_{f,g} [A]_{e,f}
+$$
+
+$$
+Bf = g[B]_{f,g} \Rightarrow g[BA]_{e,g} = g[B]_{f,g}[A]_{e,f}
+$$
+$g$ - базис $\Rightarrow$
+$$
+[BA]_{e,g} = [B]_{f,g}[A]_{e,f}
+\tag*{$\blacksquare$}
 $$
 По единственности матрицы линейного отображения получаем формулу.
 
@@ -613,10 +635,39 @@ $$
 
 ## 18. Пространство линейных отображений. Изоморфизм с пространством матриц
 
+T.: $A \in \mathcal{L}(V,W); \dim V = n < \infty; \dim W = m < \infty \Rightarrow \exists E,F -$базисы $V,W:$
+
+$$
+[A]_{E,F} = \begin{pmatrix} E_r & 0 \\
+0 & 0
+\end{pmatrix},
+$$для некоторого $r$
+
+$\triangleright$
+$$
+\text{Let} \; E_0, F_0 - \text{базисы} \; V,W: [A]_{E_0, F_0} \rightleftharpoons A \Rightarrow
+$$
+$$
+\Rightarrow \exists P, Q: P \in \mathrm{GL}_n(K), Q \in \mathrm{GL}_m(K):
+$$
+$$
+PAQ = D = \begin{pmatrix} E_r & 0 \\
+0 & 0
+\end{pmatrix}
+$$
+$$
+\exists F: \mathcal{M}_{F_0 \rightarrow F} = Q; \; \exists E: \mathcal{M}_{E_0 \rightarrow E} = P^{-1} \Rightarrow
+$$
+$$
+\Rightarrow [A]_{E, F} = (P^{-1})^{-1} A Q = PAQ = D
+\tag*{$\blacksquare$}
+$$
+
+Опр.:
 $$
 \operatorname{Hom}(U,V)
 $$
-— пространство всех линейных отображений $U\to V$.
+— пространство всех линейных отображений $U\to V$. (строго говоря, гомоморфизмов, но в нашем курсе отождествляется $\mathcal{L}(V,W)$, тк. в $\mathrm{Vect}_K$ это суть одно и то же)
 
 Операции:
 $$
@@ -642,7 +693,7 @@ $$
 
 ## 19. Линейные операторы. Инвариантные подпространства
 
-Линейный оператор — это линейное отображение
+Линейный оператор — это линейное отображение, $\mathrm{Hom}(V,W) = \mathrm{End}(V,W)$
 $$
 A:V\to V.
 $$
