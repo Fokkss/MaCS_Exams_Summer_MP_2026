@@ -952,10 +952,10 @@ $$
 
 $\triangleright$
 $$
-\text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ij}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
+\text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ii}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
 $$
 $$
-= x^n - (\sum^n a_{ii}) x^{n-1} + f, \quad \deg f \leq n - 2
+= x^n - (\sum^n a_{ii}) x^{n-1} + f), \quad \deg f \leq n - 2
 $$
 $$
 (1)^n \chi_A (0) = |0 \cdot E_n - A| = |-A| = (-1)^n |A|
@@ -981,7 +981,20 @@ $$
 
 ## 24. Связь между алгебраической и геометрической кратностями собственного значения
 
-Для собственного значения $\lambda$:
+Опр.: кратность $\lambda$ наз. алг. кратностью
+
+Пр.: $A \in \mathrm{End} V; \; W - A-$инв., $\leq V; \; A_1 \leftrightharpoons A|_{w} \in \mathrm{End} W \Rightarrow \chi_{A_1} | \chi_{A}$
+$\triangleright$
+$$
+\chi_A = |[A - X \varepsilon]_E|; \; [A]_E = \begin{pmatrix} A_1 & * \\ 0 & B\end{pmatrix} \Rightarrow
+$$
+$$
+\Rightarrow \begin{pmatrix} A_1 - X E_m & * \\ 0 & B - X E_m \end{pmatrix} = \underset{\chi_{A_1}}{\underbrace{|A_1 - XE_m|}} |B - XE_m|
+\tag*{$\blacksquare$}
+$$
+Зам.: Аналог, если $V = W_1 \oplus W_2,$ если они $A-$инв. $\Rightarrow \chi_A = \chi_{A|_{W_1}} \cdot \chi_{A|_{W_2}}$
+
+Сл.: Для собственного значения $\lambda$:
 $$
 1\le g_\lambda\le a_\lambda.
 $$
@@ -1034,7 +1047,7 @@ $$
 $$
 g_\lambda=a_\lambda.
 $$
-
+$\triangleright$
 Если $A$ диагонализируем, то на диагонали стоят собственные значения, и кратность $\lambda$ на диагонали равна и алгебраической, и геометрической кратности.
 
 Обратно:
@@ -1042,6 +1055,9 @@ $$
 \sum_\lambda g_\lambda=\sum_\lambda a_\lambda=n,
 $$
 значит собственных векторов хватает на базис.
+$$
+\tag*{$\blacksquare$}
+$$
 
 Примеры недиагонализируемых:
 
@@ -1054,6 +1070,8 @@ $$
 не диагонализируема, так как $g_1<a_1$.
 
 Поворот плоскости на $90^\circ$ над $\mathbb R$ не диагонализируем, потому что $\chi(t)=t^2+1$ не раскладывается над $\mathbb R$.
+
+Сл.: $\chi_A$ раскл. на линейные множители и все корни – простые $\Rightarrow A$ – диагн.
 
 ---
 
