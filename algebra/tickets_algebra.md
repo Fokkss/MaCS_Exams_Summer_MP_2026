@@ -10,7 +10,7 @@ $$
 
 ## 1. Свойства матриц перехода между базисами
 
-Опр.: $\varepsilon $ - базис $\Leftrightarrow$ $f_{\varepsilon}$ - биекция
+Опр.: $\varepsilon$ - базис $\Leftrightarrow$ $f_{\varepsilon}$ - биекция
 
 $[v]_{\varepsilon} = f_{\varepsilon}^{-1} (v)$
 
