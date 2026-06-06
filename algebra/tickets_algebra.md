@@ -695,15 +695,36 @@ $$
 
 ## 19. Линейные операторы. Инвариантные подпространства
 
-Линейный оператор — это линейное отображение, $\mathrm{Hom}(V,W) = \mathrm{End}(V,W)$
+Линейный оператор — это линейное отображение, $\mathrm{Hom}(V,W) = \mathrm{End}(V)$
 $$
 A:V\to V.
 $$
+Пр.: $E$ - базис $V$, $\mathrm{End} V \underset{A \mapsto [A]_E}{\overset{\varepsilon_V}{\longrightarrow}} M_n(K)$
+Легко видеть, что $\varepsilon_v \in \mathrm{Iso}(\mathrm{End} V, K)$ (колец)
 
-Подпространство $U\subseteq V$ называется $A$-инвариантным, если
+Пр.: $(\mathrm{End} V, +, \cdot)$ - КА с 1 = $\varepsilon_V$
+$\varepsilon_E (BA) = [BA]_{E,E} = [B]_{E,E} [A]_{E,E} = \varepsilon_E (B) \varepsilon_E (A)$
+
+
+Пр.: Подпространство $U\subseteq V$ называется $A$-инвариантным, если $\forall u \in U: Au \in U$
 $$
 A(U)\subseteq U.
 $$
+Пр.: $V = W_1 \oplus W_2; (e_i)_{i=1}^m -$ базис $W_1; (e_{m+i})_{i=1}^{n-m} -$ базис $W_2; E = (e_i)_{i=1}^n \Rightarrow$ (след. эквивалентно)
+	1.  $W_1 \; \And \; W_2$ A-инв
+	2. $[A]_E = \begin{pmatrix}  B & 0 \\ 0 & C\end{pmatrix}, B \in M_m(K); C \in M_{n-m}(K)$
+(доказывается также как и предложение в конце билета)
+
+Опр.: $W$ - A-инв, Индуцированным оператором пространства $W$ наз.
+$$
+A_1 : W \underset{w \mapsto A_1w}{\longrightarrow} W
+$$
+Легко видеть, что $A_1 \in \mathrm{End} W$
+$[A_1]_{e_1, \dots, e_m} =B; [A_2]_{e_{m+1}, \dots, e_n} =C, A_2$ - индуцировано по $W_2$
+
+Опр.: $A, A' \in M_n(K)$ наз. подобными, если $\exists C \in \mathrm{GL}_n(K): A' = C^{1}AC$
+
+Пр.: $C = \mathcal{M}_{E \rightarrow E'}; [A]_E = A \Rightarrow [A]_{E'} = C^{-1} A C$
 
 Примеры:
 
