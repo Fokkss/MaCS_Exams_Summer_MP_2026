@@ -1280,16 +1280,46 @@ $$
 $$
 — наименьшая подгруппа $G$, содержащая $S$.
 
-Эквивалентно:
-$$
-\langle S\rangle=\bigcap_{H\le G,\ S\subseteq H}H.
-$$
-
-Явно:
+Определение.
 $$
 \langle S\rangle=
 \{s_1^{\varepsilon_1}\dots s_m^{\varepsilon_m}:s_i\in S,\ \varepsilon_i=\pm1\}.
 $$
+
+Замечание. Это действительно группа.
+
+
+Предложение.
+$$
+\langle S\rangle=\bigcap_{H\le G,\ S\subseteq H}H.
+$$
+
+Доказательство в 2 стороны. $\triangleright$
+
+$\subset$:
+
+$$
+\forall H \le G
+\\
+
+S \subset H \Rightarrow \langle S \rangle  \subset H
+\\
+\langle S \rangle \subset \bigcap_{H\le G,\ S\subseteq H}H
+$$
+
+$\supset : $
+
+Потому что $\exists$ H': 
+
+$$H' = \langle S \rangle$$
+
+$$\bigcap_{H\le G,\ S\subseteq H}H \cap H' \subset H' = \langle S \rangle$$
+
+$$
+\tag*{$\blacksquare$}
+$$
+
+
 
 То есть это все конечные слова из элементов $S$ и обратных к ним.
 
