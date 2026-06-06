@@ -922,17 +922,17 @@ $$
 
 Характеристический многочлен:
 $$
-\chi_A(t)=\det(tE-A).
+\chi_A(t)=\det(tE-A) \in K[t]
 $$
 
-Он не зависит от базиса: если $B=\mathcal{M}^{-1}A\mathcal{M}$, то
+Он не зависит от базиса: если $B=C^{-1}AC$, то
 $$
 \det(tE-B)=\det(C^{-1}(tE-A)C)=\det(tE-A).
 $$
 
 $\lambda$ — собственное значение тогда и только тогда, когда
 $$
-\chi_A(\lambda)=0.
+\chi_A(\lambda)=0 \Leftrightarrow [A - \lambda \varepsilon]_E \notin \mathrm{GL}_n(K) \Leftrightarrow \ker(A - \lambda \varepsilon) \neq 0 
 $$
 
 Действительно:
@@ -945,6 +945,35 @@ $$
 $$
 \iff \ker(A-\lambda E)\ne0.
 $$
+
+Пр.: $(-1)^n \chi_A = x^n - ((\mathrm{Tr}A) x^{n-1} + \dots + (-1)^n |A|)$
+
+Опр.: $A = (a_{ij}); \; \mathrm{Tr} A \leftrightharpoons \sum^n a_{ii}$
+
+$\triangleright$
+$$
+\text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ij}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
+$$
+$$
+= x^n - (\sum^n a_{ii}) x^{n-1} + f, \quad \deg f \leq n - 2
+$$
+$$
+(1)^n \chi_A (0) = |0 \cdot E_n - A| = |-A| = (-1)^n |A|
+\tag*{$\blacksquare$}
+$$
+Пр.: $E, E' -$базисы $v; \; A \in \mathrm{End} V \Rightarrow$
+$\Rightarrow \chi_{[A]_E} = \chi_{[A]_{E'}}$
+$\triangleright$
+$$
+\text{Let} \; \begin{array}{c|c}U = \mathcal{M}_{E \rightarrow E'} & \\ [A]_{E'} = U^{-1} [A]_E U & \end{array} \Rightarrow \chi_{[A]_{E'}} =
+$$
+$$
+=|[A]_{E'} - X E_n| = |U^{-1} [A]_E U - X U^{-1} U| = |U^{-1} ([A]_{E'} - X) U| = |U^{-1}|\chi_{[A]_E}|U| = \chi_{[A]_E}
+\tag*{$\blacksquare$}
+$$
+
+Опр.: $\chi_A = \chi_{[A]_E}$
+Зам.: $A = U^{-1} A U \Rightarrow \mathrm{Tr} A' = \mathrm{Tr} A$
 
 Алгебраическая кратность $a_\lambda$ — кратность $\lambda$ как корня $\chi_A(t)$.
 
