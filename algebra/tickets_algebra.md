@@ -3419,7 +3419,7 @@ $$
 1 \in (b) \Rightarrow (b) = R \Rightarrow R/(b) = \{0\}
 $$ - не поле
 
-$2^0$ $ \ b= b_1b_2, \\ \ b_1, \ b_2 \notin R^*$
+$2^0$ $\ b= b_1b_2, \\ \ b_1, \ b_2 \notin R^*$
 
 $$
 \overline{b_1} \cdot \overline{b_2} =  \overline{b} = \overline{0}
@@ -3429,7 +3429,7 @@ $$
 Let \ \overline{b_1} = \overline{0} \Rightarrow b | b_1 , \ b_1 = bc \Rightarrow b = bcb_2 \Rightarrow b_2
 $$ - обратим
 
-$3^0$ $  \ Let \ b$ - неприводим
+$3^0$ $\ Let \ b$ - неприводим
 
 $$Let \ \overline{c} \in R / (b) , \ \overline{c} \neq 0$$
 
@@ -3905,7 +3905,7 @@ $\Rightarrow$
 
 $$\mathbb{F}_p (a) = F$$
 
-Следствие. Над $\mathbb{F}_p $ есть неприводимый многочлен степени $n$
+Следствие. Над $\mathbb{F}_p$ есть неприводимый многочлен степени $n$
 
 Доказательство. $\triangleright$ $\mathbb{F}_{p^n} = \mathbb{F}_p(a), \ \mathrm {Irr} a = f$
 
