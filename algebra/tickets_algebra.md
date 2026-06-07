@@ -2936,26 +2936,123 @@ $$
 $$
 V=U\oplus U^\perp.
 $$
+
+$\triangleright$
+
+$$
+u \in U \cap U^\perp \Rightarrow (u, u) = 0 \Rightarrow u = 0 \Rightarrow
+$$
+$$
+\Rightarrow U + U^\perp = U \oplus U^\perp \Rightarrow U + U^\perp = V = U \oplus U^\perp 
+\tag*{$\blacksquare$}
+$$
+
 3.
 $$
 \dim U+\dim U^\perp=\dim V.
 $$
+
+$\triangleright$
+Дополняем ОНБ в $U$ до базиса и ортогоналихируем.
+$$
+v = \sum \alpha_i e_i
+$$
+$$
+v \in U^\perp \Leftrightarrow (v, w) = 0; \; \forall w \in U \Leftrightarrow (v, e_j) = 0, \; j \in [\dim U] \Leftrightarrow
+$$
+$$
+\Leftrightarrow \alpha_j = 0 \Leftrightarrow v \in \mathrm{Lin}(e_{\dim U + 1}, \dots, e_{\dim V}) \Rightarrow
+$$
+$$
+\Rightarrow U^\perp = \mathrm{Lin} (e_{\dim U + 1}, \dots, e_{\dim V})
+\tag*{$\blacksquare$}
+$$
+
 4.
 $$
 (U^\perp)^\perp=U
 $$
+
+$\triangleright$
+
+$$
+U \subset (U^\perp)^\perp; \; \dim (U^\perp)^\perp = \dim V - \dim U^\perp = \dim V - \dim V + \dim U = \dim U \Rightarrow
+$$
+$$
+(U^\perp)^\perp = U
+\tag*{$\blacksquare$}
+$$
+
 в конечномерном случае.
 5. Если $U\subseteq W$, то
 $$
 W^\perp\subseteq U^\perp.
 $$
+
+Очев
+
 6.
 $$
 (U+W)^\perp=U^\perp\cap W^\perp.
 $$
+
+$\triangleright$
+Из 5:
+
+$$
+(U_1 + U_2)^\perp \subset U_1^\perp, U_2^\perp
+$$
+$$
+u \in U_1^\perp \cap U_2^\perp
+$$
+$$
+v \in U_1 + U_2 \Rightarrow v = u_1 + u_2 \Rightarrow
+$$
+$$
+\Rightarrow (u, v) = (w_1, u_1) + (w_2, u_2) = 0
+\tag*{$\blacksquare$}
+$$
+
 7.
 $$
 (U\cap W)^\perp=U^\perp+W^\perp.
+$$
+
+$\triangleright$
+По 6 + 4:
+$$
+(U_1^\perp + U_2^\perp)^\perp = (U_1^\perp)^\perp \cap (U_2^\perp)^\perp = U_1 \cap U_2 \Rightarrow
+$$
+$$
+\Rightarrow ((U_1^\perp + U_2^\perp)^\perp)^\perp = (U_1 \cap U_2)^\perp \Leftrightarrow
+$$
+$$
+\Leftrightarrow U_1^\perp + U_2^\perp = (U_1 \cap U_2)^\perp
+\tag*{$\blacksquare$}
+$$
+
+9.
+$$
+V^\perp = \{0\}
+$$
+
+$\triangleright$
+
+$$
+v \in V^\perp \Rightarrow v \perp v \Rightarrow v = 0
+\tag*{$\blacksquare$}
+$$
+
+10.
+$$
+0^\perp = V
+$$
+
+$\triangleright$
+
+$$
+v \in V \Rightarrow (v, 0) = 0 \cdot (v, 0) = 0
+\tag*{$\blacksquare$}
 $$
 
 Основное разложение доказывается дополнением ортонормированного базиса $U$ до ортонормированного базиса $V$.
@@ -2973,6 +3070,10 @@ $$
 $$
 Q^{-1}=Q^T.
 $$
+
+Опр.: $O_n(K) = \{U \in M_n(K) \; | \; U - \text{орт.}\}$
+
+Л.: $O_n(K) < \mathrm{GL}_n(K)$
 
 Также эквивалентно:
 
@@ -2999,6 +3100,18 @@ $$
 поэтому
 $$
 \det Q=\pm1.
+$$
+
+Пр.: $E -$ ОНБ в евкл. $V$, $F$ - базис $V$; $U = \mathcal{M}_{E \rightarrow F} \Rightarrow (F - \text{ОНБ} \Leftrightarrow U \in O_n(K))$
+
+$\triangleright$
+
+$$
+\Gamma_F = U^T \Gamma_E U = U^T U (\Gamma_E - \text{ортнормировано и матрица единична}) \Rightarrow
+$$
+$$
+\Gamma_F - \text{ОНБ} \Leftrightarrow \Gamma_F = E_n \Leftrightarrow U \in O_n(K)
+\tag*{$\blacksquare$}
 $$
 
 ---
@@ -3030,9 +3143,28 @@ $$
 [A^*]=\overline{[A]}^T.
 $$
 
+$\triangleright$
+
+$$
+A^* \in \mathrm{End} V, \; \text{Fix ONB E}
+$$
+$$
+[A^*]_E = A^* \Leftrightarrow \forall v, w \in V: (Av, w) = (v, A*w) - \text{linear by v, w}; \; v = E[v]_E, w = E[w]_E \Leftrightarrow
+$$
+$$
+\Leftrightarrow (Ae_i, e_j) = (e_i, A^* e_j) \Leftrightarrow (a_{1i}e_i + \dots + a_{ni}e_i, e_j) = (e_i, b_{1j}e_j + \dots + b_{nj}e_j) \Leftrightarrow
+$$
+$$
+\Leftrightarrow a_{ji} = b_{ij} \Leftrightarrow A^* = A^T 
+\tag*{$\blacksquare$}
+$$
+
 Свойства:
 $$
 (A+B)^*=A^*+B^*,
+$$
+$$
+(\lambda A)^* = \lambda A^*
 $$
 $$
 (AB)^*=B^*A^*,
@@ -3040,6 +3172,8 @@ $$
 $$
 (A^*)^*=A.
 $$
+
+Док-ва из св-в транспонированной матрицы.
 
 ---
 
@@ -3056,9 +3190,33 @@ $$
 $$
 для всех $x,y$.
 
-В ортонормированном базисе его матрица симметрична:
+В ортонормированном базисе его матрица симметрична и $A^*$ явл. симм. билинецной формой как и сама $A$:
 $$
 A^T=A.
+$$
+
+Пр.: $\mathcal{A}$ - симм. $\Rightarrow \chi_A$ раскл. на лин. множители над $\mathbb{R}$
+
+$\triangleright$
+
+$$
+\lambda \in \mathbb{C} - \text{root of} \; \chi_A; \; A = [\mathcal{A}]_E, E - \text{ONB}
+$$
+$$
+\mathbb{C}^n \overset{A \cdot}{\longrightarrow} \mathbb{C}^n; \; \chi_{A \cdot} = \chi_A = \chi_{\mathcal{A}}
+$$
+$$
+\chi_{A \cdot} (\lambda) = 0 \Rightarrow \exists x \in \mathbb{C}^n: \mathcal{A}x = \lambda x, \quad x \neq 0
+$$
+$$
+(Ax)^T\overline{x} = (\lambda x)^T \overline{x} = \lambda x^T \overline{x}
+$$
+$$
+(Ax)^T\overline{x} = x^T A^T \overline{x} = x^T A \overline{x} = x^T \overline{Ax} = x^T \overline{\lambda x} = \overline{\lambda} x^T \overline{x}
+$$
+$$
+x^T \overline{x} = \sum_{i=1}^n |x_i|^2 \neq 0 (x \neq 0) \Rightarrow \lambda = \overline{\lambda} \Rightarrow \lambda \in \mathbb{R}
+\tag*{$\blacksquare$}
 $$
 
 Собственные векторы для разных собственных значений ортогональны. Если
@@ -3074,7 +3232,32 @@ $$
 (x,y)=0.
 $$
 
-Спектральная теорема: всякий самосопряжённый оператор в конечномерном евклидовом пространстве имеет ортонормированный базис из собственных векторов.
+Спектральная теорема: всякий самосопряжённый оператор в конечномерном евклидовом пространстве имеет ортонормированный базис из собственных векторов $E$ и $[A]_E$ - диагнолизируем.
+
+$\triangleright$
+
+MI по $n = \dim V$
+
+$$
+n = 1 - \checkmark
+$$
+$$
+n - 1 \mapsto n:
+$$
+$$
+\lambda - \text{eigen value} \; A, v - \text{eigen vector}; \; e_1 = \frac{1}{||v||} v
+$$
+$$
+W = \mathrm{Lin}(e_1)^\perp, \dim W = n - 1, W - A - \text{инв.}: \; w \in W: (w, Ae_1) = (w, \lambda e_1) = \lambda (w, e_1) = 0
+$$
+$$
+A_1 = A|_{W} \in \mathrm{End} W, A_1^* = A_1
+$$
+По ИП в $W$ есть ОНБ $e_2, \dots, e_n: [A_1]_{e_2, \dots, e_n}$ - диаг
+$$
+\Rightarrow e_2, \dots, e_n - \text{искомый ОНБ}
+\tag*{$\blacksquare$}
+$$
 
 ---
 
@@ -3088,31 +3271,54 @@ $$
 
 Эквивалентно:
 
+1.
 $$
 \|Ax\|=\|x\|,
 $$
+
+2.
+
 $$
 A^*A=E,
 $$
+
+3.
+
 $$
 A^{-1}=A^*.
 $$
 
+4.
 В ортонормированном базисе матрица ортогонального оператора ортогональна:
 $$
 Q^TQ=E.
 $$
+
+5.
+В любом ОНБ -- ортогональна
+
+Зам.: В лекциях за опр. бралось утверждение 2 (возьмем тогда его за определение и заменим с нашим для показания цепочки док-в), остальное было эквивалентно с утв. что $A$ - ортогональна (0) и следующая цепь доказательств:
+
+0->5->4->0->2->0
+
+2->1->2
 
 Нормальная форма: существует ортонормированный базис, в котором матрица ортогонального оператора блочно-диагональна с блоками:
 $$
 (1),\quad (-1),
 $$
 $$
-\begin{pmatrix}
-\cos\varphi&-\sin\varphi\\
-\sin\varphi&\cos\varphi
-\end{pmatrix}.
+R_\varphi = \begin{pmatrix}
+\cos\varphi&\sin\varphi\\
+-\sin\varphi&\cos\varphi
+\end{pmatrix} \in O_2
 $$
+
+$$
+\chi_{R_\varphi} = \begin{vmatrix} \cos \varphi - x & \sin \varphi \\ - \sin \varphi & \cos \varphi - x \end{vmatrix} = (\cos \varphi - x)^2 + \sin^2 \varphi = x^2 - 2x \cos \varphi + 1; \frac{D}{4} = \cos^2 \varphi - 1 \leq 0; \; \varphi \neq k \pi \Rightarrow \text{нет вещественных значнений}
+$$
+
+T.: (Спектральная для ортогональных операторов) $A \in \mathrm{End} V$ - ортогон, Тогда существент ОНБ $E$ и $[A]_E$ - орт, и каждый блок имеет вид либо $R_\varphi$ либо $(\pm 1)$ ($\diamond$ добавить условие что $\varphi \neq k \pi$) 
 
 ---
 
