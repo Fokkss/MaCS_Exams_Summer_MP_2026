@@ -3395,25 +3395,27 @@ $$
 
 Если $K\subseteq L$, то $L$ — векторное пространство над $K$.
 
-Степень расширения:
+T.: Степень расширения:
 $$
 [L:K]=\dim_K L.
 $$
 
 Если
 $$
-K\subseteq L\subseteq M,
+F\subseteq K\subseteq L,
 $$
 то
 $$
-[M:K]=[M:L][L:K].
+[L:F]=[L:K][K:F].
 $$
 
-Доказательство. Пусть $e_1,\dots,e_m$ — базис $L$ над $K$, а $f_1,\dots,f_n$ — базис $M$ над $L$. Тогда элементы
+Доказательство. Пусть $e_1,\dots,e_m$ — базис $K$ над $F$, а $f_1,\dots,f_n$ — базис $L$ над $K$. Тогда элементы
 $$
 e_if_j
 $$
-образуют базис $M$ над $K$. Порождаемость и линейная независимость проверяются последовательным разложением сначала по $f_j$, потом по $e_i$.
+образуют базис $L$ над $F$. Порождаемость и линейная независимость проверяются последовательным разложением сначала по $f_j$, потом по $e_i$.
+
+Зам.: верно и обратное (получаем конечность для элементов башни)
 
 ---
 
@@ -3430,11 +3432,15 @@ $$
 
 Если такого многочлена нет, $\alpha$ трансцендентен.
 
+Опр.: $\{f \in K[x] | f(a) = 0, a \in K \} -$ идеал, при том главный (тк в поле - ОГИ) $=(f_0)$ он и называется минимальным многочленом, определенным с точностью до умножения на $\varepsilon \in K^*$
+
 Минимальный многочлен $m_\alpha$ — нормированный многочлен наименьшей степени, зануляющий $\alpha$.
+
+Обозн.: $m_\alpha = \mathrm{Irr}_{K} (\alpha)$
 
 Свойства:
 
-1. $m_\alpha$ неприводим. Если $m=fg$, то
+1. $\mathrm{Irr}_{K} (\alpha)$ неприводим. Если $m=fg$, то
 $$
 0=f(\alpha)g(\alpha),
 $$
@@ -3442,18 +3448,34 @@ $$
 
 2. Если $f(\alpha)=0$, то
 $$
-m_\alpha\mid f.
+\mathrm{Irr}_{K} (\alpha)\mid f.
 $$
 Доказательство: делим $f=qm+r$, $\deg r<\deg m$, подставляем $\alpha$, получаем $r=0$.
 
 3.
 $$
-[K(\alpha):K]=\deg m_\alpha.
+[K(\alpha):K]=\deg \mathrm{Irr}_{K} (\alpha).
 $$
+
+Пр.: $[L:K] = n < \infty \Rightarrow \forall a \in L -$ алгебраичен над $K$ и его степень не превосходит $n$
+
+$\triangleright$
+
+$$
+1, a, a^2, \dots, a^n; \; [L:K] = n \Rightarrow \text{ЛЗС}
+$$
+$$
+f = \alpha_nx^n + \dots + \alpha_0 \neq 0; f(a) = 0 \Rightarrow f \in (f_0), a - \text{алг.} \Rightarrow \deg \mathrm{Irr}_K(a) \leq \deg f \leq n
+\tag*{$\blacksquare$}
+$$
+
+Опр.: $L/K$ наз алгебраическим если все элементы алгебраичны над $K$, иначе -- трансцендентным
 
 ---
 
 ## 71. Расширение, порождённое данным конечным множеством
+
+Опр.: $L/K, S \subset L: K(S) = \bigcap_{K \subset F \subset L} F, K(S)$ - поле, полученное присоединением элементов $S$.
 
 Пусть $S=\{\alpha_1,\dots,\alpha_n\}\subseteq L$.
 
@@ -3476,7 +3498,7 @@ $$
 K(\alpha)=K[\alpha].
 $$
 
-Если $d=\deg m_\alpha$, то
+Если $d=\deg \mathrm{Irr}_{K} (\alpha)$, то
 $$
 K(\alpha)=
 \{a_0+a_1\alpha+\dots+a_{d-1}\alpha^{d-1}:a_i\in K\}.
@@ -3489,13 +3511,63 @@ K(\alpha_1,\dots,\alpha_n)
 K(\alpha_1,\dots,\alpha_{n-1})(\alpha_n).
 $$
 
+T.: $L/K$, тогда эквивалентно:
+
+1. $L/K$ конечно
+2. $L/K$ алг и конечно порождено
+
+
+
 ---
 
 ## 72. Строение простых алгебраических расширений. Присоединение к полю корня неприводимого многочлена
 
-Если $\alpha$ алгебраичен над $K$, то
+Опр.: $L/K, P \subset L: K(P) = \bigcap_{K \subset F \subset L} F, K(P)$ - поле, полученное присоединением элементов $P$.
+
+Опр.: $L/K$ наз простым если $L = K(x), x \in L$
+
+Зам.: Трансцендентность и алгебраичность $x$ наследуется в название расширения
+
+$\triangleright$
+
+1->2:
+
 $$
-K(\alpha)=K[\alpha]\cong K[x]/(m_\alpha).
+a_1, \dots, a_n - \text{базис} \; L \text{над} \; K \Rightarrow
+$$
+$$
+a_1, \dots, a_n \in K(a_1, \dots, a_n) \Rightarrow \forall \alpha_1, \dots, \alpha_n \in K: \sum \alpha_i a_i \in K \Rightarrow L = K \Rightarrow
+$$
+$$
+\Rightarrow L/K \text{кон порожден}
+$$
+
+2->1
+
+$$
+L = K(a_1, \dots, a_n); L_j = K(a_1, \dots, a_j)
+$$
+
+(!): MI по $j$: $L/K$ - кон
+
+$$
+j=0: \checkmark
+$$
+$$
+j > 0:
+$$
+$$
+L_j = L_{j-1}(a_j) \Rightarrow [L_j : L_{j-1}] < \infty \Rightarrow
+$$
+По ИП:
+$$
+[L_j:K] < \infty
+\tag*{$\blacksquare$}
+$$
+
+T.: Если $\alpha$ алгебраичен над $K$, то
+$$
+K(\alpha)=K[\alpha]\cong K[x]/(\mathrm{Irr}_{K} (\alpha)).
 $$
 
 Гомоморфизм:
@@ -3508,15 +3580,15 @@ $$
 
 Его ядро:
 $$
-(m_\alpha).
+(\mathrm{Irr}_{K} (\alpha)).
 $$
 
 По теореме о гомоморфизме:
 $$
-K[x]/(m_\alpha)\cong K[\alpha].
+K[x]/(\mathrm{Irr}_{K} (\alpha))\cong K[\alpha].
 $$
 
-Так как $m_\alpha$ неприводим, фактор — поле, значит $K[\alpha]$ уже поле.
+Так как $\mathrm{Irr}_{K} (\alpha)$ неприводим, фактор — поле, значит $K[\alpha]$ уже поле.
 
 Базис:
 $$
@@ -3524,6 +3596,48 @@ $$
 $$
 
 Если $f\in K[x]$ неприводим, то $K[x]/(f)$ — поле, в котором класс $x$ является корнем $f$. Так формально присоединяют корень.
+
+Пр.: $\mathbb{Q}(\sqrt[3]{2}) \cong \mathbb{Q}(\sqrt[3]{2} w) \cong \mathbb{Q}(\sqrt[3]{2}w^2) \cong \mathbb{Q}[X]/(X^3 - 2)$
+
+Пр.: $f_0 \in K[X] -$ неприв., $L = K[X]/(f_0)$, рассматриваемя $L$ как расширение $K$, отождествляя $\alpha \in K$ с $\overline{\alpha} \in K[X]/(f_0) \Rightarrow L = K(X), x = \overline{X} \; \And \; \mathrm{Irr}_K(x) = f_0$
+
+Зам.: Это теорема о существовании к только что доказанной теореме о единственности.
+
+$\triangleright$
+
+$$
+\forall n: x^n \in K(x) \Rightarrow \forall f \in K[x]: \overline{f} \in K(x) \Rightarrow K(x) = L
+$$
+$$
+f(x) = 0 \Leftrightarrow \overline{f} = 0 \Leftrightarrow f_0 | f \Leftrightarrow f \in f_0 \Rightarrow f_0 = \mathrm{Irr}_K(x)  
+\tag*{$\blacksquare$}
+$$
+
+Сл.: $x -$ алг. $\Rightarrow [K(x) :K] = \deg \mathrm{Irr}_K(x)$
+
+Сл.: $L/K$ кон., $x \in L \Rightarrow \deg_K x | [L:K]$
+
+$\triangleright$
+
+$$
+[L:K] = [L:K(x)]\underset{\deg_K x}{\underbrace{[K(x):K]}}
+\tag*{$\blacksquare$}
+$$
+
+Пр.: $L/K$ расш $M = \{x \in L \; | \; x - \text{алг. над K}\} \Rightarrow M < L$ (подполе)
+
+$\triangleright$
+
+$$
+1, 0 \in M
+$$
+$$
+x, y \in M: \sphericalangle \; K_1 = K(x, y) \Rightarrow [K_1:K] < \infty \Rightarrow K_1/K - \text{алг.} \Rightarrow
+$$
+$$
+\Rightarrow x + y, xy, x^{-1} - \text{алг.} \; \Rightarrow x + y, xy, x^{-1} \in M
+\tag*{$\blacksquare$}
+$$
 
 ---
 
@@ -3564,8 +3678,8 @@ $$
 
 Поле $L\supseteq K$ называется полем разложения $f\in K[x]$, если:
 
-1. $f$ раскладывается в $L[x]$ на линейные множители;
-2. $L$ порождено над $K$ корнями $f$.
+1. $f$ раскладывается в $L[x]$ на линейные множители ($f = \varepsilon (x- a_1)\cdot \dots \cdot (x - a_n)$);
+2. $L$ порождено над $K$ корнями $f$ .
 
 То есть
 $$
@@ -3573,11 +3687,13 @@ L=K(\alpha_1,\dots,\alpha_n),
 $$
 где $\alpha_i$ — корни $f$.
 
-Существование доказывается индукцией по степени. Если $f$ не раскладывается, берём неприводимый множитель $g$ степени больше $1$ и поле
+T.: Существование доказывается индукцией по степени. Если $f$ не раскладывается, берём неприводимый множитель $g$ степени больше $1$ и поле
 $$
 K_1=K[x]/(g).
 $$
 В этом поле у $g$, а значит у $f$, появляется корень. Делим на линейный множитель и продолжаем. Через конечное число шагов получаем поле, где $f$ полностью раскладывается.
+
+Единственность не доказываем.
 
 ---
 
