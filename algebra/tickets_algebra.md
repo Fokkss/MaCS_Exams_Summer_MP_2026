@@ -3324,11 +3324,58 @@ T.: (Спектральная для ортогональных оператор
 
 ## 67. Теорема о гомоморфизме для колец
 
-Пусть
-$$
+Напоминание все поле - идеал. $\triangleright$
+
+$$b \in I$$
+
+$$e \in I \Rightarrow I = K$$
+
+$$\tag*{$\blacksquare$}$$
+
+
+Пусть R - кольцо, I - идеал в R
+
+$I \triangleright R$
+
+$R / I$
+
+Введем умножение.
+
+$ \overline{a} = a + I$
+
+$ \overline{a} \overline{b} = \overline{a b} $
+
+Корректность $\triangleright$
+
+
+$$\overline{a} = \overline{a'}$$
+
+$$\overline{a} = \overline{b'}$$
+
+$$a' = a + x \ b' = b + y$$
+
+$$a'b' = a + b + I$$
+
+$$\tag*{$\blacksquare$}$$
+
+Предложение. $R / I$ - КА с 1. $\triangleright$ очев
+
+$$\tag*{$\blacksquare$}$$
+
+Опр. Пусть
+$
 \varphi:R\to S
-$$
+$
 — гомоморфизм колец.
+
+1. $\phi$ - гомоморфизм аддитивных групп
+2. мультипликативность
+3. $\phi(1_R) = 1_S$
+
+Примеры.
+
+1. $i : a \mapsto a$
+2. $\pi_i : a \mapsto a + I$ - гомоморфизм проекция на фактор
 
 Ядро:
 $$
@@ -3359,36 +3406,108 @@ $$
 
 Сюръективность очевидна, а ядро индуцированного отображения нулевое.
 
+Предложение. $Let R$ - ОГИ, $b \in R$, Тогда $R/(a)$ - поле $\Rightarrow b $ неприводимый
+
+Доказательство. $\triangleright$
+
+$1^0$ $ \ b \in R^* \Rightarrow $
+
+$$
+1 \in (b) \Rightarrow (b) = R \Rightarrow R/(b) = \{0\}
+$$ - не поле
+
+$2^0$ $ \ b= b_1b_2, \\ \ b_1, \ b_2 \notin R^*$
+
+$$
+\overline{b_1} \cdot \overline{b_2} =  \overline{b} = \overline{0}
+$$
+
+$$
+Let \ \overline{b_1} = \overline{0} \Rightarrow b | b_1 , \ b_1 = bc \Rightarrow b = bcb_2 \Rightarrow b_2
+$$ - обратим
+
+$3^0$ $  \ Let \ b$ - неприводим
+
+$$Let \ \overline{c} \in R / (b) , \ \overline{c} \neq 0$$
+
+$$
+c \notin (b)
+$$
+
+$$
+\Rightarrow (c, \ b) = 1
+$$
+
+$$
+\Rightarrow \exists x, \ y \in R : \overline{x}\overline{c} + \overline{y}\overline{b} = 1 \Rightarrow \overline{c} \in (R / (a))^*
+$$
+
+$$\tag*{$\blacksquare$}$$
+
 ---
 
 ## 68. Классификация простых полей. Простое подполе
 
-Простое подполе поля $K$ — наименьшее подполе $K$.
+Опр. $F \subset K$ - подполе, если $F$ - подкольцо, $K$ - поле
 
-Рассмотрим гомоморфизм:
+$K$ - называется простым если нет подаолей
+
+Лемма. Характеристика - простое
+
+Теорема Пусть K - простое полк
+
+1. $\mathrm{char} \ K = p \neq 0 \Rightarrow K \cong \mathbb{F}_p$
+
+2. $\mathrm{char} = 0 \Rightarrow \cong \mathbb{Q}$
+
+Доказательство. $\triangleright$
+
+$$\phi : \mathbb{Z} \underset{n \rightarrow 1 + \dots + 1}\rightarrow K$$
+
+$\phi - $ гомоморфизм колец
+
+$$\mathrm{ker} \phi = \begin{cases}
+(p) , \ \mathrm{char K } = 0\\
+0
+\end{cases}$$
+
+$1^0 \ \mathbb{Z} /(p)  \cong \Im \phi$
+
 $$
-\mathbb Z\to K,
-$$
-$$
-n\mapsto n\cdot1_K.
+\mathbb{F}_p - \text{простое поле} \Rightarrow K = \Im \phi \Rightarrow K \cong \mathbb{F}_p
 $$
 
-Если ядро нулевое, то $K$ содержит копию $\mathbb Z$, а значит и $\mathbb Q$. Тогда простое подполе изоморфно $\mathbb Q$, характеристика $0$.
 
-Если ядро $p\mathbb Z$, то $p$ простое, иначе в поле появились бы делители нуля. Тогда простое подполе изоморфно
+$2^0  \ \mathrm{char} = 0$
+
 $$
-\mathbb F_p.
+\mathbb{Q} \underset{ \frac{a}{b} \rightarrow \frac{\phi(a)} {\phi(b)}}\rightarrow K
+$$ + проверить корректность
+
 $$
+\ker \ \phi_1  : \ a = 0 \Rightarrow \frac{a}{b} = 0
+$$
+
+$$\phi  :  \mathbb{Q} \cong \Im \ \phi_1 \Rightarrow$$
+
+$$\Im \ \phi_1 - \text{ подполе в K} \Rightarrow \Im \ \phi_1 = K , \ K \cong \mathbb{Q}$$
 
 Итог:
-$$
+$
 \text{простое подполе}\cong \mathbb Q
-$$
+$
 или
-$$
+$
 \mathbb F_p.
-$$
+$
 
+$$\tag*{$\blacksquare$}$$
+
+Предложение. Любое поле содержит простое подполе
+
+$F_0 := \bigcap F_{\textbf{подполе}}$
+
+Очев.
 ---
 
 ## 69. Степень расширения. Мультипликативность степени
@@ -3733,6 +3852,9 @@ $$
 
 ## 76. Возможные порядки конечного поля. Существование поля из $p^n$ элементов
 
+Как построить - $$\mathbb{F}_p / (f_0), \ \mathrm {deg} \ f_0 = n$$
+
+
 Если $F$ — конечное поле, то его характеристика равна простому $p$, и простое подполе изоморфно $\mathbb F_p$. Тогда $F$ — конечномерное векторное пространство над $\mathbb F_p$. Если
 $$
 [F:\mathbb F_p]=n,
@@ -3758,6 +3880,47 @@ $$
 $$
 значит корни различны. Их ровно $p^n$. Поэтому существует поле из $p^n$ элементов.
 
+Заметим $F$ - поле.
+
+1. $(x + y)^{p^n} = x^{p^n} + y^{p^n} \in F$ 
+2. $(xy)^{p^n} = xy \in F$
+3. $1 \in F$
+
+$F = \mathbb{F}_p$
+
+Предложение. Пусть $| F| = p^n$, Тогда $\exists a : \ F = \mathbb{F}_p(a)$
+
+Доказательство. $\triangleright$
+
+$|F^*| \ < \infty$
+
+$$F = \langle a \rangle$$
+
+$$\mathbb{F}_p(a) \supset \langle a \rangle $$
+
+$\Rightarrow$
+
+$$\mathbb{F}_p (a) = F$$
+
+Следствие. Над $\mathbb{F}_p $ есть неприводимый многочлен степени $n$
+
+Доказательство. $\triangleright$ $\mathbb{F}_{p^n} = \mathbb{F}_p(a), \ \mathrm {Irr} a = f$
+
+Предложение. $\mathbb{F}_{p^n} = \mathbb{F}_p / (f) \Rightarrow f \mid x^{p^n} - x$
+
+Доказательство. $\triangleright$
+
+$Let \ K = \mathbb F_p[x]/(f)$
+
+$$|K| = p^n  \Rightarrow |K^*| = p^n - 1$$
+
+$$\Rightarrow \forall a \in K^* : a^{p^n - 1} = 1$$
+
+$$\forall a \in K^* : a^{p^n} = a$$
+
+$$x^{p^n} - x \in \overline{0}$$
+
+$$\tag*{$\blacksquare$}$$
 ---
 
 ## 77. Единственность поля из $p^n$ элементов
@@ -3785,6 +3948,49 @@ $$
 Так как степень многочлена $p^n$, все его корни лежат в $F$, и $F$ является полем разложения $x^{p^n}-x$ над $\mathbb F_p$.
 
 Поле разложения единственно с точностью до изоморфизма. Поэтому поле из $p^n$ элементов единственно с точностью до изоморфизма.
+
+Другое док-во, докажем, $|F| = p^n \Rightarrow F \cong \mathbb{F}_p/ (f),  \ \mathrm{deg} f = n$ 
+$\triangleright$
+
+Можно считать
+
+$$
+K = \mathbb F_p [x] / (f) , \ f \text{- неприводим} \deg f = n
+$$
+
+$$
+f | (X^{p^n} - X)
+$$
+
+$\forall a : a^{p^n} - a = 0$ - $p^n$ корней
+
+$$
+\Rightarrow X^{p^n} - X - \text{раскладывается в} L[x] \Rightarrow
+$$
+
+$f - $ раскладывается
+
+$$
+Let \ b - \text{корень} f \in L[x]
+$$
+
+$$
+\mathbb {F_p(b)}  / \mathbb {F_p}
+$$ - простое алгебраическое расширение
+
+$$
+ \mathrm{Irr} \ b = f
+$$
+
+$$
+\Rightarrow [F_p(b) : F_p] = n
+$$
+
+$$
+L = F_p(b)  \cong F_p[x] / (f) = K
+$$
+
+
 
 ---
 
