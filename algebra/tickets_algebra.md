@@ -3324,11 +3324,54 @@ T.: (Спектральная для ортогональных оператор
 
 ## 67. Теорема о гомоморфизме для колец
 
-Пусть
-$$
+Напоминание все поле - идеал. $\triangleright$
+
+$$b \in I$$
+
+$$e \in I \Rightarrow I = K$$
+
+
+Пусть R - кольцо, I - идеал в R
+
+$I \triangleright R$
+
+$R / I$
+
+Введем умножение.
+
+$ \overline{a} = a + I$
+
+$ \overline{a} \overline{b} = \overline{a b} $
+
+Корректность $\triangleright$
+
+
+$$\overline{a} = \overline{a'}$$
+
+$$\overline{a} = \overline{b'}$$
+
+$$a' = a + x \ b' = b + y$$
+
+$$a'b' = a + b + I$$
+
+Предложение. $R / I$ - КА с 1. $\triangleright$ очев
+
+
+
+Опр. Пусть
+$
 \varphi:R\to S
-$$
+$
 — гомоморфизм колец.
+
+1. $\phi$ - гомоморфизм аддитивных групп
+2. мультипликативность
+3. $\phi(1_R) = 1_S$
+
+Примеры.
+
+1. $i : a \mapsto a$
+2. $\pi_i : a \mapsto a + I$ - гомоморфизм проекция на фактор
 
 Ядро:
 $$
@@ -3359,35 +3402,98 @@ $$
 
 Сюръективность очевидна, а ядро индуцированного отображения нулевое.
 
+Предложение. $Let R$ - ОГИ, $b \in R$, Тогда $R/(a)$ - поле $\Rightarrow b $ неприводимый
+
+Доказательство. $\triangleright$
+
+$1^0$ $ \ b \in R^* \Rightarrow $
+
+$$
+1 \in (b) \Rightarrow (b) = R \Rightarrow R/(b) = \{0\}
+$$ - не поле
+
+$2^0$ $ \ b= b_1b_2, \\ \ b_1, \ b_2 \notin R^*$
+
+$$
+\overline{b_1} \cdot \overline{b_2} =  \overline{b} = \overline{0}
+$$
+
+$$
+Let \ \overline{b_1} = \overline{0} \Rightarrow b | b_1 , \ b_1 = bc \Rightarrow b = bcb_2 \Rightarrow b_2
+$$ - обратим
+
+$3^0$ $  \ Let \ b$ - неприводим
+
+$$Let \ \overline{c} \in R / (b) , \ \overline{c} \neq 0$$
+
+$$
+c \notin (b)
+$$
+
+$$
+\Rightarrow (c, \ b) = 1
+$$
+
+$$
+\Rightarrow \exists x, \ y \in R : \overline{x}\overline{c} + \overline{y}\overline{b} = 1 \Rightarrow \overline{c} \in (R / (a))^*
+$$
+
 ---
 
 ## 68. Классификация простых полей. Простое подполе
 
-Простое подполе поля $K$ — наименьшее подполе $K$.
+Опр. $F \subset K$ - подполе, если $F$ - подкольцо, $K$ - поле
 
-Рассмотрим гомоморфизм:
+$K$ - называется простым если нет подаолей
+
+Лемма. Характеристика - простое
+
+Теорема Пусть K - простое полк
+
+1. $\mathrm{char} \ K = p \neq 0 \Rightarrow K \cong \mathbb{F}_p$
+
+2. $\mathrm{char} = 0 \Rightarrow \cong \mathbb{Q}$
+
+Доказательство. $\triangleright$
+
+$$\phi : \mathbb{Z} \underset{n \rightarrow 1 + \dots + 1}\rightarrow K$$
+
+$\phi - $ гомоморфизм колец
+
+$$\mathrm{ker} \phi = \begin{cases}
+(p) , \ \mathrm{char K } = 0\\
+0
+\end{cases}$$
+
+$1^0 \ \mathbb{Z} /(p)  \cong \Im \phi$
+
 $$
-\mathbb Z\to K,
-$$
-$$
-n\mapsto n\cdot1_K.
+\mathbb{F}_p - \text{простое поле} \Rightarrow K = \Im \phi \Rightarrow K \cong \mathbb{F}_p
 $$
 
-Если ядро нулевое, то $K$ содержит копию $\mathbb Z$, а значит и $\mathbb Q$. Тогда простое подполе изоморфно $\mathbb Q$, характеристика $0$.
 
-Если ядро $p\mathbb Z$, то $p$ простое, иначе в поле появились бы делители нуля. Тогда простое подполе изоморфно
+$2^0  \ \mathrm{char} = 0$
+
 $$
-\mathbb F_p.
+\mathbb{Q} \underset{ \frac{a}{b} \rightarrow \frac{\phi(a)} {\phi(b)}}\rightarrow K
+$$ + проверить корректность
+
 $$
+\ker \ \phi_1  : \ a = 0 \Rightarrow \frac{a}{b} = 0
+$$
+
+$$\phi  :  \mathbb{Q} \cong \Im \ \phi_1 \Rightarrow$$
+
+$$\Im \ \phi_1 - \text{ подполе в K} \Rightarrow \Im \ \phi_1 = K , \ K \cong \mathbb{Q}$$
 
 Итог:
-$$
+$
 \text{простое подполе}\cong \mathbb Q
-$$
+$
 или
-$$
+$
 \mathbb F_p.
-$$
+$
 
 ---
 
