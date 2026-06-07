@@ -3880,7 +3880,11 @@ $$
 
 ## 78. Подполя поля из $p^n$ элементов
 
+
 В $\mathbb F_{p^n}$ существует подполе из $p^m$ элементов тогда и только тогда, когда
+
+
+
 $$
 m\mid n.
 $$
@@ -3914,6 +3918,52 @@ $$
 ---
 
 ## 79. Группа автоморфизмов поля из $p^n$ элементов
+
+
+Теорема. $Let \ Aut(\mathbb F_p^n) \cong C^n = \langle x \rightarrow x^p\rangle$
+
+Доказательство. $\triangleright$
+
+$ord \phi = n$:
+
+$$
+\phi ^n(a) = a^{p^n} = a
+$$
+
+$\exists m < n:$
+
+$$
+\phi ^m(a) = a
+$$
+
+$$
+\Rightarrow a^{p^m} - a = 0
+$$
+
+$$
+X^{p^m} - X - \text{есть}  \ p^n  \ \text{корней}
+$$ Противоречие.
+
+Теперь $|Aut(\mathbb F_{p^n} ) | \le n$
+
+Пусть не так и возьмем разные $\{\psi_i\}^{n + 1}$
+
+$$
+\mathbb F_{p^n} = \langle a \rangle$$
+
+$$f = \mathrm Irr \ a$$
+
+$$f(a) = 0$$
+
+$$
+\Rightarrow \forall j \\ \psi _j(f(a)) =0 
+$$
+
+$$
+\psi _i(a) - \text{ корни и их >}n 
+$$ - Противоречие.
+
+$$\tag*{$\blacksquare$}$$
 
 $$
 \operatorname{Aut}(\mathbb F_{p^n})\cong C_n.
