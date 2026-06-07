@@ -2776,6 +2776,9 @@ B(x,y)=(\mathcal{M}_{e\to f}[x]_f)^TA_e(\mathcal{M}_{e\to f}[y]_f)
 =[x]_f^T(\mathcal{M}_{e\to f}^TA_e\mathcal{M}_{e\to f})[y]_f.
 $$
 
+Опр.: симм - $B(x, y) = B(y,x);$ кососимм.: $B(x,y) = -B(y,x)$
+
+
 ---
 
 ## 58. Теорема Лагранжа
