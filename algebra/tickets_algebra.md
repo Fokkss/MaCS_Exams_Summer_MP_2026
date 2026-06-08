@@ -66,19 +66,21 @@ $$
 $$
 \mathrm{rank}(v_1,\dots,v_m)=\dim\langle v_1,\dots,v_m\rangle.
 $$
-То есть это максимальное число линно независимых векторов, выбираемых из набора.
 
 Пр.: $\mathrm{rank} (v_1, \dots, v_n)$ всегда совпадает с максимальной ЛНС векторов среди $\{v_i\}^n$
 
 $\triangleright$
 
 $$
-Let \; \{v_{ij}\}^n - \max \text{ЛНС, состоящая в-в набора} \; v_1, \dots, v_n \\
-
-(!): <v_{ij}>^l = V \\
-
-v \in V \Rightarrow v_{i1}, \dots, v_{il}, v - \text{ЛНС} \Rightarrow \\
-
+Let \; \{v_{ij}\}^n - \max \text{ЛНС, состоящая в-в набора} \; v_1, \dots, v_n
+$$
+$$
+(!): <v_{ij}>^l = V
+$$
+$$
+v \in V \Rightarrow v_{i1}, \dots, v_{il}, v - \text{ЛНС} \Rightarrow
+$$
+$$
 \Rightarrow v \in <v_{ij}>^l \Rightarrow v_{ij} - \text{базис} V
 
 \tag*{$\blacksquare$}
@@ -128,7 +130,7 @@ $$
 
 Сл.: $U \in \mathrm{GL}_n(K) \Rightarrow \mathrm{rank}(UA) = \mathrm{rank}(A)$
 
-Пр.: $U \in M_n(K) \Rightarrow (U \in \mathrm{GL}_n(K) \Leftrightarrow \mathrm{rank}A = n)$
+Пр.: $U \in M_n(K) \Rightarrow (U \in \mathrm{GL}_n(K) \Leftrightarrow \mathrm{rank}U = n)$
 
 PDQ-разложение:
 $$
@@ -201,16 +203,21 @@ $$
 $\triangleright$
 
 $$
-\mathrm{rank} A = r \Rightarrow \exists j_1, \dots, j_r: A[,j_1], \dots, A[,j_r] - \text{ЛНС} \\
-
-\text{Let} \; A' \leftrightharpoons A[,j_k]_{k=1}^r \in K^{m \times r}, \text{ее столбцы - ЛНС} \Rightarrow \\
-
-\Rightarrow \mathrm{rank} A' = r \Rightarrow |A'| \neq 0 = |A'[i_1, \dots, i_r]| - \text{один из миноров }\, A \, \text{порядка} \; r \\
-
-\text{Let} \; s > r, \diamond s = \max (m,n) \Rightarrow \text{Let} \; B = A[i_1, \dots, i_s; j_1, \dots j_s] \\
-
-A[,j_1], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow \\
-
+\mathrm{rank} A = r \Rightarrow \exists j_1, \dots, j_r: A[,j_1], \dots, A[,j_r] - \text{ЛНС}
+$$
+$$
+\text{Let} \; A' \leftrightharpoons A[,j_k]_{k=1}^r \in K^{m \times r}, \text{ее столбцы - ЛНС} \Rightarrow
+$$
+$$
+\Rightarrow \mathrm{rank} A' = r \Rightarrow |A'| \neq 0 = |A'[i_1, \dots, i_r]| - \text{один из миноров }\, A \, \text{порядка} \; r
+$$
+$$
+\text{Let} \; s > r, \diamond s = \max (m,n) \Rightarrow \text{Let} \; B = A[i_1, \dots, i_s; j_1, \dots j_s]
+$$
+$$
+A[,j_1], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow
+$$
+$$
 \Rightarrow B \text{- ЛЗС (все столбцы)} \Rightarrow \mathrm{rank} B \leq s \Rightarrow |B| = 0 
 \tag*{$\blacksquare$}
 $$
