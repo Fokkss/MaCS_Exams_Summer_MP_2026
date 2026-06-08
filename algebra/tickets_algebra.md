@@ -108,6 +108,12 @@ $$
 
 Итог: можно говорить просто «ранг матрицы».
 
+$\mathrm{rank} A = \mathrm{rank} A^T$
+
+$\mathrm{rank}(A+B) \leq \mathrm{rank}A + \mathrm{rank}B$
+
+$\mathrm{rank} (AB) \leq \min(\mathrm{rank}A, \mathrm{rank} B)$
+
 ---
 
 ## 5. Ранг произведения матриц. Связь ранга с PDQ-разложением
@@ -215,10 +221,10 @@ $$
 \text{Let} \; s > r, \diamond s = \max (m,n) \Rightarrow \text{Let} \; B = A[i_1, \dots, i_s; j_1, \dots j_s]
 $$
 $$
-A[,j_1], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow
+A[i_1,], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow
 $$
 $$
-\Rightarrow B \text{- ЛЗС (все столбцы)} \Rightarrow \mathrm{rank} B \leq s \Rightarrow |B| = 0 
+\Rightarrow B \text{- ЛЗС (все столбцы)} \Rightarrow \mathrm{rank} B < s \Rightarrow |B| = 0 
 \tag*{$\blacksquare$}
 $$
 
@@ -250,11 +256,11 @@ $$
 
 $\Rightarrow$
 
-Совместна $\Rightarrow \ \exists x : $
+Совместна $\Rightarrow \ \exists x:$
 
-$$A[, 1] \cdot x_1 + A[, 2] \cdot x_2 + \dots + A[, n] \cdot x_n = b$$
+$$A[ ,1] \cdot x_1 + A[ ,2] \cdot x_2 + \dots + A[ ,n] \cdot x_n = b$$
 
-$$\mathrm{Lin} \{A[, i] \} = \mathrm{Lin} \{ A[, i], \ b\} \Rightarrow \ \mathrm{rk} A = \mathrm{rk} (A \ | \ b)$$
+$$\mathrm{Lin} \{A[ ,i] \} = \mathrm{Lin} \{ A[ ,i], \ b\} \Rightarrow \ \mathrm{rk} A = \mathrm{rk} (A \ | \ b)$$
 
 $\Leftarrow$
 
@@ -307,7 +313,7 @@ $2 \Rightarrow 1$
 
 Пусть не так, 
 
-$\exists v: $
+$\exists v:$
 
 $$v = w_1 + w_2 + \dots + w_n$$
 
@@ -323,11 +329,11 @@ $$0 = (w_1 - w'_1) + \dots + (w_n - w'_n)$$
 
 $1 \Rightarrow 3$
 
-Пусть не так $\exists x \in W_k \cap \underset{i \neq k} \sum W_i $
+Пусть не так $\exists x \in W_k \cap \underset{i \neq k} \sum W_i$
 
 $$x = x + 0 + \dots + 0$$
 
-$$x = \underset {i \neq k} \sum w_k$$
+$$x = \underset {i \neq k} \sum w_i$$
 
 Противоречие.
 
@@ -335,7 +341,7 @@ $3 \Rightarrow 1$
 
 Пусть не так 
 
-$\exists v : $
+$\exists v :$
 
 $$v = w_1 + w_2 + \dots + w_n$$
 
@@ -430,17 +436,21 @@ $$
 $\triangleright$
 
 $$
-v \in \ker A: \\
+v \in \ker A:
+$$
 
-v_1,v_2 \in \ker A \Rightarrow A( \lambda_1 v_1 + \lambda_2 v_2) = \lambda_1 A(v_1) + \lambda_2 A(v_2) = \lambda_1 0 + \lambda_2 0 = 0 \\
-
-0 \in \Im A: 0 = A(0) \\
-
-v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A \\
+$$
+v_1,v_2 \in \ker A \Rightarrow A( \lambda_1 v_1 + \lambda_2 v_2) = \lambda_1 A(v_1) + \lambda_2 A(v_2) = \lambda_1 0 + \lambda_2 0 = 0
+$$
+$$
+0 \in \Im A: 0 = A(0)
+$$
+$$
+v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A
 \tag*{$\blacksquare$}
 $$
 
-Зам: $\mathrm{Iso(V,W)} \subset \mathrm{Hom}(V,W) \supset \mathcal{L} (V,W) $
+Зам: $\mathrm{Iso(V,W)} \subset \mathrm{Hom}(V,W) \supset \mathcal{L} (V,W)$
 
 ---
 
@@ -481,8 +491,9 @@ X = \{
             \vdots \\
             0
         \end{pmatrix} 
-    \} = \ker (A: K^n \longrightarrow K^m) \\
-
+    \} = \ker (A: K^n \longrightarrow K^m)
+$$
+$$
 \dim X = \sim K^n - \dim \Im (A) = n - \dim <A[,j]>_{i=1}^n = n - \mathrm{rank} A
 \tag*{$\blacksquare$}
 $$
@@ -502,18 +513,24 @@ $$
 $\triangleright$
 
 $$
-\Rightarrow: \\
-
-|A^{-1} (0)| \leq 1; 0 \in \ker A \Rightarrow \\
-
+\Rightarrow:
+$$
+$$
+|A^{-1} (0)| \leq 1; 0 \in \ker A \Rightarrow 
+$$
+$$
 \ker A = 0
-
-\Leftarrow: \\
-
-\text{Let} \; A v_1 = A v_2, A(v_1 - v_2) = Av_1 - A v_2 = 0 \Rightarrow \\
-
-\Rightarrow v_1 - v_2 \in \ker A = 0 \Rightarrow \
-
+$$
+$$
+\Leftarrow: 
+$$
+$$
+\text{Let} \; A v_1 = A v_2, A(v_1 - v_2) = Av_1 - A v_2 = 0 \Rightarrow 
+$$
+$$
+\Rightarrow v_1 - v_2 \in \ker A = 0 \Rightarrow 
+$$
+$$
 \Rightarrow v_1 = v_2 \Rightarrow A \in \mathrm{Inj} (V, W)
 \tag*{$\blacksquare$}
 $$
@@ -707,7 +724,7 @@ $$
 A:V\to V.
 $$
 Пр.: $E$ - базис $V$, $\mathrm{End} V \underset{A \mapsto [A]_E}{\overset{\varepsilon_V}{\longrightarrow}} M_n(K)$
-Легко видеть, что $\varepsilon_v \in \mathrm{Iso}(\mathrm{End} V, K)$ (колец)
+Легко видеть, что $\varepsilon_v \in \mathrm{Iso}(\mathrm{End} V, M_n(K))$ (колец)
 
 Пр.: $(\mathrm{End} V, +, \cdot)$ - КА с 1 = $\varepsilon_V$
 $\varepsilon_E (BA) = [BA]_{E,E} = [B]_{E,E} [A]_{E,E} = \varepsilon_E (B) \varepsilon_E (A)$
@@ -754,18 +771,16 @@ $$
 $$Au \in U$$
 
 $$Au = A \mid _U u = \begin{pmatrix}
-        0 \\
-        A \mid _U u
+        A \mid _U u \\
+        0
         \end{pmatrix}$$
 
 Для
-$
-v = u + u' : i \in U, \ u' \in U \backslash V
-$:
+$v = u + u' : u \in U, \ u' \in U \backslash V$:
 
 $$Av = A \mid _Uu + A u' = \begin{pmatrix}
         u'' \in U \\
-        u''' \in U \backslash U
+        u''' \in V \backslash U
         \end{pmatrix}$$
 
 Итого:
@@ -852,10 +867,10 @@ $$
 
 $\triangleright$
 $$
-\text{Let} \; v = \sum^k v_i = \sum^k v_i'; v_i, v_i' \in V_\lambda \Rightarrow
+\text{Let} \; v = \sum^k v_i = \sum^k v_i'; \quad v_i, v_i' \in V_\lambda \Rightarrow
 $$
 $$
-\Rightarrow \sum^k (v_i - v_i') = 0; v_i - v_i' \in V_\lambda \Rightarrow
+\Rightarrow \sum^k (v_i - v_i') = 0; \quad v_i - v_i' \in V_\lambda \Rightarrow
 $$
 $$
 \Rightarrow v_i - v_i' = 0
@@ -873,8 +888,6 @@ $$
 g_\lambda=\dim\ker(A-\lambda E).
 $$
 Сл.: $\dim V = n; \{\lambda_i\}^n - \text{с.з.з} \; A \Rightarrow \sum^k g_{\lambda_i} \leq n$
-
-Л.: $[A]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{\lambda_1, \dots , \lambda_1,}} \dots , \underset{m_k \, \text{раз}}{\underbrace{\lambda_k, \dots , \lambda_k}}); \; g_{\lambda_i} = m_i; \; i \in [k]$
 
 Л.: $A \in \mathrm{End} V, E = (e_1, \dots, e_n) -$ базис V; $[A]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{\lambda_1, \dots , \lambda_1,}} \dots , \underset{m_k \, \text{раз}}{\underbrace{\lambda_k, \dots , \lambda_k}}) \Rightarrow$ все лямбды – с.з.з A, $g_{\lambda_i} = m_i; \; i \in [k]$
 
@@ -1167,7 +1180,7 @@ K[x] - \text{ОГИ} \Rightarrow I_v = (\mu_{v, A}), \mu - \min \text{аннул
 \tag*{$\blacksquare$}
 $$
 
-Пр.: Степень $\deg \mu = d \Rightarrow v, Av, A^2v. \dots -$ базис
+Пр.: Степень $\deg \mu_ {v, A} = d \Rightarrow v, Av, A^2v. \dots -$ базис
 $\triangleright$
 $$
 v, Av, A^2v, \dots \in C_v; \; W = <vA^i>^m \Rightarrow
@@ -1307,14 +1320,16 @@ $\subset$:
 
 $$
 \forall H \le G
-\\
+$$
 
+$$
 S \subset H \Rightarrow \langle S \rangle  \subset H
-\\
+$$
+$$
 \langle S \rangle \subset \bigcap_{H\le G,\ S\subseteq H}H
 $$
 
-$\supset : $
+$\supset :$
 
 Потому что $\exists$ H': 
 
@@ -1646,549 +1661,63 @@ $$
 
 ## 39. Теорема о соответствии
 
-Пусть $N\triangleleft G$. Подгруппы $G/N$ взаимно однозначно соответствуют подгруппам $H\le G$, содержащим $N$.
-
-Соответствие:
-$$
-H\mapsto H/N,
-$$
-$$
-\overline H\mapsto \pi^{-1}(\overline H).
-$$
-
-Нормальность сохраняется:
-$$
-H\triangleleft G\iff H/N\triangleleft G/N.
-$$
-
-Если $H\triangleleft G$, $N\subseteq H$, то
-$$
-(G/N)/(H/N)\cong G/H.
-$$
-
-Идея доказательства: образ подгруппы, содержащей ядро, является подгруппой фактора; прообраз подгруппы фактора является подгруппой исходной группы. Эти операции взаимно обратны.
-
-## ДРУГОЙ ПОДХОД
-
-**Теорема о соответствии.** Пусть $N\triangleleft G$. Тогда подгруппы фактор-группы $G/N$ взаимно однозначно соответствуют подгруппам $H\le G$, содержащим $N$.
-
-Соответствие задаётся так:
-
-$$
-H\mapsto H/N,
-$$
-
-где $N\subseteq H\le G$, и обратно:
-
-$$
-\overline H\mapsto \pi^{-1}(\overline H),
-$$
-
-где $\overline H\le G/N$, а
-
-$$
-\pi:G\to G/N,\qquad \pi(g)=gN
-$$
-
-— естественная проекция.
-
-Докажем это подробно.
-
-Пусть сначала $H\le G$ и $N\subseteq H$. Тогда рассмотрим множество
-
-$$
-H/N=\{hN\mid h\in H\}.
-$$
-
-Это то же самое, что образ $H$ при проекции $\pi$:
-
-$$
-H/N=\pi(H).
-$$
-
-Покажем, что $H/N\le G/N$.
-
-Во-первых, единица фактор-группы $G/N$ равна $N=eN$. Так как $e\in H$, имеем
-
-$$
-N=eN\in H/N.
-$$
-
-Во-вторых, если $h_1N,h_2N\in H/N$, где $h_1,h_2\in H$, то
-
-$$
-(h_1N)(h_2N)=h_1h_2N.
-$$
-
-Поскольку $H$ — подгруппа, то $h_1h_2\in H$. Значит,
-
-$$
-h_1h_2N\in H/N.
-$$
-
-В-третьих, если $hN\in H/N$, то
-
-$$
-(hN)^{-1}=h^{-1}N.
-$$
-
-Поскольку $h\in H$ и $H$ — подгруппа, то $h^{-1}\in H$. Значит,
-
-$$
-h^{-1}N\in H/N.
-$$
-
-Следовательно,
-
-$$
-H/N\le G/N.
-$$
-
-Теперь наоборот. Пусть
-
-$$
-\overline H\le G/N.
-$$
-
-Рассмотрим её полный прообраз при $\pi$:
-
-$$
-\pi^{-1}(\overline H)=\{g\in G\mid \pi(g)\in \overline H\}.
-$$
-
-То есть
-
-$$
-\pi^{-1}(\overline H)=\{g\in G\mid gN\in \overline H\}.
-$$
-
-Покажем, что $\pi^{-1}(\overline H)\le G$.
-
-Во-первых, единица $e\in G$ лежит в прообразе, потому что
-
-$$
-\pi(e)=N,
-$$
-
-а $N$ — единица группы $G/N$, значит $N\in \overline H$. Поэтому
-
-$$
-e\in \pi^{-1}(\overline H).
-$$
-
-Во-вторых, если
-
-$$
-g_1,g_2\in \pi^{-1}(\overline H),
-$$
-
-то
-
-$$
-g_1N\in \overline H,\qquad g_2N\in \overline H.
-$$
-
-Так как $\overline H$ — подгруппа в $G/N$, то
-
-$$
-(g_1N)(g_2N)=g_1g_2N\in \overline H.
-$$
-
-Следовательно,
-
-$$
-g_1g_2\in \pi^{-1}(\overline H).
-$$
-
-В-третьих, если
-
-$$
-g\in \pi^{-1}(\overline H),
-$$
-
-то
-
-$$
-gN\in \overline H.
-$$
-
-Так как $\overline H$ — подгруппа, то
-
-$$
-(gN)^{-1}=g^{-1}N\in \overline H.
-$$
-
-Значит,
-
-$$
-g^{-1}\in \pi^{-1}(\overline H).
-$$
-
-Следовательно,
-
-$$
-\pi^{-1}(\overline H)\le G.
-$$
-
-Кроме того, эта подгруппа содержит $N$. Действительно, если $n\in N$, то
-
-$$
-\pi(n)=nN=N,
-$$
-
-а $N$ — единица фактор-группы $G/N$, поэтому $N\in \overline H$. Значит,
-
-$$
-n\in \pi^{-1}(\overline H).
-$$
-
-Итак,
-
-$$
-N\subseteq \pi^{-1}(\overline H).
-$$
-
-Теперь докажем, что эти две операции взаимно обратны.
-
-Пусть $H\le G$ и $N\subseteq H$. Тогда
-
-$$
-\pi^{-1}(H/N)=H.
-$$
-
-Действительно, если $h\in H$, то
-
-$$
-\pi(h)=hN\in H/N,
-$$
-
-значит,
-
-$$
-h\in \pi^{-1}(H/N).
-$$
-
-Поэтому
-
-$$
-H\subseteq \pi^{-1}(H/N).
-$$
-
-Обратно, пусть
-
-$$
-g\in \pi^{-1}(H/N).
-$$
-
-Тогда
-
-$$
-gN\in H/N.
-$$
-
-Значит, существует $h\in H$ такой, что
-
-$$
-gN=hN.
-$$
-
-Отсюда
-
-$$
-h^{-1}g\in N.
-$$
-
-Так как $N\subseteq H$, то
-
-$$
-h^{-1}g\in H.
-$$
-
-Но $h\in H$, значит
-
-$$
-g=h(h^{-1}g)\in H.
-$$
-
-Следовательно,
-
-$$
-\pi^{-1}(H/N)\subseteq H.
-$$
-
-Итак,
-
-$$
-\pi^{-1}(H/N)=H.
-$$
-
-Теперь пусть $\overline H\le G/N$. Докажем, что
-
-$$
-\pi(\pi^{-1}(\overline H))=\overline H.
-$$
-
-Включение
-
-$$
-\pi(\pi^{-1}(\overline H))\subseteq \overline H
-$$
-
-верно по определению прообраза.
-
-Докажем обратное включение. Пусть
-
-$$
-x\in \overline H.
-$$
-
-Так как $x\in G/N$, то существует $g\in G$, что
-
-$$
-x=gN=\pi(g).
-$$
-
-Поскольку $x\in \overline H$, имеем
-
-$$
-\pi(g)\in \overline H.
-$$
-
-Значит,
-
-$$
-g\in \pi^{-1}(\overline H).
-$$
-
-Следовательно,
-
-$$
-x=\pi(g)\in \pi(\pi^{-1}(\overline H)).
-$$
-
-Поэтому
-
-$$
-\overline H\subseteq \pi(\pi^{-1}(\overline H)).
-$$
-
-Итак,
-
-$$
-\pi(\pi^{-1}(\overline H))=\overline H.
-$$
-
-Значит, отображения
-
-$$
-H\mapsto H/N
-$$
-
-и
-
-$$
-\overline H\mapsto \pi^{-1}(\overline H)
-$$
-
-взаимно обратны. Поэтому они задают биекцию между подгруппами $G/N$ и подгруппами $G$, содержащими $N$.
-
-Теперь докажем сохранение нормальности.
-
-Пусть $H\le G$, $N\subseteq H$. Тогда
-
-$$
-H\triangleleft G
-\iff
-H/N\triangleleft G/N.
-$$
-
-Действительно, пусть сначала $H\triangleleft G$. Возьмём произвольные элементы
-
-$$
-gN\in G/N,\qquad hN\in H/N.
-$$
-
-Тогда
-
-$$
-(gN)(hN)(gN)^{-1}=ghg^{-1}N.
-$$
-
-Так как $H\triangleleft G$, то
-
-$$
-ghg^{-1}\in H.
-$$
-
-Следовательно,
-
-$$
-ghg^{-1}N\in H/N.
-$$
-
-Значит,
-
-$$
-H/N\triangleleft G/N.
-$$
-
-Обратно, пусть
-
-$$
-H/N\triangleleft G/N.
-$$
-
-Возьмём произвольные $g\in G$, $h\in H$. Тогда
-
-$$
-gN\in G/N,\qquad hN\in H/N.
-$$
-
-Из нормальности $H/N$ в $G/N$ получаем:
-
-$$
-(gN)(hN)(gN)^{-1}\in H/N.
-$$
-
-То есть
-
-$$
-ghg^{-1}N\in H/N.
-$$
-
-Значит, существует $h_1\in H$ такой, что
-
-$$
-ghg^{-1}N=h_1N.
-$$
-
-Отсюда
-
-$$
-h_1^{-1}ghg^{-1}\in N.
+$H \triangleleft G, \pi_H: G \longrightarrow G /H$ - канон проекция. $\Rightarrow$
 $$
+\begin{array}{cc} \\
+\alpha: \{P \leq G \; | \; H \subseteq P\} \rightarrow \left\{ Q \leq G / H \right\}, & \alpha(P) = \pi_H(P) \\ \\
+\beta:\{Q \leq G / H\} \rightarrow \{P \leq G \; | \; H \subseteq P\}, & \beta(Q) = \pi_H^{-1}(Q)
+\end{array}
+$$ - взаимно обратны $\Rightarrow$ между подгруппами $G$, содержащими $H$, и подгруппами факторгруппы $G /H$ существует биекция
 
-Так как $N\subseteq H$, то
-
-$$
-h_1^{-1}ghg^{-1}\in H.
-$$
-
-А так как $h_1\in H$, получаем
-
-$$
-ghg^{-1}=h_1(h_1^{-1}ghg^{-1})\in H.
-$$
-
-Следовательно,
-
-$$
-H\triangleleft G.
+$\triangleright$
+Покажем, что $\alpha$ и $\beta$ взаимно обратны.
 $$
-
-Итак,
-
-$$
-H\triangleleft G
-\iff
-H/N\triangleleft G/N.
-$$
-
-Наконец, если $H\triangleleft G$ и $N\subseteq H$, то
-
-$$
-(G/N)/(H/N)\cong G/H.
+P \leq G \; \And \; H \subseteq P \Rightarrow \pi_H(P) \leq G / H \quad / \pi_H(P) \in \mathrm{Im} \pi_H|_P:P \rightarrow G / H/
 $$
-
-Для доказательства рассмотрим отображение
-
 $$
-\varphi:G/N\to G/H,
-\qquad
-\varphi(gN)=gH.
+Q \leq G / H \Rightarrow \pi^{-1}_H(Q) \leq G
 $$
-
-Оно корректно определено. Действительно, если
-
 $$
-gN=g'N,
+H = \pi_H^{-1}(\{eH\}) \subseteq \pi_H^{-1}(Q)
 $$
-
-то
-
 $$
-g^{-1}g'\in N.
+Q \leq G /H:
 $$
-
-Так как $N\subseteq H$, то
-
 $$
-g^{-1}g'\in H.
+(\alpha \circ \beta) (Q) = \alpha(\pi_H^{-1} (Q)) = Q, \quad \pi_H \in \mathrm{Surj}
 $$
-
-Значит,
-
 $$
-gH=g'H.
+P \leq G \; \And \; H \subseteq P:
 $$
-
-Отображение $\varphi$ является гомоморфизмом:
-
 $$
-\varphi((gN)(g'N))
-=
-\varphi(gg'N)
-=
-gg'H
-=
-(gH)(g'H)
-=
-\varphi(gN)\varphi(g'N).
+(\beta \circ \alpha)(P) = \pi_H^{-1}(\pi_H(P)) = \{g \in G \; | \; gH \in \pi_H(P)\} \Leftrightarrow \{g \in G \; | \; \exists p \in P: gH = pH\} \Leftrightarrow
 $$
-
-Оно сюръективно, потому что любой элемент $G/H$ имеет вид $gH$, и
-
 $$
-\varphi(gN)=gH.
+\Leftrightarrow \{g \in G \; | \; \exists p \in P: p^{-1}g \in H \subseteq P\} \Leftrightarrow \{g \in G \; | \; g \in P\} \Rightarrow
 $$
-
-Найдём ядро:
-
 $$
-\ker\varphi
-=
-\{gN\in G/N\mid \varphi(gN)=H\}.
+\Rightarrow \pi_H^{-1}(\pi_H(P)) = P \Leftrightarrow \alpha \; \text{взаимнообратно} \; \beta
+\tag*{$\blacksquare$}
 $$
 
-Но
+Пр.: (нормальность в факторгруппе): $H \triangleleft G, P \leq G, H \subseteq P \Rightarrow (\pi_H(P) \triangleleft G / H \Leftrightarrow P \triangleleft G)$
 
+$\triangleright$
+$\Rightarrow:$ из прошлого:
 $$
-\varphi(gN)=gH.
+\pi_H(P) \triangleleft G / H \Rightarrow P = \pi_H^{-1} ( \pi_H(P)) \triangleleft G
 $$
-
-Поэтому
-
+$\Leftarrow:$
 $$
-gN\in\ker\varphi
-\iff
-gH=H
-\iff
-g\in H.
+P \triangleleft G: \sphericalangle \; \pi_H|_P: \; \pi_H(P) \leq G / H \;(\text{теорема о соотв.}) \;; \; \forall gH \in G / H \; \And \; \forall pH \in \pi_H(P): 
 $$
-
-Значит,
-
 $$
-\ker\varphi=H/N.
+(gH)(pH)(gh)^{-1} = (gpg)^{-1}H, \; P \triangleleft G \Rightarrow (gpg)^{-1} \in P \Rightarrow
 $$
-
-По теореме о гомоморфизме получаем
-
 $$
-(G/N)/(H/N)\cong G/H.
+\Rightarrow (gpg)^{-1}H \in \pi_H(P) \Rightarrow \pi_H(P) \triangleleft G / H
+\tag*{$\blacksquare$}
 $$
-
-Это и требовалось доказать.
 
 ---
 
@@ -2201,7 +1730,7 @@ $$
 
 Тогда
 $$
-H/N\triangleleft G/N,
+H/N\triangleleft G/N, \; N \triangleleft H
 $$
 и
 $$
@@ -2220,9 +1749,12 @@ $$
 
 Отображение сюръективно. Его ядро:
 $$
-\ker\psi=\{gN:gH=H\}=H/N.
+\ker\psi=\{gN:gH=eH\}=H/N.
 $$
-
+Образ: $\mathrm{Im} \psi = G / H \Rightarrow$
+$$
+\Rightarrow H / N \triangleleft G / N
+$$
 По теореме о гомоморфизме:
 $$
 (G/N)/(H/N)\cong G/H.
