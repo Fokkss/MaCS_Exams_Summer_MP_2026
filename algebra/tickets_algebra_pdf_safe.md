@@ -4,6 +4,7 @@
 ## Принятые обозначения
 
 Если $A\in K^{ n \times m}$ (например, $A\in \mathbb{R}^{n	\times m}$), то $A[i,]$ — $i$-я строка, $A[,j]$ — $j$-й столбец, а элемент матрицы можно писать как $A[i,j]$ или $a_{ij}\in A$. Наборы всех строк и столбцов будем обозначать так:
+
 $$
 \{A[i,]\}_{i=1}^n,\qquad \{A[,j]\}_{j=1}^m.
 $$
@@ -15,15 +16,18 @@ $$
 $[v]_{\varepsilon} = f_{\varepsilon}^{-1} (v)$
 
 Пусть $e=(e_1,\dots,e_n)$, $f=(f_1,\dots,f_n)$ — базисы $V$. Матрица перехода $\mathcal{M}_{e\to f}$ определяется равенством
+
 $$
 f=e\mathcal{M}_{e\to f}.
 $$
 Её столбец $\mathcal{M}_{e\to f}[,j]$ — координаты $f_j$ в базисе $e$.
 
 Свойства:
+
 $$
 \mathcal{M}_{e\to e}=E,\qquad \mathcal{M}_{f\to e}=\mathcal{M}_{e\to f}^{-1},
 $$
+
 $$
 \mathcal{M}_{e\to g}=\mathcal{M}_{e\to f}\mathcal{M}_{f\to g}.
 $$
@@ -31,6 +35,7 @@ $$
 Доказательство обратимости: если $f=e\mathcal{M}_{e\to f}$, то столбцы $\{\mathcal{M}_{e\to f}[,j]\}_{j=1}^n$ — координаты базиса $f$, значит линейно независимы. Поэтому $\mathcal{M}_{e\to f}\in GL_n(K)$.
 
 Пример: если $f_1=e_1+e_2,\ f_2=e_1-e_2$, то
+
 $$
 \mathcal{M}_{e\to f}=
 \begin{pmatrix}
@@ -44,14 +49,17 @@ $$
 ## 2. Изменение координат вектора при замене базиса
 
 Пусть $f=e\mathcal{M}_{e\to f}$. Тогда для любого $x\in V$:
+
 $$
 x=e[x]_e=f[x]_f=e\mathcal{M}_{e\to f}[x]_f.
 $$
 Так как $e$ — базис, получаем:
+
 $$
 [x]_e=\mathcal{M}_{e\to f}[x]_f.
 $$
 Отсюда
+
 $$
 [x]_f=\mathcal{M}_{e\to f}^{-1}[x]_e=\mathcal{M}_{f\to e}[x]_e.
 $$
@@ -63,6 +71,7 @@ $$
 ## 3. Ранг набора векторов. Столбцовый и строчный ранг матрицы
 
 Ранг набора $v_1,\dots,v_m$:
+
 $$
 \mathrm{rank}(v_1,\dots,v_m)=\dim\langle v_1,\dots,v_m\rangle.
 $$
@@ -74,16 +83,18 @@ $\triangleright$
 $$
 Let \; \{v_{ij}\}^n - \max \text{ЛНС, состоящая в-в набора} \; v_1, \dots, v_n
 $$
+
 $$
 (!): <v_{ij}>^l = V
 $$
+
 $$
 v \in V \Rightarrow v_{i1}, \dots, v_{il}, v - \text{ЛНС} \Rightarrow
 $$
+
 $$
 \Rightarrow v \in <v_{ij}>^l \Rightarrow v_{ij} - \text{базис} V
-
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Для матрицы $A\in K^{n\times m}$:
@@ -92,6 +103,7 @@ $$
 - строчный ранг — ранг набора строк $\{A[i,]\}_{i=1}^n$.
 
 Всегда
+
 $$
 \mathrm{rank} A\le \min(m,n).
 $$
@@ -119,16 +131,19 @@ $\mathrm{rank} (AB) \leq \min(\mathrm{rank}A, \mathrm{rank} B)$
 ## 5. Ранг произведения матриц. Связь ранга с PDQ-разложением
 
 Для совместимых матриц:
+
 $$
 \mathrm{rank}(AB)\le \mathrm{rank} A,\qquad \mathrm{rank}(AB)\le \mathrm{rank} B.
 $$
 
 Первое неравенство: столбцы $\{(AB)[,j]\}_{j=1}^k$ являются линейными комбинациями столбцов $\{A[,j]\}_{j=1}^n$, значит
+
 $$
 \langle \{(AB)[,j]\}_{j=1}^k\rangle\subseteq \langle \{A[,j]\}_{j=1}^n\rangle.
 $$
 
 Второе: $AB$ — композиция
+
 $$
 K^k\xrightarrow{B}K^n\xrightarrow{A}K^m,
 $$
@@ -139,6 +154,7 @@ $$
 Пр.: $U \in M_n(K) \Rightarrow (U \in \mathrm{GL}_n(K) \Leftrightarrow \mathrm{rank}U = n)$
 
 PDQ-разложение:
+
 $$
 PAQ=D=
 \begin{pmatrix}
@@ -147,6 +163,7 @@ E_r&0\\
 \end{pmatrix},
 $$
 где $P,Q$ обратимы. Тогда
+
 $$
 \mathrm{rank} A=r.
 $$
@@ -183,6 +200,7 @@ $$
 
 
 Доказательство цепочкой: обратимость даёт нулевое ядро; нулевое ядро означает независимость столбцов $\{A[,j]\}_{j=1}^n$; $n$ независимых столбцов в $K^n$ образуют базис; значит отображение сюръективно; в конечной размерности инъективность и сюръективность эквивалентны. Связь с определителем следует из
+
 $$
 A\operatorname{adj}A=(\det A)E.
 $$
@@ -196,6 +214,7 @@ $$
 Минорный ранг — максимальный порядок ненулевого минора.
 
 Теорема:
+
 $$
 \mathrm{rank} A=\max\{r:\text{у }A\text{ есть ненулевой минор порядка }r\}.
 $$
@@ -204,28 +223,33 @@ $$
 
 ### BETTER
 
-Теорема: $A \in K^{m \times n}, \mathrm{rank} A = r \Rightarrow \exists M \subseteq A \neq 0 \; \text{порядка} \; r \; \And \; \not\exists M \subseteq A \; \text{порядка} \, > r$
+Теорема: $A \in K^{m \times n}, \mathrm{rank} A = r \Rightarrow \exists M \subseteq A \neq 0 \; \text{порядка} \; r \; \;\text{и}\; \; \not\exists M \subseteq A \; \text{порядка} \, > r$
 
 $\triangleright$
 
 $$
 \mathrm{rank} A = r \Rightarrow \exists j_1, \dots, j_r: A[,j_1], \dots, A[,j_r] - \text{ЛНС}
 $$
+
 $$
 \text{Let} \; A' \leftrightharpoons A[,j_k]_{k=1}^r \in K^{m \times r}, \text{ее столбцы - ЛНС} \Rightarrow
 $$
+
 $$
 \Rightarrow \mathrm{rank} A' = r \Rightarrow |A'| \neq 0 = |A'[i_1, \dots, i_r]| - \text{один из миноров }\, A \, \text{порядка} \; r
 $$
+
 $$
 \text{Let} \; s > r, \diamond s = \max (m,n) \Rightarrow \text{Let} \; B = A[i_1, \dots, i_s; j_1, \dots j_s]
 $$
+
 $$
 A[i_1,], \dots - \text{ЛЗС} \Rightarrow \text{ее столбцы - ЛЗС} \; \Rightarrow
 $$
+
 $$
 \Rightarrow B \text{- ЛЗС (все столбцы)} \Rightarrow \mathrm{rank} B < s \Rightarrow |B| = 0 
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -233,21 +257,25 @@ $$
 ## 8. Теорема Кронекера-Капелли
 
 Для системы
+
 $$
 Ax=b
 $$
 с расширенной матрицей $(A|b)$:
+
 $$
 Ax=b\text{ совместна}\iff \mathrm{rank} A=\mathrm{rank}(A|b).
 $$
 
 Доказательство. Пусть столбцы $A$ — это $A[,1],\dots,A[,n]$. Система означает:
+
 $$
 x_1A[,1]+\dots+x_nA[,n]=b.
 $$
 То есть $b$ лежит в линейной оболочке столбцов $\{A[,j]\}_{j=1}^n$. Это равносильно тому, что добавление столбца $b$ не увеличивает ранг.
 
 Если система совместна и $x_0$ — одно решение, то все решения:
+
 $$
 x_0+\ker A.
 $$
@@ -258,27 +286,37 @@ $\Rightarrow$
 
 Совместна $\Rightarrow \ \exists x:$
 
-$$A[ ,1] \cdot x_1 + A[ ,2] \cdot x_2 + \dots + A[ ,n] \cdot x_n = b$$
+$$
+A[ ,1] \cdot x_1 + A[ ,2] \cdot x_2 + \dots + A[ ,n] \cdot x_n = b
+$$
 
-$$\mathrm{Lin} \{A[ ,i] \} = \mathrm{Lin} \{ A[ ,i], \ b\} \Rightarrow \ \mathrm{rk} A = \mathrm{rk} (A \ | \ b)$$
+$$
+\mathrm{Lin} \{A[ ,i] \} = \mathrm{Lin} \{ A[ ,i], \ b\} \Rightarrow \ \mathrm{rk} A = \mathrm{rk} (A \ | \ b)
+$$
 
 $\Leftarrow$
 
 $\mathrm{rk} A = \mathrm{rk} (A \ | \ b) \ \Rightarrow$
 
-$$b \in \mathrm{Lin} \{A[, i] \} \Rightarrow \exists x : $$
+$$
+b \in \mathrm{Lin} \{A[, i] \} \Rightarrow \exists x :
+$$
 
-$$Ax = b$$
+$$
+Ax = b
+$$
 
 ---
 
 ## 9. Внутренняя прямая сумма линейных подпространств, эквивалентные определения
 
 Пишут
+
 $$
 V=U_1\oplus\dots\oplus U_k,
 $$
 если каждый $v\in V$ единственно представим как
+
 $$
 v=u_1+\dots+u_k,\qquad u_i\in U_i.
 $$
@@ -287,17 +325,20 @@ $$
 
 1. $V=U_1+\dots+U_k$ и разложение единственно.
 2. Если
+
 $$
 u_1+\dots+u_k=0,\quad u_i\in U_i,
 $$
 то все $u_i=0$.
 
 3.
+
 $$
 U_i\cap\sum_{j\ne i}U_j=\{0\}.
 $$
 
 4. Отображение
+
 $$
 U_1\oplus\dots\oplus U_k\to V,\quad (u_1,\dots,u_k)\mapsto u_1+\dots+u_k
 $$
@@ -315,15 +356,23 @@ $2 \Rightarrow 1$
 
 $\exists v:$
 
-$$v = w_1 + w_2 + \dots + w_n$$
+$$
+v = w_1 + w_2 + \dots + w_n
+$$
 
-$$v = w'_1 + w'_2 + \dots + w'_n$$
+$$
+v = w'_1 + w'_2 + \dots + w'_n
+$$
 
-$$w_i \neq w'_i$$
+$$
+w_i \neq w'_i
+$$
 
 $\Rightarrow$
 
-$$0 = (w_1 - w'_1) + \dots + (w_n - w'_n)$$
+$$
+0 = (w_1 - w'_1) + \dots + (w_n - w'_n)
+$$
 
 Противоречие.
 
@@ -331,9 +380,13 @@ $1 \Rightarrow 3$
 
 Пусть не так $\exists x \in W_k \cap \underset{i \neq k} \sum W_i$
 
-$$x = x + 0 + \dots + 0$$
+$$
+x = x + 0 + \dots + 0
+$$
 
-$$x = \underset {i \neq k} \sum w_i$$
+$$
+x = \underset {i \neq k} \sum w_i
+$$
 
 Противоречие.
 
@@ -343,35 +396,45 @@ $3 \Rightarrow 1$
 
 $\exists v :$
 
-$$v = w_1 + w_2 + \dots + w_n$$
+$$
+v = w_1 + w_2 + \dots + w_n
+$$
 
-$$v = w'_1 + w'_2 + \dots + w'_n$$
+$$
+v = w'_1 + w'_2 + \dots + w'_n
+$$
 
 Оставим только ненулевые
 
-$$ 
+$$
 0 = \underset{\neq 0} \sum (w_i - w'_i) 
-$$ 
+$$
 
 Сумма по оставшимся (их $\ge$ 2, выразим одну разность через другие $\neq0$)
 
-$$w_i - w'_i = \underset{v_j \in W_j} \sum v_j$$
+$$
+w_i - w'_i = \underset{v_j \in W_j} \sum v_j
+$$
 
 $\Rightarrow W_i \cap \underset{j \neq i} \sum W_j \neq 0$
 
 Противоречие.
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 ---
 
 ## 10. Характеристика внутренней прямой суммы в терминах базиса
 
 Пусть $B_i$ — базис $U_i$. Тогда
+
 $$
 V=U_1\oplus\dots\oplus U_k
 $$
 тогда и только тогда, когда объединение базисов
+
 $$
 B_1\cup\dots\cup B_k
 $$
@@ -380,6 +443,7 @@ $$
 Доказательство. Если сумма прямая, любой вектор раскладывается по $U_i$, а затем по $B_i$, значит объединение $B_i$ порождает $V$. Линейная независимость следует из единственности разложения нуля. Обратно, если объединение базисов — базис $V$, то координатное разложение единственно, значит сумма прямая.
 
 Следствие:
+
 $$
 \dim V=\dim U_1+\dots+\dim U_k.
 $$
@@ -389,15 +453,18 @@ $$
 ## 11. Связь внутренней и внешней прямой суммы
 
 Внешняя прямая сумма $U_1\oplus\dots\oplus U_k$ — это пространство кортежей
+
 $$
 (u_1,\dots,u_k),\qquad u_i\in U_i,
 $$
 с покомпонентными операциями.
 
 Если $U_i\subseteq V$, есть естественное отображение:
+
 $$
 \varphi:U_1\oplus\dots\oplus U_k\to V,
 $$
+
 $$
 \varphi(u_1,\dots,u_k)=u_1+\dots+u_k.
 $$
@@ -409,6 +476,7 @@ $$
 ## 12. Линейные отображения. Примеры. Свойство универсальности базиса. Ядро и образ
 
 Линейное отображение $L:U\to V$:
+
 $$
 L(x+y)=L(x)+L(y),\qquad L(\lambda x)=\lambda L(x).
 $$
@@ -416,18 +484,22 @@ $$
 Примеры: умножение на матрицу, поворот, проекция, дифференцирование многочленов, нулевое отображение, тождественное отображение.
 
 Универсальность базиса: если $e_1,\dots,e_n$ — базис $U$, а $v_1,\dots,v_n\in V$, то существует единственное линейное $L:U\to V$, такое что
+
 $$
 L(e_i)=v_i.
 $$
 Если $x=\sum\alpha_i e_i$, то обязательно
+
 $$
 L(x)=\sum\alpha_i v_i.
 $$
 
 Ядро и образ:
+
 $$
 \ker L=\{x:Lx=0\},
 $$
+
 $$
 \Im L=\{Lx:x\in U\}.
 $$
@@ -442,12 +514,14 @@ $$
 $$
 v_1,v_2 \in \ker A \Rightarrow A( \lambda_1 v_1 + \lambda_2 v_2) = \lambda_1 A(v_1) + \lambda_2 A(v_2) = \lambda_1 0 + \lambda_2 0 = 0
 $$
+
 $$
 0 \in \Im A: 0 = A(0)
 $$
+
 $$
 v_1, v_2 \in \Im A \Rightarrow \lambda_1 v_1 + \lambda_2 v_2 = \lambda_1 A v_1 + \lambda_2 A v_2 = A (\lambda_1 v_1 + \lambda_2 v_2) \in \Im A
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Зам: $\mathrm{Iso(V,W)} \subset \mathrm{Hom}(V,W) \supset \mathcal{L} (V,W)$
@@ -457,17 +531,20 @@ $$
 ## 13. Связь между размерностями ядра и образа. Размерность пространства решений однородной СЛУ
 
 Теорема о ранге и дефекте:
+
 $$
 \dim U=\dim\ker L+\dim\Im L.
 $$
 
 Доказательство. Берём базис $k_1,\dots,k_s$ ядра $\ker L$ и дополняем до базиса $U$:
+
 $$
 k_1,\dots,k_s,w_1,\dots,w_r.
 $$
 Тогда $L(w_1),\dots,L(w_r)$ — базис образа. Они порождают образ, потому что $L(k_i)=0$. Они независимы: если $\sum a_iL(w_i)=0$, то $\sum a_iw_i\in\ker L$, что противоречит независимости полного базиса, если не все $a_i=0$.
 
 T: Для однородной системы $Ax=0$, где $A:K^n\to K^m$:
+
 $$
 \dim\{x:Ax=0\}=n-\mathrm{rank} A.
 $$
@@ -493,11 +570,11 @@ X = \{
         \end{pmatrix} 
     \} = \ker (A: K^n \longrightarrow K^m)
 $$
+
 $$
 \dim X = \sim K^n - \dim \Im (A) = n - \dim <A[,j]>_{i=1}^n = n - \mathrm{rank} A
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
-
 
 
 ---
@@ -515,24 +592,30 @@ $\triangleright$
 $$
 \Rightarrow:
 $$
+
 $$
 |A^{-1} (0)| \leq 1; 0 \in \ker A \Rightarrow 
 $$
+
 $$
 \ker A = 0
 $$
+
 $$
 \Leftarrow: 
 $$
+
 $$
 \text{Let} \; A v_1 = A v_2, A(v_1 - v_2) = Av_1 - A v_2 = 0 \Rightarrow 
 $$
+
 $$
 \Rightarrow v_1 - v_2 \in \ker A = 0 \Rightarrow 
 $$
+
 $$
 \Rightarrow v_1 = v_2 \Rightarrow A \in \mathrm{Inj} (V, W)
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 
@@ -549,11 +632,13 @@ $$
 3. $A \in \mathcal{Bij} \Leftrightarrow \{Ae_i\}^n - \text{базис} \; W$
 
 T (Принцип Дирихле для ВП): Если $\dim U=\dim V<\infty$, то
+
 $$
 L\text{ инъективно}\iff L\text{ сюръективно}.
 $$
 
 Доказательство:
+
 $$
 \dim U=\dim\ker L+\dim\Im L.
 $$
@@ -566,6 +651,7 @@ $$
 ## 15. Изменение координат вектора под действием линейного отображения
 
 Пусть $L:U\to V$, $e$ — базис $U$, $f$ — базис $V$. Матрица $[L]^e_f$ определяется формулой
+
 $$
 [L(x)]_f=[L]^e_f[x]_e.
 $$
@@ -573,10 +659,12 @@ $$
 Её столбец $[L]^e_f[,j]$ — координаты $L(e_j)$ в базисе $f$.
 
 Доказательство: если
+
 $$
 x=e[x]_e,
 $$
 то
+
 $$
 L(x)=L(e[x]_e)=L(e)[x]_e.
 $$
@@ -585,12 +673,14 @@ $$
 Пр.: $[A]_{E,F} = A; v \in V \Rightarrow [Av]_{F} = A[v]_E$
 
 $\triangleright$
+
 $$
 v=E[v]_E \Rightarrow Av = (AE)[v]_E=(FA)[v]_E = F(A[v]_E) \Rightarrow
 $$
+
 $$
 \Rightarrow [Av]_F = A[v]_E
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -598,22 +688,26 @@ $$
 ## 16. Матрица линейного отображения. Матрица композиции
 
 Для $L:U\to V$ матрица $[L]^e_f$ задаётся своими столбцами:
+
 $$
 [L]^e_f[,j]=[L(e_j)]_f,\qquad j=1,\dots,n.
 $$
 
 Пр.: Если
+
 $$
 U\xrightarrow{A}V\xrightarrow{B}W,
 $$
 
 $e,f,g -$ базисы $U,V,W$
 то
+
 $$
 [B\circ A]^e_g=[B]^f_g[A]^e_f.
 $$
 
 Доказательство:
+
 $$
 Ae = f[A]_{e,f} \Rightarrow (BA)e = (BF)[A]_{e.f} = g[B]_{f,g} [A]_{e,f}
 $$
@@ -622,9 +716,10 @@ $$
 Bf = g[B]_{f,g} \Rightarrow g[BA]_{e,g} = g[B]_{f,g}[A]_{e,f}
 $$
 $g$ - базис $\Rightarrow$
+
 $$
 [BA]_{e,g} = [B]_{f,g}[A]_{e,f}
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 По единственности матрицы линейного отображения получаем формулу.
 
@@ -633,23 +728,28 @@ $$
 ## 17. Изменение матрицы линейного отображения при замене базисов
 
 Пусть $L:U\to V$. В $U$ базисы $e,e'$, в $V$ базисы $f,f'$. Тогда
+
 $$
 [L]^{e'}_{f'}=\mathcal{M}_{f'\to f}[L]^e_f\mathcal{M}_{e\to e'}.
 $$
 
 Доказательство:
+
 $$
 [x]_e=\mathcal{M}_{e\to e'}[x]_{e'},
 $$
+
 $$
 [Lx]_{f'}=\mathcal{M}_{f'\to f}[Lx]_f.
 $$
 Тогда
+
 $$
 [Lx]_{f'}=\mathcal{M}_{f'\to f}[L]^e_f\mathcal{M}_{e\to e'}[x]_{e'}.
 $$
 
 Для оператора $A:V\to V$:
+
 $$
 [A]_{e'}=\mathcal{M}_{e'\to e}[A]_e\mathcal{M}_{e\to e'}.
 $$
@@ -667,43 +767,53 @@ $$
 [A]_{E,F} = \begin{pmatrix} E_r & 0 \\
 0 & 0
 \end{pmatrix},
-$$для некоторого $r$
+$$
+для некоторого $r$
 
 $\triangleright$
+
 $$
 \text{Let} \; E_0, F_0 - \text{базисы} \; V,W: [A]_{E_0, F_0} \rightleftharpoons A \Rightarrow
 $$
+
 $$
 \Rightarrow \exists P, Q: P \in \mathrm{GL}_n(K), Q \in \mathrm{GL}_m(K):
 $$
+
 $$
 PAQ = D = \begin{pmatrix} E_r & 0 \\
 0 & 0
 \end{pmatrix}
 $$
+
 $$
 \exists F: \mathcal{M}_{F_0 \rightarrow F} = Q; \; \exists E: \mathcal{M}_{E_0 \rightarrow E} = P^{-1} \Rightarrow
 $$
+
 $$
 \Rightarrow [A]_{E, F} = (P^{-1})^{-1} A Q = PAQ = D
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Опр.:
+
 $$
 \operatorname{Hom}(U,V)
 $$
 — пространство всех линейных отображений $U\to V$. (строго говоря, гомоморфизмов, но в нашем курсе отождествляется $\mathcal{L}(V,W)$, тк. в $\mathrm{Vect}_K$ это суть одно и то же)
 
 Операции:
+
 $$
 (L+M)(x)=Lx+Mx,\qquad (\lambda L)(x)=\lambda Lx.
 $$
 
 Если $\dim U=n,\ \dim V=m$, то выбор базисов даёт изоморфизм:
+
 $$
 \operatorname{Hom}(U,V)\cong M_{m\times n}(K),
 $$
+
 $$
 L\mapsto [L]^e_f.
 $$
@@ -711,6 +821,7 @@ $$
 Инъективность: одинаковые матрицы дают одинаковые образы базиса. Сюръективность: по любой матрице задаём образы базисных векторов и продолжаем линейно.
 
 Следствие:
+
 $$
 \dim\operatorname{Hom}(U,V)=mn.
 $$
@@ -720,6 +831,7 @@ $$
 ## 19. Линейные операторы. Инвариантные подпространства
 
 Линейный оператор — это линейное отображение, $\mathrm{Hom}(V,W) = \mathrm{End}(V)$
+
 $$
 A:V\to V.
 $$
@@ -731,15 +843,17 @@ $\varepsilon_E (BA) = [BA]_{E,E} = [B]_{E,E} [A]_{E,E} = \varepsilon_E (B) \vare
 
 
 Пр.: Подпространство $U\subseteq V$ называется $A$-инвариантным, если $\forall u \in U: Au \in U$
+
 $$
 A(U)\subseteq U.
 $$
 Пр.: $V = W_1 \oplus W_2; (e_i)_{i=1}^m -$ базис $W_1; (e_{m+i})_{i=1}^{n-m} -$ базис $W_2; E = (e_i)_{i=1}^n \Rightarrow$ (след. эквивалентно)
-	1.  $W_1 \; \And \; W_2$ A-инв
+	1.  $W_1 \; \;\text{и}\; \; W_2$ A-инв
 	2. $[A]_E = \begin{pmatrix}  B & 0 \\ 0 & C\end{pmatrix}, B \in M_m(K); C \in M_{n-m}(K)$
 (доказывается также как и предложение в конце билета)
 
 Опр.: $W$ - A-инв, Индуцированным оператором пространства $W$ наз.
+
 $$
 A_1 : W \underset{w \mapsto A_1w}{\longrightarrow} W
 $$
@@ -759,6 +873,7 @@ $[A_1]_{e_1, \dots, e_m} =B; [A_2]_{e_{m+1}, \dots, e_n} =C, A_2$ - индуци
 - $\ker p(A)$ и $\Im p(A)$ для многочлена $p$.
 
 Если $U$ инвариантно, то можно рассматривать ограничение
+
 $$
 A|_U:U\to U.
 $$
@@ -768,30 +883,35 @@ $$
 
 Для $u \in U$
 
-$$Au \in U$$
+$$
+Au \in U
+$$
 
-$$Au = A \mid _U u = \begin{pmatrix}
+$$
+Au = A \mid _U u = \begin{pmatrix}
         A \mid _U u \\
         0
-        \end{pmatrix}$$
+        \end{pmatrix}
+$$
 
 Для
 $v = u + u' : u \in U, \ u' \in U \backslash V$:
 
-$$Av = A \mid _Uu + A u' = \begin{pmatrix}
+$$
+Av = A \mid _Uu + A u' = \begin{pmatrix}
         u'' \in U \\
         u''' \in V \backslash U
-        \end{pmatrix}$$
+        \end{pmatrix}
+$$
 
 Итого:
 
-$$A = \begin{pmatrix}
+$$
+A = \begin{pmatrix}
         A \mid _U & * \\
         0 & *
-        \end{pmatrix}$$
-
-
-
+        \end{pmatrix}
+$$
 
 
 ---
@@ -806,6 +926,7 @@ $$
 
 - сложение поточечно;
 - умножение — композиция:
+
 $$
 (AB)(x)=A(Bx).
 $$
@@ -813,20 +934,25 @@ $$
 Это ассоциативное кольцо с единицей $\operatorname{id}_V$, вообще говоря некоммутативное.
 
 После выбора базиса $e$:
+
 $$
 \operatorname{End}(V)\cong M_n(K),
 $$
+
 $$
 A\mapsto [A]_e.
 $$
 
 Причём:
+
 $$
 [A+B]=[A]+[B],
 $$
+
 $$
 [\lambda A]=\lambda[A],
 $$
+
 $$
 [AB]=[A][B].
 $$
@@ -838,11 +964,13 @@ $$
 Зам.: eigen - собственный
 
 $\lambda\in K$ — собственное значение $A$, если есть $v\ne0$:
+
 $$
 Av=\lambda v.
 $$
 
 Собственное подпространство:
+
 $$
 V_\lambda=\ker(A-\lambda E).
 $$
@@ -852,10 +980,12 @@ $$
 Теорема: собственные векторы, соответствующие попарно различным собственным значениям, линейно независимы.
 
 Доказательство: пусть есть минимальная нетривиальная зависимость
+
 $$
 \alpha_1v_1+\dots+\alpha_kv_k=0.
 $$
 Применяем $A$:
+
 $$
 \alpha_1\lambda_1v_1+\dots+\alpha_k\lambda_kv_k=0.
 $$
@@ -866,15 +996,18 @@ $$
 Следствия: если у оператора на $n$-мерном пространстве есть $n$ различных собственных значений, он диагонализируем; сумма разных собственных подпространств прямая.
 
 $\triangleright$
+
 $$
 \text{Let} \; v = \sum^k v_i = \sum^k v_i'; \quad v_i, v_i' \in V_\lambda \Rightarrow
 $$
+
 $$
 \Rightarrow \sum^k (v_i - v_i') = 0; \quad v_i - v_i' \in V_\lambda \Rightarrow
 $$
+
 $$
 \Rightarrow v_i - v_i' = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -884,6 +1017,7 @@ $$
 Опр.: Оператор диагонализируем, если существует базис из собственных векторов.
 
 Опр.: Геометрическая кратность ($g_\lambda \geq 1$):
+
 $$
 g_\lambda=\dim\ker(A-\lambda E).
 $$
@@ -892,44 +1026,56 @@ $$
 Л.: $A \in \mathrm{End} V, E = (e_1, \dots, e_n) -$ базис V; $[A]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{\lambda_1, \dots , \lambda_1,}} \dots , \underset{m_k \, \text{раз}}{\underbrace{\lambda_k, \dots , \lambda_k}}) \Rightarrow$ все лямбды – с.з.з A, $g_{\lambda_i} = m_i; \; i \in [k]$
 
 $\triangleright$
+
 $$
 \lambda \neq \lambda_1, \dots, \lambda_k
 $$
+
 $$
 [A- \lambda \varepsilon]_E = [A]_E - \lambda E_n = \mathrm{diag} (\lambda_1', \dots, \lambda_k') \Rightarrow
 $$
+
 $$
 \Rightarrow \ker (A - \lambda \varepsilon) = 0 \Rightarrow
 $$
+
 $$
 \Rightarrow \lambda - \text{не с.з.з.} \; A
 $$
+
 $$
 \text{Let} \; \lambda = \lambda_j; \; \text{для определенности} \, j=1
 $$
+
 $$
 v \in \ker(A - \lambda_1 \varepsilon)
 ; \; v = \sum^n \alpha_i e_i
 $$
+
 $$
 (A - \lambda_1 \varepsilon) v = \sum^k_{j=1} \sum^{m_j}_{i=1} (A - \lambda_1 \varepsilon) \alpha_{\sum_{t=1}^{j-1+i} m_t} e_{\sum_{t=1}^{j-1+i} m_t} = \sum^k - //-
 $$
+
 $$
 / [A- \lambda_1 \varepsilon]_E = \mathrm{diag}(\underset{m_1 \, \text{раз}}{\underbrace{0, \dots , 0,}} \dots , \underset{m_2 \, \text{раз}}{\underbrace{\lambda_2 - \lambda_1, \dots , \lambda_2 - \lambda_1,}} \dots, \underset{m_k \, \text{раз}}{\underbrace{\lambda_k - \lambda_1, \dots , \lambda_k - \lambda_1}}) /
 $$
+
 $$
 (A - \lambda_1 \varepsilon)v = 0 \Leftrightarrow \forall \alpha_{j \geq 2} = 0 \Rightarrow
 $$
+
 $$
 \Rightarrow V_{\lambda_1} = \mathrm{Lin} (e_1, \dots, e_{m_1}); \; g_{\lambda_1} = m_1
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Критерий:
+
 $$
 A\text{ диагонализируем}\iff V=\bigoplus_\lambda V_\lambda.
 $$
 Эквивалентно:
+
 $$
 \sum_\lambda g_\lambda=\dim V.
 $$
@@ -941,27 +1087,33 @@ $$
 ## 23. Характеристический многочлен линейного оператора. Алгебраическая кратность собственного значения
 
 Характеристический многочлен:
+
 $$
 \chi_A(t)=\det(tE-A) \in K[t]
 $$
 
 Он не зависит от базиса: если $B=C^{-1}AC$, то
+
 $$
 \det(tE-B)=\det(C^{-1}(tE-A)C)=\det(tE-A).
 $$
 
 $\lambda$ — собственное значение тогда и только тогда, когда
+
 $$
 \chi_A(\lambda)=0 \Leftrightarrow [A - \lambda \varepsilon]_E \notin \mathrm{GL}_n(K) \Leftrightarrow \ker(A - \lambda \varepsilon) \neq 0 
 $$
 
 Действительно:
+
 $$
 \chi_A(\lambda)=0\iff \det(\lambda E-A)=0
 $$
+
 $$
 \iff \lambda E-A\text{ необратима}
 $$
+
 $$
 \iff \ker(A-\lambda E)\ne0.
 $$
@@ -971,25 +1123,30 @@ $$
 Опр.: $A = (a_{ij}); \; \mathrm{Tr} A \leftrightharpoons \sum^n a_{ii}$
 
 $\triangleright$
+
 $$
 \text{Let} \; A = (a_{ij}) \Rightarrow |XE_n - A| = \prod_{i}^n (x-a_{ii}) + \sum_{\sigma \neq e} \underset{\text{мн-н} \, \deg \, \leq \, n - 2}{\underbrace{\varphi_{1 \sigma_1} \cdot \dots \cdot \varphi_{n \sigma_n}}} = \; ; \; \varphi_{ij} \leftrightharpoons \begin{cases} -a_{ij}, & i \neq j \\ x-a_{ij}, & i = j\end{cases}
 $$
+
 $$
 = x^n - (\sum^n a_{ii}) x^{n-1} + f), \quad \deg f \leq n - 2
 $$
+
 $$
 (1)^n \chi_A (0) = |0 \cdot E_n - A| = |-A| = (-1)^n |A|
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 Пр.: $E, E' -$базисы $v; \; A \in \mathrm{End} V \Rightarrow$
 $\Rightarrow \chi_{[A]_E} = \chi_{[A]_{E'}}$
 $\triangleright$
+
 $$
-\text{Let} \; \begin{array}{c|c}U = \mathcal{M}_{E \rightarrow E'} & \\ [A]_{E'} = U^{-1} [A]_E U & \end{array} \Rightarrow \chi_{[A]_{E'}} =
+\text{Let} \; \begin{array}{c|c}U = \mathcal{M}_{E \rightarrow E'} & \\{} [A]_{E'} = U^{-1} [A]_E U & \end{array} \Rightarrow \chi_{[A]_{E'}} =
 $$
+
 $$
 =|[A]_{E'} - X E_n| = |U^{-1} [A]_E U - X U^{-1} U| = |U^{-1} ([A]_{E'} - X) U| = |U^{-1}|\chi_{[A]_E}|U| = \chi_{[A]_E}
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Опр.: $\chi_A = \chi_{[A]_E}$
@@ -1005,21 +1162,25 @@ $$
 
 Пр.: $A \in \mathrm{End} V; \; W - A-$инв., $\leq V; \; A_1 \leftrightharpoons A|_{w} \in \mathrm{End} W \Rightarrow \chi_{A_1} | \chi_{A}$
 $\triangleright$
+
 $$
 \chi_A = |[A - X \varepsilon]_E|; \; [A]_E = \begin{pmatrix} A_1 & * \\ 0 & B\end{pmatrix} \Rightarrow
 $$
+
 $$
 \Rightarrow \begin{pmatrix} A_1 - X E_m & * \\ 0 & B - X E_m \end{pmatrix} = \underset{\chi_{A_1}}{\underbrace{|A_1 - XE_m|}} |B - XE_m|
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 Зам.: Аналог, если $V = W_1 \oplus W_2,$ если они $A-$инв. $\Rightarrow \chi_A = \chi_{A|_{W_1}} \cdot \chi_{A|_{W_2}}$
 
 Сл.: Для собственного значения $\lambda$:
+
 $$
 1\le g_\lambda\le a_\lambda.
 $$
 
 Доказательство. Пусть $g=g_\lambda$. Возьмём базис собственного подпространства $V_\lambda$ и дополним его до базиса $V$. В этом базисе:
+
 $$
 A=
 \begin{pmatrix}
@@ -1028,6 +1189,7 @@ A=
 \end{pmatrix}.
 $$
 Тогда
+
 $$
 \chi_A(t)=
 \det
@@ -1039,11 +1201,13 @@ $$
 (t-\lambda)^g\det(tE-B).
 $$
 Значит $(t-\lambda)^g$ делит характеристический многочлен, поэтому
+
 $$
 g_\lambda\le a_\lambda.
 $$
 
 Пример:
+
 $$
 \begin{pmatrix}
 1&1\\
@@ -1057,6 +1221,7 @@ $$
 ## 25. Критерий диагонализируемости в терминах геометрических и алгебраических кратностей. Примеры недиагонализируемых операторов
 
 Критерий:
+
 $$
 A\text{ диагонализируем}
 $$
@@ -1064,6 +1229,7 @@ $$
 
 1. $\chi_A(t)$ раскладывается на линейные множители над $K$;
 2. для каждого собственного значения
+
 $$
 g_\lambda=a_\lambda.
 $$
@@ -1071,12 +1237,14 @@ $\triangleright$
 Если $A$ диагонализируем, то на диагонали стоят собственные значения, и кратность $\lambda$ на диагонали равна и алгебраической, и геометрической кратности.
 
 Обратно:
+
 $$
 \sum_\lambda g_\lambda=\sum_\lambda a_\lambda=n,
 $$
 значит собственных векторов хватает на базис.
+
 $$
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Примеры недиагонализируемых:
@@ -1098,6 +1266,7 @@ $$
 ## 26. Жорданова нормальная форма (формулировка теоремы)
 
 Над алгебраически замкнутым полем всякий оператор имеет базис, в котором его матрица является прямой суммой жордановых блоков:
+
 $$
 J_m(\lambda)=
 \begin{pmatrix}
@@ -1110,6 +1279,7 @@ J_m(\lambda)=
 $$
 
 То есть
+
 $$
 A\sim \operatorname{diag}(J_{m_1}(\lambda_1),\dots,J_{m_s}(\lambda_s)).
 $$
@@ -1122,7 +1292,7 @@ $$
 
 T.: $\chi_A$ раскладывается на лин. мн-ли $\Rightarrow$
 	1. $\diamond$ выбрать Ж. базис $V$
-	2. $E, E'$ - Ж. базисы $V$, то $[A]_E \; \And \; [A]_{E'}$ отличаются только порядком блоков
+	2. $E, E'$ - Ж. базисы $V$, то $[A]_E \; \;\text{и}\; \; [A]_{E'}$ отличаются только порядком блоков
 
 Зам.: $[A]_E = \mathrm{diag}(J_1( \mu_1), \dots, J_k (\mu_k)), \mu_1, \dots, \mu_k$ не обяхательно различны $\Rightarrow \chi_A = \pm \prod (x- \mu_i)^{k_i}$, т.о. $\chi_A$ раскладывается на линейные множители.
 
@@ -1135,12 +1305,14 @@ T.: $\chi_A$ раскладывается на лин. мн-ли $\Rightarrow$
 ## 27. Циклические подпространства
 
 Для оператора $A$ и вектора $v$:
+
 $$
 Z(v)=\langle v,Av,A^2v,\dots\rangle
 $$
 — циклическое подпространство, порождённое $v$.
 
 Оно $A$-инвариантно, потому что
+
 $$
 A(A^kv)=A^{k+1}v.
 $$
@@ -1148,10 +1320,12 @@ $$
 Это наименьшее $A$-инвариантное подпространство, содержащее $v$: всякое инвариантное подпространство, содержащее $v$, содержит все $A^kv$.
 
 Если
+
 $$
 v,Av,\dots,A^{r-1}v
 $$
 линейно независимы, а
+
 $$
 A^rv=a_0v+\dots+a_{r-1}A^{r-1}v,
 $$
@@ -1163,48 +1337,61 @@ $$
 
 Пр.: $I_v \leftrightharpoons \{f \in K[x] \; | \; f(A)(v) = 0\} -$ идеал
 $\triangleright$
+
 $$
 f, g \in I_v \Rightarrow (f + g)(A)(v) = 0
 $$
+
 $$
 f, g \in I_v \Rightarrow (fg)(A)(v) = 0
 $$
+
 $$
 v, Av, A^2v, \dots - \text{ЛЗС} \Rightarrow
 $$
+
 $$
 \Rightarrow \sum^k \alpha_i A^i v = 0 = f(A)(v)
 $$
+
 $$
 K[x] - \text{ОГИ} \Rightarrow I_v = (\mu_{v, A}), \mu - \min \text{аннулятор} \; v
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
-Пр.: Степень $\deg \mu_ {v, A} = d \Rightarrow v, Av, A^2v. \dots -$ базис
+Пр.: Степень $\deg \mu_ {v, A} = d \Rightarrow v, Av, A^2v. \dots -$ базис
 $\triangleright$
+
 $$
 v, Av, A^2v, \dots \in C_v; \; W = <vA^i>^m \Rightarrow
 $$
+
 $$
 \Rightarrow A(A^{d-1}v) = A^d v = - \beta_{d-1}A^{d-1} - \dots - \beta_0 v \in W \Rightarrow W = C_v; \;
 $$
+
 $$
 (vA^i)^n - \text{ЛНС} \Rightarrow f(A)(v) = \sum \lambda_i A^i v = 0 \Rightarrow
 $$
+
 $$
 \Rightarrow f(A)(v), f \in I_V \Rightarrow
 $$
+
 $$
 \Rightarrow \mu | f \Rightarrow f = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 Опр.:
+
 $$
 [A|_{C_v}] = \begin{pmatrix}0 & 0 & 0 & \dots & -\beta_0 \\ 1 & 0 & 0 & \dots & -\beta_1 \\ \vdots & \vdots & \vdots & \vdots & \vdots \\ 0& 0 & 0 & \dots & -\beta_{d-1} \end{pmatrix}
 $$
+
 $$
 \Xi_{A|_{C_v}} = \det \begin{pmatrix} -x & 0 & \dots & - \beta_0 \\ \vdots & \vdots & \vdots & \vdots \\ 0 & \dots & \dots & - \beta_{d-1} - x\end{pmatrix} =
 $$
+
 $$
 = \sum^d (-1)^{d-k} \beta_k x^k = \pm \mu_{v, A}
 $$
@@ -1214,24 +1401,29 @@ $$
 ## 28. Теорема Гамильтона — Кэли
 
 Теорема:
+
 $$
 \chi_A(A)=0.
 $$
 
 Если
+
 $$
 \chi_A(t)=t^n+c_{n-1}t^{n-1}+\dots+c_0,
 $$
 то
+
 $$
 A^n+c_{n-1}A^{n-1}+\dots+c_0E=0.
 $$
 
 Доказательство через ЖНФ: над алгебраическим замыканием $A\sim J$. Для многочлена $p$:
+
 $$
 p(\mathcal{M}^{-1}A\mathcal{M})=\mathcal{M}^{-1}p(A)\mathcal{M}.
 $$
 Значит достаточно проверить теорему для жордановых блоков. Для блока
+
 $$
 J_m(\lambda)=\lambda E+N,\qquad N^m=0.
 $$
@@ -1239,19 +1431,23 @@ $$
 
 Another one:
 $\triangleright$
+
 $$
 v \in V; \; (\chi_A |_{C_v} = \pm \mu) \; | \; {\chi_A}
 $$
+
 $$
 \chi_A(A)v = \chi_A(A)|_{C_v}(v) = \chi_A(A|_{C_v})v =
 $$
+
 $$
 = g(A|_{C_v}) \circ \chi_{A|_{C_v}} (A|_{C_v})v = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 Сл.: $A \in M_n(K); \; \chi_A(A) = 0$
 
 Опр.: (Сопровождающая матрица) $f = x^n - \sum^{n-1} \lambda_k x^k$
+
 $$
 L_f = \begin{pmatrix} 0 & 0 & 0 & \dots & - \lambda_0 \\ 1 & 0 & 0 & \dots & \vdots \\ 0 & 1 & 0 & \ddots & \vdots \\ \vdots & \vdots & \ddots & \dots & \vdots \\ 0 & 0 & 0 & \dots & -\lambda_{d-1} \end{pmatrix}
 $$
@@ -1261,31 +1457,37 @@ $$
 ## 29. Порядки элементов и циклические подгруппы
 
 Порядок элемента $g\in G$:
+
 $$
 \operatorname{ord}(g)=\min\{n>0:g^n=e\},
 $$
 если такое $n$ существует. Иначе порядок бесконечен.
 
 Циклическая подгруппа:
+
 $$
 \langle g\rangle=\{g^k:k\in\mathbb Z\}.
 $$
 
 Если $\operatorname{ord}(g)=n$, то
+
 $$
 \langle g\rangle=\{e,g,\dots,g^{n-1}\},
 $$
 и
+
 $$
 |\langle g\rangle|=n.
 $$
 
 Также
+
 $$
 g^a=g^b\iff a\equiv b\pmod n.
 $$
 
 Если порядок бесконечен, то все $g^k$ различны, и
+
 $$
 \langle g\rangle\cong\mathbb Z.
 $$
@@ -1295,12 +1497,14 @@ $$
 ## 30. Подгруппа, порождённая подмножеством
 
 Для $S\subseteq G$:
+
 $$
 \langle S\rangle
 $$
 — наименьшая подгруппа $G$, содержащая $S$.
 
 Определение.
+
 $$
 \langle S\rangle=
 \{s_1^{\varepsilon_1}\dots s_m^{\varepsilon_m}:s_i\in S,\ \varepsilon_i=\pm1\}.
@@ -1310,6 +1514,7 @@ $$
 
 
 Предложение.
+
 $$
 \langle S\rangle=\bigcap_{H\le G,\ S\subseteq H}H.
 $$
@@ -1325,6 +1530,7 @@ $$
 $$
 S \subset H \Rightarrow \langle S \rangle  \subset H
 $$
+
 $$
 \langle S \rangle \subset \bigcap_{H\le G,\ S\subseteq H}H
 $$
@@ -1333,14 +1539,17 @@ $\supset :$
 
 Потому что $\exists$ H': 
 
-$$H' = \langle S \rangle$$
-
-$$\bigcap_{H\le G,\ S\subseteq H}H \cap H' \subset H' = \langle S \rangle$$
-
 $$
-\tag*{$\blacksquare$}
+H' = \langle S \rangle
 $$
 
+$$
+\bigcap_{H\le G,\ S\subseteq H}H \cap H' \subset H' = \langle S \rangle
+$$
+
+$$
+\qquad \blacksquare
+$$
 
 
 То есть это все конечные слова из элементов $S$ и обратных к ним.
@@ -1354,11 +1563,13 @@ $$
 Пусть $H\le G$.
 
 Левый смежный класс:
+
 $$
 gH=\{gh:h\in H\}.
 $$
 
 Правый смежный класс:
+
 $$
 Hg=\{hg:h\in H\}.
 $$
@@ -1370,17 +1581,20 @@ g_1H=g_2H\iff g_2^{-1}g_1\in H.
 $$
 
 Левые смежные классы либо совпадают, либо не пересекаются. Все они имеют мощность $|H|$, так как
+
 $$
 H\to gH,\quad h\mapsto gh
 $$
 — биекция.
 
 Индекс:
+
 $$
 [G:H]=\text{число левых смежных классов}.
 $$
 
 Если $G$ конечна:
+
 $$
 |G|=[G:H]|H|.
 $$
@@ -1390,11 +1604,13 @@ $$
 ## 32. Теорема Лагранжа и следствия из неё
 
 Если $G$ — конечная группа и $H\le G$, то
+
 $$
 |H|\mid |G|.
 $$
 
 Более точно:
+
 $$
 |G|=[G:H]|H|.
 $$
@@ -1404,11 +1620,13 @@ $$
 Следствия:
 
 1. Порядок любого элемента делит порядок группы:
+
 $$
 \operatorname{ord}(g)=|\langle g\rangle|\mid |G|.
 $$
 
 2.
+
 $$
 g^{|G|}=e.
 $$
@@ -1422,17 +1640,20 @@ $$
 ## 33. Нормальные подгруппы
 
 Подгруппа $N\le G$ нормальна, если
+
 $$
 gN=Ng
 $$
 для всех $g\in G$.
 
 Эквивалентно:
+
 $$
 gNg^{-1}=N.
 $$
 
 Достаточно проверять:
+
 $$
 gng^{-1}\in N
 $$
@@ -1454,17 +1675,20 @@ $$
 - $A_n\triangleleft S_n$.
 
 Ядро нормально: если $k\in\ker\varphi$, то
+
 $$
 \varphi(gkg^{-1})=\varphi(g)\varphi(k)\varphi(g)^{-1}=e.
 $$
 Л.: $[G:H]= 2 \Rightarrow H \triangleleft G$
 $\triangleright$
+
 $$
 g \in G, g \in H \Rightarrow gH = H = Hg
 $$
+
 $$
 g \notin H \Rightarrow gH \neq H \Rightarrow gH = G \setminus H = Hg
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Пр-ры:
@@ -1475,31 +1699,37 @@ $S_3, H = <(12)> \not\triangleleft G$
 ## 34. Факторгруппа
 
 Если $N\triangleleft G$, то факторгруппа
+
 $$
 G/N=\{gN:g\in G\}
 $$
 с операцией
+
 $$
 (gN)(hN)=ghN.
 $$
 
 Корректность использует нормальность. Если $g'=gn_1$, $h'=hn_2$, то
+
 $$
 g'h'=gn_1hn_2=gh(h^{-1}n_1h)n_2.
 $$
 Так как $N$ нормальна, $h^{-1}n_1h\in N$, значит $g'h'\in ghN$.
 
 Нейтральный элемент:
+
 $$
 N=eN.
 $$
 
 Обратный:
+
 $$
 (gN)^{-1}=g^{-1}N.
 $$
 
 Каноническая проекция:
+
 $$
 \pi:G\to G/N,\quad g\mapsto gN
 $$
@@ -1510,35 +1740,42 @@ $$
 ## 35. Гомоморфизм, образ и ядро
 
 Гомоморфизм групп:
+
 $$
 \varphi:G\to H,
 $$
 такой что
+
 $$
 \varphi(ab)=\varphi(a)\varphi(b).
 $$
 
 Свойства:
+
 $$
 \varphi(e_G)=e_H,
 $$
+
 $$
 \varphi(g^{-1})=\varphi(g)^{-1}.
 $$
 
 Образ:
+
 $$
 \Im\varphi=\{\varphi(g):g\in G\}
 $$
 — подгруппа $H$.
 
 Ядро:
+
 $$
 \ker\varphi=\{g\in G:\varphi(g)=e_H\}
 $$
 — нормальная подгруппа $G$.
 
 Критерий инъективности:
+
 $$
 \varphi\text{ инъективен}\iff \ker\varphi=\{e\}.
 $$
@@ -1552,37 +1789,42 @@ $$
 Опр. Группы изоморфны если есть изоморфизм.
 
 
-
 ---
 
 ## 36. Канонические гомоморфизмы. Индуцированный гомоморфизм, разложение гомоморфизма
 
 Канонический гомоморфизм:
+
 $$
 \pi:G\to G/N,\quad g\mapsto gN,
 $$
 где $N\triangleleft G$.
 
 Если $\varphi:G\to H$, $N\triangleleft G$, $N\subseteq\ker\varphi$, то существует единственный индуцированный гомоморфизм
+
 $$
 \overline\varphi:G/N\to H
 $$
 такой, что
+
 $$
 \varphi=\overline\varphi\circ\pi.
 $$
 
 Он задаётся формулой:
+
 $$
 \overline\varphi(gN)=\varphi(g).
 $$
 
 Корректность: если $gN=g'N$, то $g'=gn$, $n\in N$, значит
+
 $$
 \varphi(g')=\varphi(g)\varphi(n)=\varphi(g).
 $$
 
 Разложение:
+
 $$
 G\to G/\ker\varphi\to \Im\varphi\hookrightarrow H.
 $$
@@ -1592,20 +1834,24 @@ $$
 ## 37. Теорема о гомоморфизме
 
 Для гомоморфизма групп $\varphi:G\to H$:
+
 $$
 G/\ker\varphi\cong \Im\varphi.
 $$
 
 Изоморфизм:
+
 $$
 g\ker\varphi\mapsto \varphi(g).
 $$
 
 Корректность: если
+
 $$
 g\ker\varphi=g'\ker\varphi,
 $$
 то $g'=gk$, где $k\in\ker\varphi$, значит
+
 $$
 \varphi(g')=\varphi(g).
 $$
@@ -1613,6 +1859,7 @@ $$
 Сюръективность очевидна по определению образа.
 
 Инъективность: если
+
 $$
 \varphi(g)=e,
 $$
@@ -1623,14 +1870,17 @@ $$
 ## 38. Применение теоремы о гомоморфизме к классификации циклических групп
 
 Пусть
+
 $$
 G=\langle g\rangle.
 $$
 
 Рассмотрим гомоморфизм:
+
 $$
 \varphi:\mathbb Z\to G,
 $$
+
 $$
 n\mapsto g^n.
 $$
@@ -1638,19 +1888,23 @@ $$
 Он сюръективен.
 
 Если $g$ имеет бесконечный порядок, то
+
 $$
 \ker\varphi=0,
 $$
 и
+
 $$
 G\cong\mathbb Z.
 $$
 
 Если $\operatorname{ord}(g)=m$, то
+
 $$
 \ker\varphi=m\mathbb Z,
 $$
 и
+
 $$
 G\cong\mathbb Z/m\mathbb Z.
 $$
@@ -1662,61 +1916,76 @@ $$
 ## 39. Теорема о соответствии
 
 $H \triangleleft G, \pi_H: G \longrightarrow G /H$ - канон проекция. $\Rightarrow$
+
 $$
 \begin{array}{cc} \\
 \alpha: \{P \leq G \; | \; H \subseteq P\} \rightarrow \left\{ Q \leq G / H \right\}, & \alpha(P) = \pi_H(P) \\ \\
 \beta:\{Q \leq G / H\} \rightarrow \{P \leq G \; | \; H \subseteq P\}, & \beta(Q) = \pi_H^{-1}(Q)
 \end{array}
-$$ - взаимно обратны $\Rightarrow$ между подгруппами $G$, содержащими $H$, и подгруппами факторгруппы $G /H$ существует биекция
+$$
+ - взаимно обратны $\Rightarrow$ между подгруппами $G$, содержащими $H$, и подгруппами факторгруппы $G /H$ существует биекция
 
 $\triangleright$
 Покажем, что $\alpha$ и $\beta$ взаимно обратны.
+
 $$
-P \leq G \; \And \; H \subseteq P \Rightarrow \pi_H(P) \leq G / H \quad / \pi_H(P) \in \mathrm{Im} \pi_H|_P:P \rightarrow G / H/
+P \leq G \; \;\text{и}\; \; H \subseteq P \Rightarrow \pi_H(P) \leq G / H \quad / \pi_H(P) \in \mathrm{Im} \pi_H|_P:P \rightarrow G / H/
 $$
+
 $$
 Q \leq G / H \Rightarrow \pi^{-1}_H(Q) \leq G
 $$
+
 $$
 H = \pi_H^{-1}(\{eH\}) \subseteq \pi_H^{-1}(Q)
 $$
+
 $$
 Q \leq G /H:
 $$
+
 $$
 (\alpha \circ \beta) (Q) = \alpha(\pi_H^{-1} (Q)) = Q, \quad \pi_H \in \mathrm{Surj}
 $$
+
 $$
-P \leq G \; \And \; H \subseteq P:
+P \leq G \; \;\text{и}\; \; H \subseteq P:
 $$
+
 $$
 (\beta \circ \alpha)(P) = \pi_H^{-1}(\pi_H(P)) = \{g \in G \; | \; gH \in \pi_H(P)\} \Leftrightarrow \{g \in G \; | \; \exists p \in P: gH = pH\} \Leftrightarrow
 $$
+
 $$
 \Leftrightarrow \{g \in G \; | \; \exists p \in P: p^{-1}g \in H \subseteq P\} \Leftrightarrow \{g \in G \; | \; g \in P\} \Rightarrow
 $$
+
 $$
 \Rightarrow \pi_H^{-1}(\pi_H(P)) = P \Leftrightarrow \alpha \; \text{взаимнообратно} \; \beta
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Пр.: (нормальность в факторгруппе): $H \triangleleft G, P \leq G, H \subseteq P \Rightarrow (\pi_H(P) \triangleleft G / H \Leftrightarrow P \triangleleft G)$
 
 $\triangleright$
 $\Rightarrow:$ из прошлого:
+
 $$
 \pi_H(P) \triangleleft G / H \Rightarrow P = \pi_H^{-1} ( \pi_H(P)) \triangleleft G
 $$
 $\Leftarrow:$
+
 $$
-P \triangleleft G: \sphericalangle \; \pi_H|_P: \; \pi_H(P) \leq G / H \;(\text{теорема о соотв.}) \;; \; \forall gH \in G / H \; \And \; \forall pH \in \pi_H(P): 
+P \triangleleft G: \text{рассм.} \; \pi_H|_P: \; \pi_H(P) \leq G / H \;(\text{теорема о соотв.}) \;; \; \forall gH \in G / H \; \;\text{и}\; \; \forall pH \in \pi_H(P): 
 $$
+
 $$
 (gH)(pH)(gh)^{-1} = (gpg)^{-1}H, \; P \triangleleft G \Rightarrow (gpg)^{-1} \in P \Rightarrow
 $$
+
 $$
 \Rightarrow (gpg)^{-1}H \in \pi_H(P) \Rightarrow \pi_H(P) \triangleleft G / H
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -1724,23 +1993,28 @@ $$
 ## 40. Теорема о факторгруппе факторгруппы
 
 Пусть
+
 $$
 N\triangleleft G,\qquad H\triangleleft G,\qquad N\subseteq H.
 $$
 
 Тогда
+
 $$
 H/N\triangleleft G/N, \; N \triangleleft H
 $$
 и
+
 $$
 (G/N)/(H/N)\cong G/H.
 $$
 
 Доказательство. Зададим
+
 $$
 \psi:G/N\to G/H,
 $$
+
 $$
 \psi(gN)=gH.
 $$
@@ -1748,14 +2022,17 @@ $$
 Корректность следует из $N\subseteq H$.
 
 Отображение сюръективно. Его ядро:
+
 $$
 \ker\psi=\{gN:gH=eH\}=H/N.
 $$
 Образ: $\mathrm{Im} \psi = G / H \Rightarrow$
+
 $$
 \Rightarrow H / N \triangleleft G / N
 $$
 По теореме о гомоморфизме:
+
 $$
 (G/N)/(H/N)\cong G/H.
 $$
@@ -1765,26 +2042,31 @@ $$
 ## 41. Теорема о произведении подгрупп (формулировка)
 
 Пусть $H,K\le G$. Их произведение:
+
 $$
 HK=\{hk:h\in H,\ k\in K\}.
 $$
 
 Теорема:
+
 $$
 HK\le G\iff HK=KH.
 $$
 
 Если $H,K\triangleleft G$, то
+
 $$
 HK\triangleleft G.
 $$
 
 Если $H,K$ конечны, то
+
 $$
 |HK|=\frac{|H||K|}{|H\cap K|}.
 $$
 
 Идея формулы: каждое $x\in HK$ имеет ровно $|H\cap K|$ представлений $x=hk$. Если $h_1k_1=h_2k_2$, то
+
 $$
 h_2^{-1}h_1=k_2k_1^{-1}\in H\cap K.
 $$
@@ -1798,27 +2080,33 @@ $$
 $$
 H\triangleleft G,\qquad K\triangleleft G,
 $$
+
 $$
 G=HK,
 $$
+
 $$
 H\cap K=\{e\}.
 $$
 
 Тогда
+
 $$
 G\cong H\times K.
 $$
 
 Изоморфизм:
+
 $$
 H\times K\to G,
 $$
+
 $$
 (h,k)\mapsto hk.
 $$
 
 Почему это гомоморфизм: из нормальности и тривиального пересечения следует, что элементы $H$ и $K$ коммутируют. Коммутатор
+
 $$
 hkh^{-1}k^{-1}
 $$
@@ -1828,8 +2116,9 @@ $$
 
 Доказательство. Ядро тривиально, потому что $H\cap K=\{e\}$.
 
-$$(h, k) \mapsto hk = e \Rightarrow h, k = e$$
-
+$$
+(h, k) \mapsto hk = e \Rightarrow h, k = e
+$$
 
 
 ---
@@ -1837,16 +2126,20 @@ $$(h, k) \mapsto hk = e \Rightarrow h, k = e$$
 ## 43. Действие группы на множестве. Определение и примеры
 
 Действие группы $G$ на множестве $X$ ($G \curvearrowright X$):
+
 $$
 G\times X\to X,
 $$
+
 $$
 (g,x)\mapsto gx,
 $$
 такое что
+
 $$
 ex=x,
 $$
+
 $$
 g(hx)=(gh)x.
 $$
@@ -1856,6 +2149,7 @@ $$
 1. $S_n$ действует на $\{1,\dots,n\}$.
 2. $G$ действует на себе левыми сдвигами.
 3. $G$ действует на себе сопряжениями:
+
 $$
 g\cdot x=gxg^{-1}.
 $$
@@ -1869,12 +2163,14 @@ $$
 Пусть $G \curvearrowright X$.
 
 Орбита:
+
 $$
 \operatorname{Orb}_G(x)=\operatorname{Orb}(x)=Gx=\{gx:g\in G\}.
 $$
 Если группа $G$ ясна из контекста, пишем просто $\operatorname{Orb}(x)$; обозначение $Gx$ тоже допустимо.
 
 Стабилизатор:
+
 $$
 \operatorname{Stab}_G(x)=\operatorname{Stab}(x)=\{g\in G:gx=x\}.
 $$
@@ -1884,19 +2180,23 @@ $$
 Орбиты либо совпадают, либо не пересекаются, поэтому разбивают $X$.
 
 Теорема орбиты-стабилизатора:
+
 $$
 |\operatorname{Orb}_G(x)|=[G:\operatorname{Stab}_G(x)].
 $$
 
 Если $G$ конечна:
+
 $$
 |\operatorname{Orb}_G(x)|=\frac{|G|}{|\operatorname{Stab}_G(x)|}.
 $$
 
 Доказательство: отображение
+
 $$
 G/\operatorname{Stab}_G(x)\to \operatorname{Orb}_G(x),
 $$
+
 $$
 g\operatorname{Stab}_G(x)\mapsto gx
 $$
@@ -1907,16 +2207,19 @@ $$
 ## 45. Альтернативное определение действия группы, теорема Кэли
 
 Действие $G$ на $X$ эквивалентно гомоморфизму
+
 $$
 \rho:G\to S_X.
 $$
 
 По действию строим:
+
 $$
 \rho(g)(x)=gx.
 $$
 
 Обратно, по гомоморфизму $\rho$ задаём:
+
 $$
 gx=\rho(g)(x).
 $$
@@ -1924,15 +2227,16 @@ $$
 Теорема Кэли: всякая группа $G$ изоморфна подгруппе симметрической группы $S_G$.
 
 Доказательство: $G$ действует на себе левыми сдвигами:
+
 $$
 g\cdot x=gx.
 $$
 Получаем
+
 $$
 \rho:G\to S_G.
 $$
 Если $\rho(g)=\operatorname{id}$, то $gx=x$ для всех $x$, в частности при $x=e$ получаем $g=e$. Значит $\rho$ инъективен. 
-
 
 
 ---
@@ -1940,36 +2244,43 @@ $$
 ## 46. Лемма Бернсайда
 
 Пусть конечная группа $G$ действует на конечном множестве $X$. Тогда число орбит равно
+
 $$
 \frac1{|G|}\sum_{g\in G}|\operatorname{Fix}(g)|.
 $$
 
 Здесь
+
 $$
 \operatorname{Fix}(g)=\{x\in X:gx=x\}.
 $$
 
 Доказательство. Рассмотрим пары
+
 $$
 M=\{(g,x):gx=x\}.
 $$
 
 С одной стороны:
+
 $$
 |M|=\sum_{g\in G}|\operatorname{Fix}(g)|.
 $$
 
 С другой:
+
 $$
 |M|=\sum_{x\in X}|\operatorname{Stab}_G(x)|.
 $$
 
 На одной орбите вклад равен $|G|$, потому что
+
 $$
 |\operatorname{Stab}_G(x)|=\frac{|G|}{|\operatorname{Orb}_G(x)|}.
 $$
 
 Значит
+
 $$
 |M|=|G|\cdot(\text{число орбит}).
 $$
@@ -1981,15 +2292,18 @@ $$
 Центр группы обозначаем через $Z(G)$, а если группа ясна из контекста — просто через $Z$.
 
 Если $G$ — конечная $p$-группа, то
+
 $$
 Z=Z(G)\ne\{e\}.
 $$
 
 Доказательство. Рассмотрим действие сопряжением. Классовая формула:
+
 $$
 |G|=|Z|+\sum_i |\operatorname{Orb}_G(x_i)|,
 $$
 где сумма идёт по нецентральным классам сопряжённости. Размер нецентрального класса равен
+
 $$
 [G:C_G(x_i)],
 $$
@@ -1998,10 +2312,12 @@ $$
 Если $|G|=p^2$, то $G$ абелева. Если $|Z|=p$, то $G/Z$ циклическая, откуда $G$ абелева, противоречие. Значит $Z=G$.
 
 Итог:
+
 $$
 G\cong C_{p^2}
 $$
 или
+
 $$
 G\cong C_p\times C_p.
 $$
@@ -2010,21 +2326,35 @@ $$
 
 Действие сопряжением.
 
-$$|Orb(g)| \mid |G| \Rightarrow |Orb(g)| = p^m$$
+$$
+|Orb(g)| \mid |G| \Rightarrow |Orb(g)| = p^m
+$$
 
-$$|G| = \underset{g \in G} \sum |Orb(G)|$$
+$$
+|G| = \underset{g \in G} \sum |Orb(G)|
+$$
 
-$$p^n = k_0 + k_1 p + k_2 p^2 + \dots$$
+$$
+p^n = k_0 + k_1 p + k_2 p^2 + \dots
+$$
 
-$$p \mid k_0 \Rightarrow$$
+$$
+p \mid k_0 \Rightarrow
+$$
 
 Рассмотрим эти орибиты
 
-$$ghg^{1} = h$$
+$$
+ghg^{1} = h
+$$
 
-$$\Rightarrow |Z(G)| \ge \# \text{Орбит размера 1}$$
+$$
+\Rightarrow |Z(G)| \ge \# \text{Орбит размера 1}
+$$
 
-$$|Z(G) \ge p|$$
+$$
+|Z(G) \ge p|
+$$
 
 
 ---
@@ -2034,20 +2364,24 @@ $$|Z(G) \ge p|$$
 Если $G$ конечна и простое $p\mid |G|$, то в $G$ есть элемент порядка $p$.
 
 Доказательство. Рассмотрим
+
 $$
 X=\{(g_1,\dots,g_p):g_1g_2\dots g_p=e\}.
 $$
 Тогда
+
 $$
 |X|=|G|^{p-1},
 $$
 значит $|X|$ делится на $p$.
 
 Группа $C_p$ действует на $X$ циклическим сдвигом координат. Орбиты имеют размер $1$ или $p$. Неподвижные точки имеют вид
+
 $$
 (g,g,\dots,g),
 $$
 и условие даёт
+
 $$
 g^p=e.
 $$
@@ -2059,10 +2393,12 @@ $$
 ## 49. Разрешимость конечной $p$-группы
 
 Группа разрешима, если существует цепочка
+
 $$
 G=G_0\triangleright G_1\triangleright\dots\triangleright G_m=\{e\},
 $$
 где все факторы
+
 $$
 G_i/G_{i+1}
 $$
@@ -2071,6 +2407,7 @@ $$
 Теорема: всякая конечная $p$-группа разрешима.
 
 Доказательство по индукции. У конечной $p$-группы центр $Z(G)$ нетривиален. По теореме Коши в $Z(G)$ есть элемент $z$ порядка $p$. Тогда
+
 $$
 N=\langle z\rangle
 $$
@@ -2081,6 +2418,7 @@ $$
 ## 50. Теоремы Силова (формулировки)
 
 Пусть
+
 $$
 |G|=p^am,\qquad p\nmid m.
 $$
@@ -2092,10 +2430,12 @@ $$
 1. Силовская $p$-подгруппа существует.
 2. Все силовские $p$-подгруппы сопряжены.
 3. Если $n_p$ — число силовских $p$-подгрупп, то
+
 $$
 n_p\equiv1\pmod p,
 $$
 и
+
 $$
 n_p\mid m.
 $$
@@ -2108,16 +2448,19 @@ $$
 ## 51. Разложение конечной циклической группы
 
 Пусть
+
 $$
 n=p_1^{a_1}\dots p_k^{a_k}.
 $$
 
 Тогда
+
 $$
 C_n\cong C_{p_1^{a_1}}\times\dots\times C_{p_k^{a_k}}.
 $$
 
 Это следует из китайской теоремы об остатках:
+
 $$
 \mathbb Z/n\mathbb Z\cong
 \mathbb Z/p_1^{a_1}\mathbb Z\times\dots\times
@@ -2125,11 +2468,13 @@ $$
 $$
 
 Если $\gcd(m,n)=1$, то
+
 $$
 C_m\times C_n\cong C_{mn}.
 $$
 
 Действительно, если $a,b$ — генераторы, то $(a,b)$ имеет порядок
+
 $$
 \operatorname{lcm}(m,n)=mn.
 $$
@@ -2139,10 +2484,12 @@ $$
 ## 52. Строение конечных и конечно порождённых абелевых групп (формулировки)
 
 Всякая конечно порождённая абелева группа имеет вид
+
 $$
 \mathbb Z^r\oplus \mathbb Z/d_1\mathbb Z\oplus\dots\oplus \mathbb Z/d_s\mathbb Z,
 $$
 где
+
 $$
 d_i>1,\qquad d_i\mid d_{i+1}.
 $$
@@ -2152,15 +2499,18 @@ $$
 Для конечной абелевой группы $r=0$.
 
 Эквивалентная форма через элементарные делители:
+
 $$
 G\cong \bigoplus_p\bigoplus_i \mathbb Z/p^{a_{p,i}}\mathbb Z.
 $$
 
 Пример:
+
 $$
 |G|=p^2
 $$
 даёт варианты
+
 $$
 C_{p^2},\qquad C_p\times C_p.
 $$
@@ -2172,6 +2522,7 @@ $$
 Теорема: всякая конечная подгруппа $G\le K^\times$ циклическая.
 
 Идея доказательства. $G$ конечная абелева. Достаточно показать, что каждая силовская $p$-подгруппа циклическая. Если $P$ не циклическая, то для некоторого $r$ уравнение
+
 $$
 x^{p^r}=1
 $$
@@ -2180,6 +2531,7 @@ $$
 Значит силовские подгруппы циклические. Прямое произведение циклических групп попарно взаимно простых порядков циклическое.
 
 Следствие:
+
 $$
 \mathbb F_q^\times\cong C_{q-1}.
 $$
@@ -2189,18 +2541,22 @@ $$
 ## 54. Свободная группа, аксиоматическое определение
 
 Свободная группа $F(X)$ на множестве $X$ — это группа с отображением
+
 $$
 i:X\to F(X),
 $$
 такая что для любой группы $G$ и любого отображения множеств
+
 $$
 f:X\to G
 $$
 существует единственный гомоморфизм
+
 $$
 \overline f:F(X)\to G
 $$
 со свойством
+
 $$
 \overline f\circ i=f.
 $$
@@ -2216,11 +2572,13 @@ $$
 ## 55. Построение свободной группы
 
 Берём алфавит
+
 $$
 X\cup X^{-1}.
 $$
 
 Слова — конечные последовательности букв. Приведённое слово не содержит соседних пар
+
 $$
 xx^{-1},\qquad x^{-1}x.
 $$
@@ -2232,6 +2590,7 @@ $$
 Единица — пустое слово.
 
 Обратный элемент:
+
 $$
 (a_1a_2\dots a_n)^{-1}=a_n^{-1}\dots a_2^{-1}a_1^{-1}.
 $$
@@ -2245,21 +2604,25 @@ $$
 Пусть $X$ — генераторы, $R\subset F(X)$ — набор соотношений.
 
 Группа с образующими $X$ и соотношениями $R$:
+
 $$
 \langle X\mid R\rangle=F(X)/\langle\!\langle R\rangle\!\rangle,
 $$
 где $\langle\!\langle R\rangle\!\rangle$ — нормальная подгруппа, порождённая $R$.
 
 Универсальное свойство: чтобы задать гомоморфизм
+
 $$
 \langle X\mid R\rangle\to G,
 $$
 достаточно задать образы генераторов $X$, причём все слова из $R$ должны перейти в $e_G$.
 
 Примеры:
+
 $$
 C_n=\langle a\mid a^n=e\rangle.
 $$
+
 $$
 D_n=\langle r,s\mid r^n=e,\ s^2=e,\ srs^{-1}=r^{-1}\rangle.
 $$
@@ -2269,49 +2632,65 @@ $$
 ## 57. Билинейные формы. Замена базиса
 
 Билинейная форма:
+
 $$
 B:V\times V\to K,
 $$
 линейная по каждому аргументу.
 
-$$B(x, y) = x^tBy$$
+$$
+B(x, y) = x^tBy
+$$
 
 Пусть $x = E[x]_e, \ y = E[y]_e$.
 
-$$B(x, y) = \sum_{i, \ j} [x]_i [y]_j B(e_i, \ e_j)$$
+$$
+B(x, y) = \sum_{i, \ j} [x]_i [y]_j B(e_i, \ e_j)
+$$
 
 $$
 B(e_i, \ e_j)
-$$ - матрица Грамма.
+$$
+ - матрица Грамма.
 
-$$[B]_e = (B(e_i, \ e_j))$$
+$$
+[B]_e = (B(e_i, \ e_j))
+$$
 
-$$B(x, \ y) = [x]_e^t [B]_e [y]_e$$
+$$
+B(x, \ y) = [x]_e^t [B]_e [y]_e
+$$
 
 В базисе $e=(e_1,\dots,e_n)$ матрица формы $A_e$ задаётся элементами
+
 $$
 A_e[i,j]=a_{ij}=B(e_i,e_j).
 $$
 
 Если
+
 $$
 [x]_e=X,\qquad [y]_e=Y,
 $$
 то
+
 $$
 B(x,y)=X^TA_eY.
 $$
 
 Если $f=e\mathcal{M}_{e\to f}$, то
+
 $$
 A_f=\mathcal{M}_{e\to f}^TA_e\mathcal{M}_{e\to f}.
 $$
 
 Доказательство:
+
 $$
 [x]_e=\mathcal{M}_{e\to f}[x]_f,\qquad [y]_e=\mathcal{M}_{e\to f}[y]_f.
 $$
 Тогда
+
 $$
 B(x,y)=(\mathcal{M}_{e\to f}[x]_f)^TA_e(\mathcal{M}_{e\to f}[y]_f)
 =[x]_f^T(\mathcal{M}_{e\to f}^TA_e\mathcal{M}_{e\to f})[y]_f.
@@ -2329,15 +2708,18 @@ $$
 Пусть $\operatorname{char}K\ne2$. Тогда для любой симметрической билинейной формы существует базис, в котором её матрица диагональна.
 
 Эквивалентно, квадратичная форма приводится к виду
+
 $$
 \lambda_1x_1^2+\dots+\lambda_rx_r^2.
 $$
 
 Доказательство по индукции. Если форма ненулевая, найдём $v$, такой что
+
 $$
 B(v,v)\ne0.
 $$
 Если сначала есть только $B(u,w)\ne0$, то
+
 $$
 B(u+w,u+w)=2B(u,w)\ne0
 $$
@@ -2356,12 +2738,14 @@ $$
 Из диагонализуемости получаем диагональную матрицу Гремма, далее просто корни.
 
 Над $\mathbb C$ всякая симметрическая билинейная форма приводится к виду
+
 $$
 x_1^2+\dots+x_r^2.
 $$
 Инвариант только ранг $r$, потому что любой ненулевой коэффициент можно сделать $1$, извлекая квадратный корень.
 
 Над $\mathbb R$ всякая симметрическая билинейная форма приводится к виду
+
 $$
 x_1^2+\dots+x_p^2-y_1^2-\dots-y_q^2.
 $$
@@ -2372,24 +2756,36 @@ $$
 
 Рассмотрим 2 пространства
 
-$$W = \langle e_1, \dots, e_k \rangle$$
+$$
+W = \langle e_1, \dots, e_k \rangle
+$$
 
-$$W' = \langle e_k' \dots e_n \rangle$$
+$$
+W' = \langle e_k' \dots e_n \rangle
+$$
 
-$$\mathrm {dim} W + W' = \mathrm {dim} W  + \mathrm {dim} W' - \mathrm {dim} (W \cap W')$$
+$$
+\dim(W+W') = \mathrm {dim} W  + \mathrm {dim} W' - \mathrm {dim} (W \cap W')
+$$
 
 $\Rightarrow$
 
-$$W \cap W' \neq 0$$
+$$
+W \cap W' \neq 0
+$$
 
-$$w \in W \cap W$$
+$$
+w \in W \cap W
+$$
 
-$$B(w, w) = \lambda _1 + \dots + \lambda _k (> 0)= - (\mu _{k' + 1} + \dots ) (< 0)$$
+$$
+B(w, w) = \lambda _1 + \dots + \lambda _k (> 0)= - (\mu _{k' + 1} + \dots ) (< 0)
+$$
 
 Противоречие.
 
 $$
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Пара $(p,q)$ называется сигнатурой. Число $p+q$ — ранг.
@@ -2403,6 +2799,7 @@ $$
 ## 60. Евклидовы пространства
 
 Евклидово пространство — вещественное конечномерное пространство со скалярным произведением
+
 $$
 (\cdot,\cdot):V\times V\to\mathbb R,
 $$
@@ -2413,22 +2810,26 @@ $$
 3. $(x,x)>0$ при $x\ne0$.
 
 Норма:
+
 $$
 \|x\|=\sqrt{(x,x)}.
 $$
 
 Неравенство Коши-Буняковского:
+
 $$
 |(x,y)|\le \|x\|\|y\|.
 $$
 
 Доказательство: рассматриваем
+
 $$
 0\le\|x-ty\|^2
 $$
 как квадратный трёхчлен по $t$; его дискриминант неположителен.
 
 Неравенство треугольника:
+
 $$
 \|x+y\|\le\|x\|+\|y\|.
 $$
@@ -2438,19 +2839,23 @@ $$
 ## 61. Ортогонализация Грама-Шмидта
 
 Пусть $v_1,\dots,v_n$ — линейно независимые векторы. Строим ортогональные $u_i$:
+
 $$
 u_1=v_1,
 $$
+
 $$
 u_k=v_k-\sum_{i=1}^{k-1}\frac{(v_k,u_i)}{(u_i,u_i)}u_i.
 $$
 
 Тогда
+
 $$
 \langle u_1,\dots,u_k\rangle=\langle v_1,\dots,v_k\rangle.
 $$
 
 Проверка ортогональности: для $j<k$
+
 $$
 (u_k,u_j)
 =
@@ -2462,6 +2867,7 @@ $$
 потому что остальные слагаемые исчезают из-за уже построенной ортогональности.
 
 Чтобы получить ортонормированный базис:
+
 $$
 e_i=\frac{u_i}{\|u_i\|}.
 $$
@@ -2471,6 +2877,7 @@ $$
 ## 62. Свойства ортогональных дополнений
 
 Для $U\subseteq V$:
+
 $$
 U^\perp=\{v\in V:(v,u)=0\ \forall u\in U\}.
 $$
@@ -2479,6 +2886,7 @@ $$
 
 1. $U^\perp$ — подпространство.
 2.
+
 $$
 V=U\oplus U^\perp.
 $$
@@ -2488,33 +2896,40 @@ $\triangleright$
 $$
 u \in U \cap U^\perp \Rightarrow (u, u) = 0 \Rightarrow u = 0 \Rightarrow
 $$
+
 $$
 \Rightarrow U + U^\perp = U \oplus U^\perp \Rightarrow U + U^\perp = V = U \oplus U^\perp 
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 3.
+
 $$
 \dim U+\dim U^\perp=\dim V.
 $$
 
 $\triangleright$
 Дополняем ОНБ в $U$ до базиса и ортогоналихируем.
+
 $$
 v = \sum \alpha_i e_i
 $$
+
 $$
 v \in U^\perp \Leftrightarrow (v, w) = 0; \; \forall w \in U \Leftrightarrow (v, e_j) = 0, \; j \in [\dim U] \Leftrightarrow
 $$
+
 $$
 \Leftrightarrow \alpha_j = 0 \Leftrightarrow v \in \mathrm{Lin}(e_{\dim U + 1}, \dots, e_{\dim V}) \Rightarrow
 $$
+
 $$
 \Rightarrow U^\perp = \mathrm{Lin} (e_{\dim U + 1}, \dots, e_{\dim V})
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 4.
+
 $$
 (U^\perp)^\perp=U
 $$
@@ -2524,13 +2939,15 @@ $\triangleright$
 $$
 U \subset (U^\perp)^\perp; \; \dim (U^\perp)^\perp = \dim V - \dim U^\perp = \dim V - \dim V + \dim U = \dim U \Rightarrow
 $$
+
 $$
 (U^\perp)^\perp = U
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 в конечномерном случае.
 5. Если $U\subseteq W$, то
+
 $$
 W^\perp\subseteq U^\perp.
 $$
@@ -2538,6 +2955,7 @@ $$
 Очев
 
 6.
+
 $$
 (U+W)^\perp=U^\perp\cap W^\perp.
 $$
@@ -2548,36 +2966,44 @@ $\triangleright$
 $$
 (U_1 + U_2)^\perp \subset U_1^\perp, U_2^\perp
 $$
+
 $$
 u \in U_1^\perp \cap U_2^\perp
 $$
+
 $$
 v \in U_1 + U_2 \Rightarrow v = u_1 + u_2 \Rightarrow
 $$
+
 $$
 \Rightarrow (u, v) = (w_1, u_1) + (w_2, u_2) = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 7.
+
 $$
 (U\cap W)^\perp=U^\perp+W^\perp.
 $$
 
 $\triangleright$
 По 6 + 4:
+
 $$
 (U_1^\perp + U_2^\perp)^\perp = (U_1^\perp)^\perp \cap (U_2^\perp)^\perp = U_1 \cap U_2 \Rightarrow
 $$
+
 $$
 \Rightarrow ((U_1^\perp + U_2^\perp)^\perp)^\perp = (U_1 \cap U_2)^\perp \Leftrightarrow
 $$
+
 $$
 \Leftrightarrow U_1^\perp + U_2^\perp = (U_1 \cap U_2)^\perp
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 9.
+
 $$
 V^\perp = \{0\}
 $$
@@ -2586,10 +3012,11 @@ $\triangleright$
 
 $$
 v \in V^\perp \Rightarrow v \perp v \Rightarrow v = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 10.
+
 $$
 0^\perp = V
 $$
@@ -2598,7 +3025,7 @@ $\triangleright$
 
 $$
 v \in V \Rightarrow (v, 0) = 0 \cdot (v, 0) = 0
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Основное разложение доказывается дополнением ортонормированного базиса $U$ до ортонормированного базиса $V$.
@@ -2608,11 +3035,13 @@ $$
 ## 63. Ортогональные матрицы
 
 Матрица $Q\in M_n(\mathbb R)$ ортогональна, если
+
 $$
 Q^TQ=E.
 $$
 
 Эквивалентно:
+
 $$
 Q^{-1}=Q^T.
 $$
@@ -2626,24 +3055,29 @@ $$
 - столбцы $\{Q[,j]\}_{j=1}^n$ образуют ортонормированный базис;
 - строки $\{Q[i,]\}_{i=1}^n$ образуют ортонормированный базис;
 - $Q$ сохраняет скалярное произведение:
+
 $$
 (Qx,Qy)=(x,y);
 $$
 - $Q$ сохраняет нормы:
+
 $$
 \|Qx\|=\|x\|.
 $$
 
 Доказательство:
+
 $$
 (Qx,Qy)=x^TQ^TQy.
 $$
 
 Если $Q$ ортогональна, то
+
 $$
 (\det Q)^2=\det(Q^TQ)=1,
 $$
 поэтому
+
 $$
 \det Q=\pm1.
 $$
@@ -2655,9 +3089,10 @@ $\triangleright$
 $$
 \Gamma_F = U^T \Gamma_E U = U^T U (\Gamma_E - \text{ортнормировано и матрица единична}) \Rightarrow
 $$
+
 $$
 \Gamma_F - \text{ОНБ} \Leftrightarrow \Gamma_F = E_n \Leftrightarrow U \in O_n(K)
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -2665,26 +3100,31 @@ $$
 ## 64. Сопряжённый оператор
 
 Оператор $A^*$ сопряжён к $A$, если
+
 $$
 (Ax,y)=(x,A^*y)
 $$
 для всех $x,y$.
 
 Существование: для фиксированного $y$ отображение
+
 $$
 x\mapsto(Ax,y)
 $$
 является линейным функционалом. В евклидовом пространстве любой функционал имеет вид
+
 $$
 x\mapsto(x,z)
 $$
 для единственного $z$. Полагаем $A^*y=z$.
 
 В ортонормированном базисе:
+
 $$
 [A^*]=[A]^T.
 $$
 В комплексном унитарном случае:
+
 $$
 [A^*]=\overline{[A]}^T.
 $$
@@ -2694,27 +3134,34 @@ $\triangleright$
 $$
 A^* \in \mathrm{End} V, \; \text{Fix ONB E}
 $$
+
 $$
 [A^*]_E = A^* \Leftrightarrow \forall v, w \in V: (Av, w) = (v, A*w) - \text{linear by v, w}; \; v = E[v]_E, w = E[w]_E \Leftrightarrow
 $$
+
 $$
 \Leftrightarrow (Ae_i, e_j) = (e_i, A^* e_j) \Leftrightarrow (a_{1i}e_i + \dots + a_{ni}e_i, e_j) = (e_i, b_{1j}e_j + \dots + b_{nj}e_j) \Leftrightarrow
 $$
+
 $$
 \Leftrightarrow a_{ji} = b_{ij} \Leftrightarrow A^* = A^T 
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Свойства:
+
 $$
 (A+B)^*=A^*+B^*,
 $$
+
 $$
 (\lambda A)^* = \lambda A^*
 $$
+
 $$
 (AB)^*=B^*A^*,
 $$
+
 $$
 (A^*)^*=A.
 $$
@@ -2726,17 +3173,20 @@ $$
 ## 65. Самосопряжённые операторы в евклидовом пространстве
 
 Оператор $A$ самосопряжён, если
+
 $$
 A=A^*.
 $$
 
 Эквивалентно:
+
 $$
 (Ax,y)=(x,Ay)
 $$
 для всех $x,y$.
 
 В ортонормированном базисе его матрица симметрична и $A^*$ явл. симм. билинецной формой как и сама $A$:
+
 $$
 A^T=A.
 $$
@@ -2748,32 +3198,40 @@ $\triangleright$
 $$
 \lambda \in \mathbb{C} - \text{root of} \; \chi_A; \; A = [\mathcal{A}]_E, E - \text{ONB}
 $$
+
 $$
 \mathbb{C}^n \overset{A \cdot}{\longrightarrow} \mathbb{C}^n; \; \chi_{A \cdot} = \chi_A = \chi_{\mathcal{A}}
 $$
+
 $$
 \chi_{A \cdot} (\lambda) = 0 \Rightarrow \exists x \in \mathbb{C}^n: \mathcal{A}x = \lambda x, \quad x \neq 0
 $$
+
 $$
 (Ax)^T\overline{x} = (\lambda x)^T \overline{x} = \lambda x^T \overline{x}
 $$
+
 $$
 (Ax)^T\overline{x} = x^T A^T \overline{x} = x^T A \overline{x} = x^T \overline{Ax} = x^T \overline{\lambda x} = \overline{\lambda} x^T \overline{x}
 $$
+
 $$
 x^T \overline{x} = \sum_{i=1}^n |x_i|^2 \neq 0 (x \neq 0) \Rightarrow \lambda = \overline{\lambda} \Rightarrow \lambda \in \mathbb{R}
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Собственные векторы для разных собственных значений ортогональны. Если
+
 $$
 Ax=\lambda x,\qquad Ay=\mu y,
 $$
 то
+
 $$
 \lambda(x,y)=(Ax,y)=(x,Ay)=\mu(x,y).
 $$
 Если $\lambda\ne\mu$, то
+
 $$
 (x,y)=0.
 $$
@@ -2787,22 +3245,27 @@ MI по $n = \dim V$
 $$
 n = 1 - \checkmark
 $$
+
 $$
 n - 1 \mapsto n:
 $$
+
 $$
 \lambda - \text{eigen value} \; A, v - \text{eigen vector}; \; e_1 = \frac{1}{||v||} v
 $$
+
 $$
 W = \mathrm{Lin}(e_1)^\perp, \dim W = n - 1, W - A - \text{инв.}: \; w \in W: (w, Ae_1) = (w, \lambda e_1) = \lambda (w, e_1) = 0
 $$
+
 $$
 A_1 = A|_{W} \in \mathrm{End} W, A_1^* = A_1
 $$
 По ИП в $W$ есть ОНБ $e_2, \dots, e_n: [A_1]_{e_2, \dots, e_n}$ - диаг
+
 $$
 \Rightarrow e_2, \dots, e_n - \text{искомый ОНБ}
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -2810,6 +3273,7 @@ $$
 ## 66. Ортогональные операторы в евклидовом пространстве (формулировки)
 
 Оператор $A:V\to V$ ортогонален, если
+
 $$
 (Ax,Ay)=(x,y)
 $$
@@ -2818,6 +3282,7 @@ $$
 Эквивалентно:
 
 1.
+
 $$
 \|Ax\|=\|x\|,
 $$
@@ -2836,6 +3301,7 @@ $$
 
 4.
 В ортонормированном базисе матрица ортогонального оператора ортогональна:
+
 $$
 Q^TQ=E.
 $$
@@ -2850,9 +3316,11 @@ $$
 2->1->2
 
 Нормальная форма: существует ортонормированный базис, в котором матрица ортогонального оператора блочно-диагональна с блоками:
+
 $$
 (1),\quad (-1),
 $$
+
 $$
 R_\varphi = \begin{pmatrix}
 \cos\varphi&\sin\varphi\\
@@ -2872,11 +3340,17 @@ T.: (Спектральная для ортогональных оператор
 
 Напоминание все поле - идеал. $\triangleright$
 
-$$b \in I$$
+$$
+b \in I
+$$
 
-$$e \in I \Rightarrow I = K$$
+$$
+e \in I \Rightarrow I = K
+$$
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 
 Пусть R - кольцо, I - идеал в R
@@ -2894,21 +3368,34 @@ $\overline{a} \overline{b} = \overline{a b}$
 Корректность $\triangleright$
 
 
-$$\overline{a} = \overline{a'}$$
+$$
+\overline{a} = \overline{a'}
+$$
 
-$$\overline{a} = \overline{b'}$$
+$$
+\overline{a} = \overline{b'}
+$$
 
-$$a' = a + x \ b' = b + y$$
+$$
+a' = a + x \ b' = b + y
+$$
 
-$$a'b' = a + b + I$$
+$$
+a'b' = a + b + I
+$$
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 Предложение. $R / I$ - КА с 1. $\triangleright$ очев
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 Опр. Пусть
+
 $$
 \varphi:R\to S
 $$
@@ -2924,28 +3411,33 @@ $$
 2. $\pi_i : a \mapsto a + I$ - гомоморфизм проекция на фактор
 
 Ядро:
+
 $$
 \ker\varphi=\{r\in R:\varphi(r)=0\}
 $$
 — идеал в $R$.
 
 Образ:
+
 $$
 \Im\varphi
 $$
 — подкольцо $S$.
 
 Теорема:
+
 $$
 R/\ker\varphi\cong \Im\varphi.
 $$
 
 Изоморфизм:
+
 $$
 r+\ker\varphi\mapsto \varphi(r).
 $$
 
 Корректность: если $r-r'\in\ker\varphi$, то
+
 $$
 \varphi(r)=\varphi(r').
 $$
@@ -2960,7 +3452,8 @@ $1^0$ $\ b \in R^* \Rightarrow$
 
 $$
 1 \in (b) \Rightarrow (b) = R \Rightarrow R/(b) = \{0\}
-$$ - не поле
+$$
+ - не поле
 
 $2^0$ $\ b= b_1b_2, \\ \ b_1, \ b_2 \notin R^*$
 
@@ -2970,11 +3463,14 @@ $$
 
 $$
 Let \ \overline{b_1} = \overline{0} \Rightarrow b | b_1 , \ b_1 = bc \Rightarrow b = bcb_2 \Rightarrow b_2
-$$ - обратим
+$$
+ - обратим
 
 $3^0$ $\ Let \ b$ - неприводим
 
-$$Let \ \overline{c} \in R / (b) , \ \overline{c} \neq 0$$
+$$
+Let \ \overline{c} \in R / (b) , \ \overline{c} \neq 0
+$$
 
 $$
 c \notin (b)
@@ -2988,7 +3484,9 @@ $$
 \Rightarrow \exists x, \ y \in R : \overline{x}\overline{c} + \overline{y}\overline{b} = 1 \Rightarrow \overline{c} \in (R / (a))^*
 $$
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 ---
 
@@ -3008,14 +3506,18 @@ $K$ - называется простым если нет подаолей
 
 Доказательство. $\triangleright$
 
-$$\phi : \mathbb{Z} \underset{n \rightarrow 1 + \dots + 1}\rightarrow K$$
+$$
+\phi : \mathbb{Z} \underset{n \rightarrow 1 + \dots + 1}\rightarrow K
+$$
 
 $\phi -$ гомоморфизм колец
 
-$$\mathrm{ker} \phi = \begin{cases}
+$$
+\mathrm{ker} \phi = \begin{cases}
 (p) , \ \mathrm{char K } = 0\\
 0
-\end{cases}$$
+\end{cases}
+$$
 
 $1^0 \ \mathbb{Z} /(p)  \cong \Im \phi$
 
@@ -3028,26 +3530,35 @@ $2^0  \ \mathrm{char} = 0$
 
 $$
 \mathbb{Q} \underset{ \frac{a}{b} \rightarrow \frac{\phi(a)} {\phi(b)}}\rightarrow K
-$$ + проверить корректность
+$$
+ + проверить корректность
 
 $$
 \ker \ \phi_1  : \ a = 0 \Rightarrow \frac{a}{b} = 0
 $$
 
-$$\phi  :  \mathbb{Q} \cong \Im \ \phi_1 \Rightarrow$$
+$$
+\phi  :  \mathbb{Q} \cong \Im \ \phi_1 \Rightarrow
+$$
 
-$$\Im \ \phi_1 - \text{ подполе в K} \Rightarrow \Im \ \phi_1 = K , \ K \cong \mathbb{Q}$$
+$$
+\Im \ \phi_1 - \text{ подполе в K} \Rightarrow \Im \ \phi_1 = K , \ K \cong \mathbb{Q}
+$$
 
 Итог:
+
 $$
 \text{простое подполе}\cong \mathbb Q
 $$
 или
+
 $$
 \mathbb F_p.
 $$
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 Предложение. Любое поле содержит простое подполе
 
@@ -3062,20 +3573,24 @@ $F_0 := \bigcap F_{\textbf{подполе}}$
 Если $K\subseteq L$, то $L$ — векторное пространство над $K$.
 
 T.: Степень расширения:
+
 $$
 [L:K]=\dim_K L.
 $$
 
 Если
+
 $$
 F\subseteq K\subseteq L,
 $$
 то
+
 $$
 [L:F]=[L:K][K:F].
 $$
 
 Доказательство. Пусть $e_1,\dots,e_m$ — базис $K$ над $F$, а $f_1,\dots,f_n$ — базис $L$ над $K$. Тогда элементы
+
 $$
 e_if_j
 $$
@@ -3088,10 +3603,12 @@ $$
 ## 70. Алгебраические и трансцендентные элементы. Минимальный многочлен алгебраического элемента
 
 $\alpha\in L$ алгебраичен над $K$, если существует ненулевой
+
 $$
 f\in K[x]
 $$
 такой что
+
 $$
 f(\alpha)=0.
 $$
@@ -3107,18 +3624,21 @@ $$
 Свойства:
 
 1. $\mathrm{Irr}_{K} (\alpha)$ неприводим. Если $m=fg$, то
+
 $$
 0=f(\alpha)g(\alpha),
 $$
 значит один множитель зануляет $\alpha$, что противоречит минимальности.
 
 2. Если $f(\alpha)=0$, то
+
 $$
 \mathrm{Irr}_{K} (\alpha)\mid f.
 $$
 Доказательство: делим $f=qm+r$, $\deg r<\deg m$, подставляем $\alpha$, получаем $r=0$.
 
 3.
+
 $$
 [K(\alpha):K]=\deg \mathrm{Irr}_{K} (\alpha).
 $$
@@ -3130,9 +3650,10 @@ $\triangleright$
 $$
 1, a, a^2, \dots, a^n; \; [L:K] = n \Rightarrow \text{ЛЗС}
 $$
+
 $$
 f = \alpha_nx^n + \dots + \alpha_0 \neq 0; f(a) = 0 \Rightarrow f \in (f_0), a - \text{алг.} \Rightarrow \deg \mathrm{Irr}_K(a) \leq \deg f \leq n
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Опр.: $L/K$ наз алгебраическим если все элементы алгебраичны над $K$, иначе -- трансцендентным
@@ -3151,6 +3672,7 @@ $$
 — наименьшее подполе $L$, содержащее $K$ и все $\alpha_i$.
 
 Для одного элемента:
+
 $$
 K(\alpha)=
 \left\{
@@ -3160,17 +3682,20 @@ f,g\in K[x],\ g(\alpha)\ne0
 $$
 
 Если $\alpha$ алгебраичен, то
+
 $$
 K(\alpha)=K[\alpha].
 $$
 
 Если $d=\deg \mathrm{Irr}_{K} (\alpha)$, то
+
 $$
 K(\alpha)=
 \{a_0+a_1\alpha+\dots+a_{d-1}\alpha^{d-1}:a_i\in K\}.
 $$
 
 Также:
+
 $$
 K(\alpha_1,\dots,\alpha_n)
 =
@@ -3189,9 +3714,11 @@ $\triangleright$
 $$
 a_1, \dots, a_n - \text{базис} \; L \text{над} \; K \Rightarrow
 $$
+
 $$
 a_1, \dots, a_n \in K(a_1, \dots, a_n) \Rightarrow \forall \alpha_1, \dots, \alpha_n \in K: \sum \alpha_i a_i \in K \Rightarrow L = K \Rightarrow
 $$
+
 $$
 \Rightarrow L/K \text{кон порожден}
 $$
@@ -3207,16 +3734,19 @@ $$
 $$
 j=0: \checkmark
 $$
+
 $$
 j > 0:
 $$
+
 $$
 L_j = L_{j-1}(a_j) \Rightarrow [L_j : L_{j-1}] < \infty \Rightarrow
 $$
 По ИП:
+
 $$
 [L_j:K] < \infty
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 
@@ -3231,24 +3761,29 @@ $$
 Зам.: Трансцендентность и алгебраичность $x$ наследуется в название расширения
 
 T.: Если $\alpha$ алгебраичен над $K$, то
+
 $$
 K(\alpha)=K[\alpha]\cong K[x]/(\mathrm{Irr}_{K} (\alpha)).
 $$
 
 Гомоморфизм:
+
 $$
 K[x]\to K(\alpha),
 $$
+
 $$
 f\mapsto f(\alpha).
 $$
 
 Его ядро:
+
 $$
 (\mathrm{Irr}_{K} (\alpha)).
 $$
 
 По теореме о гомоморфизме:
+
 $$
 K[x]/(\mathrm{Irr}_{K} (\alpha))\cong K[\alpha].
 $$
@@ -3256,6 +3791,7 @@ $$
 Так как $\mathrm{Irr}_{K} (\alpha)$ неприводим, фактор — поле, значит $K[\alpha]$ уже поле.
 
 Базис:
+
 $$
 1,\alpha,\dots,\alpha^{d-1}.
 $$
@@ -3264,7 +3800,7 @@ $$
 
 Пр.: $\mathbb{Q}(\sqrt[3]{2}) \cong \mathbb{Q}(\sqrt[3]{2} w) \cong \mathbb{Q}(\sqrt[3]{2}w^2) \cong \mathbb{Q}[X]/(X^3 - 2)$
 
-Пр.: $f_0 \in K[X] -$ неприв., $L = K[X]/(f_0)$, рассматриваемя $L$ как расширение $K$, отождествляя $\alpha \in K$ с $\overline{\alpha} \in K[X]/(f_0) \Rightarrow L = K(X), x = \overline{X} \; \And \; \mathrm{Irr}_K(x) = f_0$
+Пр.: $f_0 \in K[X] -$ неприв., $L = K[X]/(f_0)$, рассматриваемя $L$ как расширение $K$, отождествляя $\alpha \in K$ с $\overline{\alpha} \in K[X]/(f_0) \Rightarrow L = K(X), x = \overline{X} \; \;\text{и}\; \; \mathrm{Irr}_K(x) = f_0$
 
 Зам.: Это теорема о существовании к только что доказанной теореме о единственности.
 
@@ -3273,9 +3809,10 @@ $\triangleright$
 $$
 \forall n: x^n \in K(x) \Rightarrow \forall f \in K[x]: \overline{f} \in K(x) \Rightarrow K(x) = L
 $$
+
 $$
 f(x) = 0 \Leftrightarrow \overline{f} = 0 \Leftrightarrow f_0 | f \Leftrightarrow f \in f_0 \Rightarrow f_0 = \mathrm{Irr}_K(x)  
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Сл.: $x -$ алг. $\Rightarrow [K(x) :K] = \deg \mathrm{Irr}_K(x)$
@@ -3286,7 +3823,7 @@ $\triangleright$
 
 $$
 [L:K] = [L:K(x)]\underset{\deg_K x}{\underbrace{[K(x):K]}}
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 Пр.: $L/K$ расш $M = \{x \in L \; | \; x - \text{алг. над K}\} \Rightarrow M < L$ (подполе)
@@ -3296,12 +3833,14 @@ $\triangleright$
 $$
 1, 0 \in M
 $$
+
 $$
-x, y \in M: \sphericalangle \; K_1 = K(x, y) \Rightarrow [K_1:K] < \infty \Rightarrow K_1/K - \text{алг.} \Rightarrow
+x, y \in M: \text{рассм.} \; K_1 = K(x, y) \Rightarrow [K_1:K] < \infty \Rightarrow K_1/K - \text{алг.} \Rightarrow
 $$
+
 $$
 \Rightarrow x + y, xy, x^{-1} - \text{алг.} \; \Rightarrow x + y, xy, x^{-1} \in M
-\tag*{$\blacksquare$}
+\qquad \blacksquare
 $$
 
 ---
@@ -3309,20 +3848,24 @@ $$
 ## 73. Конечность расширения и конечная порождённость
 
 Если
+
 $$
 [L:K]<\infty,
 $$
 то каждый $\alpha\in L$ алгебраичен над $K$. Действительно, векторы
+
 $$
 1,\alpha,\alpha^2,\dots,\alpha^n
 $$
 линейно зависимы при $n=[L:K]$.
 
 Если
+
 $$
 L=K(\alpha_1,\dots,\alpha_m)
 $$
 и все $\alpha_i$ алгебраичны над $K$, то $L/K$ конечно. Доказательство через башню:
+
 $$
 [L:K]=\prod_i
 [K(\alpha_1,\dots,\alpha_i):K(\alpha_1,\dots,\alpha_{i-1})].
@@ -3331,6 +3874,7 @@ $$
 Каждый множитель конечен.
 
 Конечное расширение конечно порождено как поле: если $e_1,\dots,e_n$ — базис $L/K$, то
+
 $$
 L=K(e_1,\dots,e_n).
 $$
@@ -3347,12 +3891,14 @@ $$
 2. $L$ порождено над $K$ корнями $f$ .
 
 То есть
+
 $$
 L=K(\alpha_1,\dots,\alpha_n),
 $$
 где $\alpha_i$ — корни $f$.
 
 T.: Существование доказывается индукцией по степени. Если $f$ не раскладывается, берём неприводимый множитель $g$ степени больше $1$ и поле
+
 $$
 K_1=K[x]/(g).
 $$
@@ -3365,24 +3911,29 @@ $$
 ## 75. Эндоморфизм Фробениуса
 
 Пусть поле $K$ имеет характеристику $p>0$. Отображение
+
 $$
 \operatorname{Fr}:K\to K,
 $$
+
 $$
 x\mapsto x^p
 $$
 называется эндоморфизмом Фробениуса.
 
 Это гомоморфизм:
+
 $$
 (xy)^p=x^py^p,
 $$
+
 $$
 (x+y)^p=x^p+y^p,
 $$
 потому что биномиальные коэффициенты $\binom pk$ делятся на $p$ при $0<k<p$.
 
 В поле Фробениус инъективен:
+
 $$
 x^p=0\Rightarrow x=0.
 $$
@@ -3390,6 +3941,7 @@ $$
 В конечном поле инъективность влечёт сюръективность, значит Фробениус — автоморфизм.
 
 В $\mathbb F_{p^n}$:
+
 $$
 \operatorname{Fr}^n(x)=x^{p^n}=x.
 $$
@@ -3398,29 +3950,38 @@ $$
 
 ## 76. Возможные порядки конечного поля. Существование поля из $p^n$ элементов
 
-Как построить - $$\mathbb{F}_p / (f_0), \ \mathrm {deg} \ f_0 = n$$
+Как построить -
+
+$$
+\mathbb{F}_p / (f_0), \ \mathrm {deg} \ f_0 = n
+$$
 
 
 Если $F$ — конечное поле, то его характеристика равна простому $p$, и простое подполе изоморфно $\mathbb F_p$. Тогда $F$ — конечномерное векторное пространство над $\mathbb F_p$. Если
+
 $$
 [F:\mathbb F_p]=n,
 $$
 то
+
 $$
 |F|=p^n.
 $$
 
 Существование поля из $p^n$ элементов: рассмотрим
+
 $$
 x^{p^n}-x\in\mathbb F_p[x]
 $$
 и его поле разложения. Множество корней
+
 $$
 F=\{\alpha:\alpha^{p^n}=\alpha\}
 $$
 является полем: оно замкнуто относительно сложения, умножения и обратных.
 
 Производная:
+
 $$
 (p^n)x^{p^n-1}-1=-1,
 $$
@@ -3440,13 +4001,19 @@ $F = \mathbb{F}_p$
 
 $|F^*| \ < \infty$
 
-$$F = \langle a \rangle$$
+$$
+F = \langle a \rangle
+$$
 
-$$\mathbb{F}_p(a) \supset \langle a \rangle $$
+$$
+\mathbb{F}_p(a) \supset \langle a \rangle
+$$
 
 $\Rightarrow$
 
-$$\mathbb{F}_p (a) = F$$
+$$
+\mathbb{F}_p (a) = F
+$$
 
 Следствие. Над $\mathbb{F}_p$ есть неприводимый многочлен степени $n$
 
@@ -3458,15 +4025,25 @@ $$\mathbb{F}_p (a) = F$$
 
 $Let \ K = \mathbb F_p[x]/(f)$
 
-$$|K| = p^n  \Rightarrow |K^*| = p^n - 1$$
+$$
+|K| = p^n  \Rightarrow |K^*| = p^n - 1
+$$
 
-$$\Rightarrow \forall a \in K^* : a^{p^n - 1} = 1$$
+$$
+\Rightarrow \forall a \in K^* : a^{p^n - 1} = 1
+$$
 
-$$\forall a \in K^* : a^{p^n} = a$$
+$$
+\forall a \in K^* : a^{p^n} = a
+$$
 
-$$x^{p^n} - x \in \overline{0}$$
+$$
+x^{p^n} - x \in \overline{0}
+$$
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 ---
 
 ## 77. Единственность поля из $p^n$ элементов
@@ -3474,19 +4051,23 @@ $$\tag*{$\blacksquare$}$$
 Любые два поля из $p^n$ элементов изоморфны.
 
 Пусть $F$ — поле из $p^n$ элементов. Тогда
+
 $$
 |F^\times|=p^n-1.
 $$
 Для любого $x\ne0$:
+
 $$
 x^{p^n-1}=1.
 $$
 Следовательно, для всех $x\in F$:
+
 $$
 x^{p^n}=x.
 $$
 
 Значит все элементы $F$ — корни многочлена
+
 $$
 x^{p^n}-x.
 $$
@@ -3522,7 +4103,8 @@ $$
 
 $$
 \mathbb {F_p(b)}  / \mathbb {F_p}
-$$ - простое алгебраическое расширение
+$$
+ - простое алгебраическое расширение
 
 $$
  \mathrm{Irr} \ b = f
@@ -3537,7 +4119,6 @@ L = F_p(b)  \cong F_p[x] / (f) = K
 $$
 
 
-
 ---
 
 ## 78. Подполя поля из $p^n$ элементов
@@ -3546,30 +4127,34 @@ $$
 В $\mathbb F_{p^n}$ существует подполе из $p^m$ элементов тогда и только тогда, когда
 
 
-
 $$
 m\mid n.
 $$
 
 Необходимость: если $K\subseteq\mathbb F_{p^n}$, $|K|=p^m$, то
+
 $$
 \mathbb F_{p^n}
 $$
 — векторное пространство над $K$. Значит
+
 $$
 p^n=|\mathbb F_{p^n}|=|K|^d=(p^m)^d=p^{md},
 $$
 поэтому $m\mid n$.
 
 Существование: если $m\mid n$, то
+
 $$
 p^m-1\mid p^n-1,
 $$
 поэтому
+
 $$
 x^{p^m}-x
 $$
 делит
+
 $$
 x^{p^n}-x.
 $$
@@ -3604,18 +4189,24 @@ $$
 
 $$
 X^{p^m} - X - \text{есть}  \ p^n  \ \text{корней}
-$$ Противоречие.
+$$
+ Противоречие.
 
 Теперь $|Aut(\mathbb F_{p^n} ) | \le n$
 
 Пусть не так и возьмем разные $\{\psi_i\}^{n + 1}$
 
 $$
-\mathbb F_{p^n} = \langle a \rangle$$
+\mathbb F_{p^n} = \langle a \rangle
+$$
 
-$$f = \mathrm Irr \ a$$
+$$
+f = \mathrm Irr \ a
+$$
 
-$$f(a) = 0$$
+$$
+f(a) = 0
+$$
 
 $$
 \Rightarrow \forall j: \psi _j(f(a)) =0 
@@ -3623,30 +4214,37 @@ $$
 
 $$
 \psi _i(a) - \text{ корни и их >}n 
-$$ - Противоречие.
+$$
+ - Противоречие.
 
-$$\tag*{$\blacksquare$}$$
+$$
+\qquad \blacksquare
+$$
 
 $$
 \operatorname{Aut}(\mathbb F_{p^n})\cong C_n.
 $$
 
 Она порождена автоморфизмом Фробениуса:
+
 $$
 \operatorname{Fr}(x)=x^p.
 $$
 
 Имеем
+
 $$
 \operatorname{Fr}^n=\operatorname{id},
 $$
 потому что
+
 $$
 x^{p^n}=x
 $$
 для всех $x\in\mathbb F_{p^n}$.
 
 Если $0<k<n$, то $\operatorname{Fr}^k\ne\operatorname{id}$, иначе все элементы поля были бы корнями
+
 $$
 x^{p^k}-x,
 $$
@@ -3655,6 +4253,7 @@ $$
 Значит порядок Фробениуса равен $n$.
 
 Любой автоморфизм конечного поля фиксирует $\mathbb F_p$ и является степенью Фробениуса. Поэтому
+
 $$
 \operatorname{Aut}(\mathbb F_{p^n})
 =

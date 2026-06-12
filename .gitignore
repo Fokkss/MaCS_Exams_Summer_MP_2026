@@ -40,3 +40,37 @@ logs/
 
 _build/
 build/
+
+# for cpp
+exes/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+build.ninja
+.ninja_deps
+.ninja_log
+
+*.o
+*.obj
+*.lo
+*.la
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.app/
+*.dSYM/
+
+.cache/
+.ccls-cache/
+.clangd/
+.vs/
+*.user
+*.suo
+*.vcxproj.user
