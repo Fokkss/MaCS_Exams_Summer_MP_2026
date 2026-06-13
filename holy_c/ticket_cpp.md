@@ -956,7 +956,7 @@ public:
 Circle* circle = new Circle(0, 0, 5);
 Shape* shape = circle;
 ```
-– safe, as it's implicit – **upcast** 
+– safe, as it's explicit – **upcast** 
 при downcast если не делать явного преобразование типа, что компилятор может не понять, там circle или rectangle
 
 ---
@@ -964,7 +964,1070 @@ Shape* shape = circle;
 
 **Умный указатель** — это объект, который внутри хранит обычный указатель и автоматически освобождает ресурс в своём деструкторе.
 
+```
+unique_ptr<T>  ровно один владелец
+shared_ptr<T>  несколько совместных владельцев
+scoped_ptr<T>  один владелец внутри одного scope
+```
+
+### RAII
+
+RAII — Resource Acquisition Is Initialization.
+
+without:
+```C++
+void process()
+{
+    Matrix* matrix = new Matrix(100, 100);
+
+    riskyFunction();
+
+    delete matrix;
+}
+```
+
+with:
+```C++
+void process()
+{
+    unique_ptr<Matrix> matrix(new Matrix(100, 100));
+
+    riskyFunction();
+}
+```
+
+
+
+
 ### scoped_ptr
+
+`scoped_ptr` нельзя копировать и нельзя передать владение
+```
+объект живёт ровно внутри одного scope
+копировать нельзя
+передавать владение нельзя
+в деструкторе вызывает delete
+```
+похож на старый `boost::scoped_ptr`, не является стандартом, введен в качестве примера
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+class Matrix
+{
+private:
+    size_t rows_ = 0;
+    size_t cols_ = 0;
+
+public:
+    Matrix(size_t rows, size_t cols)
+        : rows_(rows)
+        , cols_(cols)
+    {
+        cout << "Matrix constructor" << endl;
+    }
+
+    ~Matrix()
+    {
+        cout << "Matrix destructor" << endl;
+    }
+
+    void print() const
+    {
+        cout << "Matrix " << rows_ << "x" << cols_ << endl;
+    }
+};
+
+class ScopedMatrixPtr
+{
+private:
+    Matrix* ptr_ = nullptr;
+
+public:
+    explicit ScopedMatrixPtr(Matrix* ptr)
+        : ptr_(ptr)
+    {
+    }
+
+    ~ScopedMatrixPtr()
+    {
+        delete ptr_;
+    }
+
+    Matrix* get() const
+    {
+        return ptr_;
+    }
+
+    Matrix& operator*() const
+    {
+        return *ptr_;
+    }
+
+    Matrix* operator->() const
+    {
+        return ptr_;
+    }
+
+    explicit operator bool() const
+    {
+        return ptr_ != nullptr;
+    }
+
+    ScopedMatrixPtr(const ScopedMatrixPtr& other) = delete;
+    ScopedMatrixPtr& operator=(const ScopedMatrixPtr& other) = delete;
+};
+
+int main()
+{
+    ScopedMatrixPtr matrix(new Matrix(2, 3));
+
+    matrix->print();
+
+    if (matrix)
+    {
+        cout << "matrix exists" << endl;
+    }
+
+    return 0;
+}
+```
+```output
+Matrix constructor
+Matrix 2x3
+matrix exists
+Matrix destructor
+```
+
+разрешим копирование:
+```
+a.ptr_ ----+
+           +----> один Matrix
+b.ptr_ ----+
+```
+
+### unique_ptr
+
+`unique_ptr<T>` — стандартный умный указатель с уникальным владением.
+
+```
+ровно один unique_ptr владеет объектом
+копировать нельзя
+перемещать можно
+при уничтожении unique_ptr удаляет объект
+```
+
+```C++
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class Matrix
+{
+public:
+    Matrix()
+    {
+        cout << "Matrix constructor" << endl;
+    }
+
+    ~Matrix()
+    {
+        cout << "Matrix destructor" << endl;
+    }
+
+    void print() const
+    {
+        cout << "Matrix" << endl;
+    }
+};
+
+int main()
+{
+    unique_ptr<Matrix> matrix(new Matrix());
+
+    matrix->print();
+
+    return 0;
+}
+```
+
+Если надо передать владение – в сигнатуре пишем уникальный указатель, а при передаче – std::move, тогда после выполнения объект будет пустым:
+```C++
+void consumeMatrix(unique_ptr<Matrix> matrix)
+{
+    matrix->print();
+}
+
+unique_ptr<Matrix> matrix(new Matrix());
+
+consumeMatrix(move(matrix));
+```
+
+C++<14:
+```C++
+unique_ptr<Matrix> createMatrix()
+{
+    unique_ptr<Matrix> matrix(new Matrix());
+
+    return matrix;
+}
+```
+C++14:
+```C++
+unique_ptr<Matrix> createMatrix()
+{
+    return make_unique<Matrix>();
+}
+```
+
+`get()`
+```C++
+unique_ptr<Matrix> matrix(new Matrix(2, 2));
+
+Matrix* raw = matrix.get();
+```
+`get()` возвращает сырой указатель, но **не отдаёт владение**.
+
+
+```C++
+unique_ptr<Matrix> matrix(new Matrix(2, 2));
+
+Matrix* raw = matrix.release();
+```
+`release()` отдаёт сырой указатель и прекращает владение, придется самому delete для raw
+
+```C++
+unique_ptr<Matrix> matrix(new Matrix(2, 2));
+
+matrix.reset(new Matrix(3, 3));
+```
+удалит объект и сделает указатель nullptr
+
+### shared_ptr
+
+`shared_ptr<T>` — умный указатель с совместным владением.
+
+```
+несколько shared_ptr могут владеть одним объектом
+объект удаляется, когда исчезает последний shared_ptr
+```
+
+realization:
+```C++
+class SharedMatrixPtr
+{
+private:
+    Matrix* ptr_ = nullptr;
+    size_t* count_ = nullptr;
+
+public:
+    explicit SharedMatrixPtr(Matrix* ptr)
+        : ptr_(ptr)
+        , count_(new size_t(1))
+    {
+    }
+
+    SharedMatrixPtr(const SharedMatrixPtr& other)
+        : ptr_(other.ptr_)
+        , count_(other.count_)
+    {
+        ++(*count_);
+    }
+
+    SharedMatrixPtr& operator=(const SharedMatrixPtr& other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+
+        release();
+
+        ptr_ = other.ptr_;
+        count_ = other.count_;
+        ++(*count_);
+
+        return *this;
+    }
+
+    ~SharedMatrixPtr()
+    {
+        release();
+    }
+
+    void release()
+    {
+        if (count_ == nullptr)
+        {
+            return;
+        }
+
+        --(*count_);
+
+        if (*count_ == 0)
+        {
+            delete ptr_;
+            delete count_;
+        }
+
+        ptr_ = nullptr;
+        count_ = nullptr;
+    }
+
+    Matrix& operator*() const
+    {
+        return *ptr_;
+    }
+
+    Matrix* operator->() const
+    {
+        return ptr_;
+    }
+
+    size_t use_count() const
+    {
+        if (count_ == nullptr)
+        {
+            return 0;
+        }
+
+        return *count_;
+    }
+};
+```
+
+но настоящая сложнее:
+```
+поддерживает custom deleter
+поддерживает weak_ptr
+control block устроен сложнее
+счётчики атомарны для многопоточности
+есть aliasing constructor
+```
+
+```C++
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class Texture
+{
+private:
+    string name_;
+
+public:
+    Texture(const string& name)
+        : name_(name)
+    {
+        cout << "load texture " << name_ << endl;
+    }
+
+    ~Texture()
+    {
+        cout << "destroy texture " << name_ << endl;
+    }
+
+    void bind() const
+    {
+        cout << "bind texture " << name_ << endl;
+    }
+};
+
+int main()
+{
+    shared_ptr<Texture> grass(new Texture("grass.png"));
+
+    {
+        shared_ptr<Texture> sameGrass = grass;
+
+        cout << "use_count = " << grass.use_count() << endl;
+
+        sameGrass->bind();
+    }
+
+    cout << "use_count = " << grass.use_count() << endl;
+
+    return 0;
+}
+```
+```output
+load texture grass.png
+use_count = 2
+bind texture grass.png
+use_count = 1
+destroy texture grass.png
+```
+
+```under_the_hood
+shared_ptr object:
++--------------------------+
+| pointer to T             |
++--------------------------+
+| pointer to control block |
++--------------------------+
+
+control block:
++------------------------+
+| strong reference count |
++------------------------+
+| weak reference count   |
++------------------------+
+| deleter / allocator    |
++------------------------+
+```
+
+Лучше писать:
+```C++
+shared_ptr<Texture> texture = make_shared<Texture>("grass.png");
+```
+
+```
+1. короче
+2. exception-safe
+3. часто делает одну аллокацию вместо двух:
+   объект + control block рядом
+```
+
+Но у `shared_ptr` есть главная проблема: циклические ссылки.
+### weak_ptr
+
+```C++
+class Node
+{
+public:
+    shared_ptr<Node> next;
+    shared_ptr<Node> prev;
+
+    ~Node()
+    {
+        cout << "Node destructor" << endl;
+    }
+};
+
+int main()
+{
+    shared_ptr<Node> a = make_shared<Node>();
+    shared_ptr<Node> b = make_shared<Node>();
+
+    a->next = b;
+    b->prev = a;
+
+    return 0;
+}
+```
+
+```
+a ссылается на b
+b ссылается на a
+счётчики не становятся 0
+деструкторы не вызываются
+```
+
+```C++
+class Node
+{
+public:
+    shared_ptr<Node> next;
+    weak_ptr<Node> prev;
+};
+```
+
+### corner cases
+
+```C++
+class Widget
+{
+public:
+    shared_ptr<Widget> getPtr()
+    {
+        return shared_ptr<Widget>(this);
+    }
+};
+```
+Почему плохо?
+
+Если объект уже управляется `shared_ptr`, создание нового `shared_ptr` из `this` создаст новый control block.
+
+Правильный способ — `enable_shared_from_this`.
+
+---
+
+## Ticket 5 – operators overload
+
+нельзя перегружать:
+```
+.
+.*
+::
+?:
+sizeof
+typeid
+alignof
+```
+
+1. Нельзя придумать новый оператор.
+2. Нельзя изменить приоритет оператора.
+3. Нельзя изменить ассоциативность.
+4. Нельзя изменить количество аргументов.
+5. Хотя бы один аргумент перегруженного оператора должен быть пользовательского типа.
+```C++
+int operator+(int a, int b)
+{
+    return a - b;
+}
+```
+– no
+
+### Binary and unary operators
+
+#### Binary: 
+
+```C++
+class Rational
+{
+private:
+    int numerator_ = 0;
+    int denominator_ = 1;
+
+public:
+    Rational operator+(const Rational& other) const
+    {
+        return Rational(
+            numerator_ * other.denominator_ + other.numerator_ * denominator_,
+            denominator_ * other.denominator_
+        );
+    }
+};
+```
+```C++
+a.operator+(b)
+```
+– левый this, понимает для a + b
+
+```C++
+Rational operator+(const Rational& a, const Rational& b)
+{
+    return Rational(
+        a.numerator() * b.denominator() + b.numerator() * a.denominator(),
+        a.denominator() * b.denominator()
+    );
+}
+```
+```C++
+operator+(a, b)
+```
+– понимает для a + b
+
+#### Unary:
+
+```C++
+-a
++a
+!a
+++a
+a++
+--a
+*a
+&a
+```
+
+```C++
+class Rational
+{
+private:
+    int numerator_ = 0;
+    int denominator_ = 1;
+
+public:
+    Rational(int numerator, int denominator)
+        : numerator_(numerator)
+        , denominator_(denominator)
+    {
+        if (denominator_ == 0)
+        {
+            throw invalid_argument("zero denominator");
+        }
+    }
+
+    Rational operator-() const
+    {
+        return Rational(-numerator_, denominator_);
+    }
+};
+```
+
+#### postfix/prefix
+```C++
+++x  → x.operator++()
+x++  → x.operator++(0)
+```
+```
+prefix ++x обычно возвращает T&
+postfix x++ обычно возвращает старую копию T
+```
+
+### operator[]
+
+```C++
+class Array
+{
+private:
+    vector<int> data_;
+
+public:
+    Array(size_t size)
+        : data_(size)
+    {
+    }
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+
+    const int& operator[](size_t index) const
+    {
+        return data_[index];
+    }
+};
+```
+
+приходится реализовывать два `operator[]` — const и non-const; неконстантный возвращает ссылку, чтобы можно было присваивать, а константный возвращает значение или `const`-ссылку.
+
+```C++
+Array a(10);
+a[0] = 42;
+
+const Array b(10);
+cout << b[0] << endl;
+```
+
+C++17,23:
+```C++
+operator[](size_t row, size_t col)
+operator() // equivalent
+```
+
+#### operator <<, >>
+```C++
+ostream& operator<<(ostream& out, const Matrix& matrix)
+{
+    for (size_t row = 0; row < matrix.rows(); ++row)
+    {
+        for (size_t col = 0; col < matrix.cols(); ++col)
+        {
+            out << matrix(row, col) << " ";
+        }
+
+        out << endl;
+    }
+
+    return out;
+}
+```
+– свободная функция, не можем добавить метод в ostream
+### In/out class
+
+In:
+
+```C++
+class BigInt
+{
+public:
+    BigInt operator+(const BigInt& other) const;
+};
+```
+```C++
+BigInt a = 10;
+BigInt b = a + 3;
+```
+– works
+```C++
+BigInt c = 3 + a;
+```
+– no
+
+Out:
+
+```C++
+BigInt operator+(const BigInt& a, const BigInt& b);
+```
+```C++
+BigInt a = 10;
+
+BigInt x = a + 3;
+BigInt y = 3 + a;
+```
+– both work
+
+Practical rule:
+```
+operator+=, -=, *=, /=       метод класса
+operator+, -, *, /           свободная функция через +=
+operator==, <, >             часто свободные функции
+operator<<, >>               свободные функции
+operator[]                   метод
+operator()                   метод
+operator->                   метод
+operator=                    только метод
+conversion operator          только метод
+```
+
+### Compound assignment
+```C++
+a += b;
+a -= b;
+a *= b;
+```
+
+```C++
+class Matrix
+{
+public:
+    Matrix& operator+=(const Matrix& other)
+    {
+        // меняем текущий объект
+        return *this;
+    }
+};
+
+Matrix operator+(Matrix left, const Matrix& right)
+{
+    left += right;
+    return left;
+}
+```
+
+```C++
+#include <cstddef>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+
+using namespace std;
+
+class Matrix
+{
+private:
+    size_t rows_ = 0;
+    size_t cols_ = 0;
+    vector<double> data_;
+
+    size_t index(size_t row, size_t col) const
+    {
+        if (row >= rows_ || col >= cols_)
+        {
+            throw out_of_range("Matrix index is out of range");
+        }
+
+        return row * cols_ + col;
+    }
+
+public:
+    Matrix() = default;
+
+    Matrix(size_t rows, size_t cols)
+        : rows_(rows)
+        , cols_(cols)
+        , data_(rows * cols, 0.0)
+    {
+    }
+
+    size_t rows() const
+    {
+        return rows_;
+    }
+
+    size_t cols() const
+    {
+        return cols_;
+    }
+
+    double& at(size_t row, size_t col)
+    {
+        return data_[index(row, col)];
+    }
+
+    double at(size_t row, size_t col) const
+    {
+        return data_[index(row, col)];
+    }
+
+    Matrix& operator+=(const Matrix& other)
+    {
+        if (rows_ != other.rows_ || cols_ != other.cols_)
+        {
+            throw invalid_argument("Matrix sizes are different");
+        }
+
+        for (size_t i = 0; i < data_.size(); ++i)
+        {
+            data_[i] += other.data_[i];
+        }
+
+        return *this;
+    }
+
+    void print(ostream& out) const
+    {
+        for (size_t row = 0; row < rows_; ++row)
+        {
+            for (size_t col = 0; col < cols_; ++col)
+            {
+                out << at(row, col) << " ";
+            }
+
+            out << endl;
+        }
+    }
+};
+
+Matrix operator+(Matrix left, const Matrix& right)
+{
+    left += right;
+    return left;
+}
+
+int main()
+{
+    Matrix a(2, 2);
+    Matrix b(2, 2);
+
+    a.at(0, 0) = 1;
+    a.at(0, 1) = 2;
+    a.at(1, 0) = 3;
+    a.at(1, 1) = 4;
+
+    b.at(0, 0) = 10;
+    b.at(0, 1) = 20;
+    b.at(1, 0) = 30;
+    b.at(1, 1) = 40;
+
+    Matrix c = a + b;
+
+    c.print(cout);
+
+    return 0;
+}
+```
+
+### friend
+
+свободному оператору нужен доступ к private полям $\Rightarrow$ fiend
+
+```C++
+class Matrix
+{
+private:
+    size_t rows_;
+    size_t cols_;
+    vector<double> data_;
+
+public:
+    friend ostream& operator<<(ostream& out, const Matrix& matrix);
+};
+```
+`friend` означает:
+
+> Эта функция не является методом класса, но имеет доступ к private/protected-членам класса.
+
+ослабляет инкапсуляцию
+
+#### operator <=>
+
+C++20:
+There’s a new three-way comparison operator, `<=>`. The expression `a <=> b` returns an object that compares `<0` if `a < b`, compares `>0` if `a > b`, and compares `==0` if `a` and `b` are equal/equivalent.
+
+### type cast
+
+#### constructor cast
+
+```C++
+class Rational
+{
+public:
+    Rational(int value)
+        : numerator_(value)
+        , denominator_(1)
+    {
+    }
+};
+
+Rational r = 5;
+```
+
+запретить такое неявное преобразование:
+
+```C++
+class Rational
+{
+public:
+    explicit Rational(int value)
+        : numerator_(value)
+        , denominator_(1)
+    {
+    }
+};
+```
+```C++
+Rational r(5);
+Rational q = Rational(5);
+```
+
+type cast operator:
+```C++
+class Rational
+{
+private:
+    int numerator_ = 0;
+    int denominator_ = 1;
+
+public:
+    explicit operator double() const
+    {
+        return static_cast<double>(numerator_) / denominator_;
+    }
+};
+```
+```C++
+Rational r(1, 2);
+
+double x = static_cast<double>(r);
+```
+
+иначе можно было бы (что опасно):
+```C++
+double x = r;
+```
+
+#### explicit bool
+```C++
+class FileHandle
+{
+private:
+    FILE* file_ = nullptr;
+
+public:
+    explicit operator bool() const
+    {
+        return file_ != nullptr;
+    }
+};
+
+FileHandle file;
+
+if (file)
+{
+    // файл открыт
+}
+```
+but can not:
+```C++
+bool b = file; // ошибка, если operator bool explicit
+```
+
+до C++11 для такого поведения использовали странные трюки вроде safe bool idiom, а с C++11 появился `explicit operator bool()`
+
+### corner cases
+
+```C++
+if (p != nullptr && p->valid())
+{
+}
+```
+
+лучше не перегружать, иначе можно нарушить short-circuit
+
+### all operators that could be possibly overloaded on C++26
+
+```operators
+1.  operator new
+2.  operator delete
+3.  operator new[]
+4.  operator delete[]
+
+5.  operator co_await
+
+6.  operator()
+7.  operator[]
+8.  operator->
+9.  operator->*
+
+10. operator~
+11. operator!
+12. operator+
+13. operator-
+14. operator*
+15. operator/
+16. operator%
+17. operator^
+18. operator&
+19. operator|
+
+20. operator=
+21. operator+=
+22. operator-=
+23. operator*=
+24. operator/=
+25. operator%=
+26. operator^=
+27. operator&=
+28. operator|=
+
+29. operator==
+30. operator!=
+31. operator<
+32. operator>
+33. operator<=
+34. operator>=
+35. operator<=>
+
+36. operator&&
+37. operator||
+
+38. operator<<
+39. operator>>
+40. operator<<=
+41. operator>>=
+
+42. operator++
+43. operator--
+
+44. operator,
+```
+
+Но если считать **формы**, будет больше, потому что некоторые операторы бывают и унарными, и бинарными. Стандарт отдельно говорит, что унарные и бинарные формы `+`, `-`, `*`, `&` могут быть перегружены.
+
+couldn't be overloaded:
+```operators
+.
+.*
+::
+?:
+```
+
+---
+
+## Ticket 6 – misc
+
+```
+const                 обещание "не менять"
+function overloading  одно имя, разные параметры
+default arguments     часть аргументов можно не писать
+static                сущность не привязана к конкретному объекту
+```
+
+### const
+
+
+
+
+
+
 
 
 
