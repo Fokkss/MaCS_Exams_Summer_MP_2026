@@ -5642,8 +5642,478 @@ cout << typeid(*p).name() << endl;
 ```
 – for polymorph base returns bad_typeid
 
+`volatile` означает:
+
+> значение объекта может измениться по причинам, которые компилятор не видит.
+
+```C++
+#include <cstdint>
+
+using namespace std;
+
+int main()
+{
+    volatile uint32_t* statusRegister =
+        reinterpret_cast<volatile uint32_t*>(0x40000000);
+
+    while ((*statusRegister & 1u) == 0u)
+    {
+        // ждём, пока железо выставит бит
+    }
+
+    return 0;
+}
+```
+
 ---
 
 ## Ticket 13 – sequence containers
 
+```
+vector       динамический массив
+list         двусвязный список
+string       строка, почти vector<char>, но со строковой спецификой
+string_view  невладеющий взгляд на строку, C++17
+array        массив фиксированного размера
+deque         двусторонняя очередь
+forward_list  односвязный список
+```
+
+### vector
+
+```C++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> values;
+
+    values.push_back(10);
+    values.push_back(20);
+    values.push_back(30);
+
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        cout << values[i] << endl;
+    }
+
+    return 0;
+}
+```
+
+`vector` хранит элементы непрерывно в памяти, выделяет память с запасом, при исчерпании запаса увеличивает память, часто примерно в 2 раза, и копирует/перемещает элементы; `size()` — число элементов, `capacity()` — общий запас памяти в элементах.
+
+model:
+```
+data_ ----> [10][20][30][ ][ ][ ][ ][ ]
+             ^^^^^^^^^
+             size = 3
+
+capacity = 8
+```
+
+`push_back` в конец — **амортизированное O(1)**, а не строго O(1) каждый раз. В лекции также сказано: добавление/удаление в конец у `vector` амортизированно `O(1)`, добавление/удаление в середине `O(N)`, доступ по индексу `O(1)`
+
+```
+reserve:
+	v.size() == 0
+	v.capacity() >= 100
+resize:
+	v.size() == 100
+v[i]     не проверяет границы, выход за границу = UB
+v.at(i)  проверяет границы, при ошибке бросает исключение
+```
+
+default cause:
+```
+1. элементы лежат подряд в памяти;
+2. хорошо работает cache;
+3. CPU prefetching помогает читать следующие элементы;
+4. доступ по индексу O(1);
+5. push_back в среднем O(1);
+6. меньше лишних аллокаций, чем в list.
+```
+
+### list
+
+```
+[node] <-> [node] <-> [node]
+```
+node:
+```C++
+template <typename T>
+struct Node
+{
+    Node* prev;
+    Node* next;
+    T value;
+};
+```
+
+operations:
+```C++
+push_back
+push_front
+pop_back
+pop_front
+insert
+erase
+splice // switching between lists without copy
+front
+back
+```
+
+```
+доступ по индексу       нет
+переход к следующему    O(1)
+вставка по итератору    O(1)
+удаление по итератору   O(1)
+поиск элемента          O(N)
+```
+
+but:
+```
+1. каждый узел отдельно выделяется в куче;
+2. память разбросана;
+3. кеш работает плохо;
+4. на каждый элемент есть overhead под prev/next;
+5. нет быстрого доступа по индексу.
+```
+
+### string
+
+`string` похож на `vector<char>`, но со строковой спецификой; для совместимости с C в конце хранит нулевой символ, не учитываемый в `size()`; есть конструктор от строковых литералов, `operator+`, `find`, `substr` и другие строковые операции.
+
+```
+string s = "hello"
+
+[h][e][l][l][o][\0]
+ ^^^^^^^^^^^^^
+ size = 5
+```
+
+c string:
+```C++
+const char* c = s.c_str();
+```
+
+operations:
+```C++
+string s = "hello";
+
+s.size();
+s.empty();
+
+s += " world";
+
+s.find("world");
+s.substr(0, 5);
+
+s[0];
+s.at(0);
+
+s.c_str();
+s.data();
+```
+
+В C++17 `data()` для неконстантной строки возвращает `char*`, раньше обычно работали через `&s[0]` аккуратно, но это уже тонкости стандартов.
+
+### string_view (C++17)
+
+non-having variant of string:
+```C++
+#include <iostream>
+#include <string>
+#include <string_view>
+
+using namespace std;
+
+void print(string_view text)
+{
+    cout << text << endl;
+}
+
+int main()
+{
+    string s = "hello";
+
+    print(s);
+    print("world");
+
+    return 0;
+}
+```
+under the hood:
+```C++
+class string_view
+{
+private:
+    const char* data_;
+    size_t size_;
+};
+```
+idea:
+```
+string      владеет символами
+string_view не владеет символами, только смотрит на них
+```
+
+bad:
+```C++
+string_view view = string("temporary");
+
+string_view getName()
+{
+    string name = "Alice";
+
+    return string_view(name); // плохо
+}
+```
+
+```
+string_view хорошо принимать параметром;
+опасно хранить как поле, если не контролируешь lifetime исходной строки.
+```
+
+### array
+
+`array` называется массивом фиксированного размера, аналогом `T[N]`.
+
+under the hood:
+```C++
+template <typename T, size_t N>
+struct array
+{
+    T data[N];
+};
+```
+
+C-massive:
+```
+легко теряет размер при передаче в функцию;
+нет методов size(), begin(), end();
+неудобно присваивать целиком;
+хуже интегрируется со стандартными алгоритмами.
+```
+
+array:
+```C++
+array<int, 3> a = {1, 2, 3};
+
+cout << a.size() << endl;
+
+for (array<int, 3>::iterator it = a.begin(); it != a.end(); ++it)
+{
+    cout << *it << endl;
+}
+```
+
+### deque
+
+`deque` поддерживает добавление/удаление с обоих концов за `O(1)`, обычно реализуется как массив указателей на массивы фиксированного размера, гарантирует постоянство ссылок на элементы, доступ по индексу `O(1)`.
+
+```
+map of blocks:
+[ptr][ptr][ptr]
+  |    |    |
+ [block][block][block]
+```
+
+### forward_list
+
+```
+[node] -> [node] -> [node] -> nullptr
+```
+
+list diff:
+```
+list          prev + next, можно идти назад и вперёд
+forward_list  только next, можно идти только вперёд
+```
+
+### iterators
+
+```C++
+vector<int> v = {1, 2, 3};
+
+for (vector<int>::iterator it = v.begin(); it != v.end(); ++it)
+{
+    cout << *it << endl;
+}
+```
+or:
+```C++
+for (auto it = v.begin(); it != v.end(); ++it)
+{
+    cout << *it << endl;
+}
+```
+
+`begin()` указывает на первый элемент.
+
+`end()` указывает **за последний элемент**, а не на последний.
+
+```C++
+cout << *v.end() << endl; // UB
+```
+
+#### invalidation
+
+Инвалидация — это когда ссылка/указатель/итератор раньше указывал на элемент, а после операции контейнера больше не может безопасно использоваться
+
+```C++
+vector<int> v(10);
+
+int& x = v[5];
+
+v.push_back(1);
+
+cout << x << endl; // плохо
+```
+
+`push_back` может перевыделить память, и ссылка `x` может указывать на уже освобождённую память
+
+with iterator:
+```C++
+vector<int> v(10);
+
+auto it = v.begin() + 5;
+
+v.push_back(1);
+
+cout << *it << endl; // плохо
+```
+
+in vector:
+```
+push_back:
+  если capacity хватило — старые ссылки/итераторы обычно остаются;
+  если была reallocation — инвалидируются все ссылки/итераторы/указатели.
+
+insert/erase в середине:
+  элементы сдвигаются;
+  инвалидируются итераторы/ссылки начиная с места изменения.
+
+reserve:
+  если увеличил capacity — reallocation, всё инвалидируется.
+```
+
+in list:
+```
+insert:
+  не инвалидирует итераторы на другие элементы
+
+erase:
+  инвалидирует только итератор/ссылку на удалённый элемент
+```
+
+in deque:
+```
+добавление/удаление может инвалидировать итераторы;
+ссылки на элементы обычно стабильнее.
+```
+
+#### save delete in cycle
+
+bad:
+```C++
+vector<int> v = {1, 2, 3, 4, 5, 6};
+
+for (auto it = v.begin(); it != v.end(); ++it)
+{
+    if (*it % 2 == 0)
+    {
+        v.erase(it);
+    }
+}
+```
+– `erase(it)` удаляет элемент и инвалидирует `it`, а потом цикл делает `++it`.
+
+good:
+```C++
+vector<int> v = {1, 2, 3, 4, 5, 6};
+
+for (auto it = v.begin(); it != v.end(); )
+{
+    if (*it % 2 == 0)
+    {
+        it = v.erase(it);
+    }
+    else
+    {
+        ++it;
+    }
+}
+```
+
+### corner cases
+
+```C++
+vector<int> v = {1, 2, 3};
+
+int* raw = v.data();
+
+v.push_back(4);
+
+cout << raw[0] << endl; // может быть UB
+```
+`data()` хорош для временного взаимодействия с C API, но нельзя хранить этот указатель, если контейнер потом может перераспределить память.
+
+```C++
+string_view view = string("hello");
+
+cout << view << endl; // плохо
+```
+– temporary string is already removed
+
+change string while string_view is alive:
+```C++
+string s = "hello";
+string_view v = s;
+
+s += " very very very long text";
+
+cout << v << endl; // может быть плохо
+```
+
+Если `string` перевыделила память, `string_view` смотрит в старую память
+
+why invalidation is happening?
+
+```vector
+старый массив:
+[1][2][3]
+
+push_back, capacity закончилась
+
+новый массив:
+[1][2][3][4][ ][ ]
+
+старый массив удалён
+```
+```list
+узлы отдельно:
+
+A <-> B <-> C
+
+erase(B):
+
+A <-> C
+
+A и C физически не переехали.
+```
+```deque
+есть блоки с элементами и отдельный массив указателей на блоки
+
+если этот массив указателей переехал,
+итераторы могут сломаться,
+но сами элементы в блоках могли остаться на месте.
+```
+
+---
+
+## Ticket 14 – associative containers
 
