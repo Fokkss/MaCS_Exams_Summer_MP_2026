@@ -3588,6 +3588,122 @@ if to try C-preprocesses:
 6. Можно легко получить странные конфликты имён.
 ```
 
+```C++
+#include <cstddef>
+#include <stdexcept>
+#include <iostream>
+
+using namespace std;
+
+#define DEFINE_ARRAY(TYPE, NAME)                          \
+class NAME                                                \
+{                                                         \
+private:                                                  \
+    TYPE* data_ = nullptr;                                \
+    size_t size_ = 0;                                     \
+                                                          \
+public:                                                   \
+    explicit NAME(size_t size)                            \
+        : data_(new TYPE[size])                           \
+        , size_(size)                                     \
+    {                                                     \
+    }                                                     \
+                                                          \
+    ~NAME()                                               \
+    {                                                     \
+        delete[] data_;                                   \
+    }                                                     \
+                                                          \
+    TYPE& operator[](size_t index)                        \
+    {                                                     \
+        if (index >= size_)                               \
+        {                                                 \
+            throw out_of_range("index is out of range");  \
+        }                                                 \
+                                                          \
+        return data_[index];                              \
+    }                                                     \
+};
+
+DEFINE_ARRAY(int, IntArray)
+DEFINE_ARRAY(double, DoubleArray)
+
+int main()
+{
+    IntArray a(10);
+    a[0] = 42;
+
+    DoubleArray b(10);
+    b[0] = 3.14;
+
+    cout << a[0] << endl;
+    cout << b[0] << endl;
+
+    return 0;
+}
+```
+```cons
+1. Ошибка внутри макроса часто выглядит ужасно.
+2. Нет настоящей проверки типов на уровне макроса.
+3. Нельзя нормально дебажить как обычный template.
+4. IntArray и DoubleArray — просто два несвязанных класса.
+5. Макросы не уважают scope как нормальный C++.
+```
+
+#### token parsing
+```C++
+#define MAKE_VARIABLE(TYPE, NAME) TYPE variable_##NAME
+
+int main()
+{
+    MAKE_VARIABLE(int, count) = 10;
+    MAKE_VARIABLE(double, price) = 3.14;
+
+    cout << variable_count << endl;
+    cout << variable_price << endl;
+
+    return 0;
+}
+```
+
+max, double compute:
+```C++
+#include <iostream>
+
+using namespace std;
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+int main()
+{
+    int x = 1;
+    int y = 2;
+
+    int z = MAX(++x, y);
+
+    cout << x << endl;
+    cout << z << endl;
+
+    return 0;
+}
+```
+```++_mulitple_times
+int z = ((++x) > (y) ? (++x) : (y));
+```
+
+better:
+```C++
+template <typename T>
+const T& maxValue(const T& a, const T& b)
+{
+    if (a < b)
+    {
+        return b;
+    }
+
+    return a;
+}
+```
 ### templates
 
 ```C++
@@ -4177,4 +4293,540 @@ Array<NoDefault> a(10);
 ---
 
 ## Ticket 10 – exceptions
+
+### C-style exception handler
+
+```C++
+int findIndex(const vector<int>& values, int target)
+{
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        if (values[i] == target)
+        {
+            return static_cast<int>(i);
+        }
+    }
+
+    return -1;
+}
+```
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+bool divide(double a, double b, double& result)
+{
+    if (b == 0.0)
+    {
+        return false;
+    }
+
+    result = a / b;
+    return true;
+}
+
+int main()
+{
+    double result = 0.0;
+
+    if (!divide(10.0, 0.0, result))
+    {
+        cout << "division failed" << endl;
+        return 1;
+    }
+
+    cout << result << endl;
+
+    return 0;
+}
+```
+
+```C++
+errno = 0;
+double x = sqrt(-1.0);
+
+if (errno != 0)
+{
+    // ошибка
+}
+```
+
+```cons:
+1. Глобальное состояние.
+2. Нужно помнить сбрасывать errno.
+3. Не все функции используют errno.
+4. Неудобно для сложных ошибок.
+```
+
+### throw, try, catch
+
+```C++
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+int divide(int a, int b)
+{
+    if (b == 0)
+    {
+        throw invalid_argument("division by zero");
+    }
+
+    return a / b;
+}
+
+int main()
+{
+    try
+    {
+        cout << divide(10, 0) << endl;
+    }
+    catch (const invalid_argument& error)
+    {
+        cout << "invalid argument: " << error.what() << endl;
+    }
+
+    return 0;
+}
+```
+
+```explanation
+1. divide обнаруживает ошибку.
+2. throw создаёт exception object.
+3. Нормальный поток выполнения divide прерывается.
+4. C++ ищет подходящий catch выше по стеку.
+5. catch получает exception object.
+```
+
+#### stack unwinding
+
+```C++
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+int divide(int a, int b)
+{
+    if (b == 0)
+    {
+        throw invalid_argument("division by zero");
+    }
+
+    return a / b;
+}
+
+int f(int x)
+{
+    return divide(1000, x);
+}
+
+int g(int x)
+{
+    return f(x - 42);
+}
+
+int main()
+{
+    try
+    {
+        cout << g(42) << endl;
+    }
+    catch (const invalid_argument& error)
+    {
+        cout << error.what() << endl;
+    }
+
+    return 0;
+}
+```
+```stack
+main
+  g(42)
+    f(0)
+      divide(1000, 0)
+        throw
+```
+```after_throw
+divide → f → g → main
+```
+
+#### exception hierarchy
+classes:
+```C++
+#include <exception>
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class AppError : public exception
+{
+private:
+    string message_;
+
+public:
+    explicit AppError(const string& message)
+        : message_(message)
+    {
+    }
+
+    const char* what() const noexcept override
+    {
+        return message_.c_str();
+    }
+};
+
+class NetworkError : public AppError
+{
+public:
+    explicit NetworkError(const string& message)
+        : AppError(message)
+    {
+    }
+};
+
+class ConnectionLost : public NetworkError
+{
+public:
+    ConnectionLost()
+        : NetworkError("connection lost")
+    {
+    }
+};
+```
+```C++
+try
+{
+    throw ConnectionLost();
+}
+catch (const ConnectionLost& error)
+{
+    cout << "connection lost: " << error.what() << endl;
+}
+catch (const NetworkError& error)
+{
+    cout << "network error: " << error.what() << endl;
+}
+catch (const AppError& error)
+{
+    cout << "app error: " << error.what() << endl;
+}
+```
+
+as there's stack unwinding:
+```
+сначала наследники,
+потом базовые классы.
+```
+
+#### catch(...)
+
+```C++
+try
+{
+    runServer();
+}
+catch (...)
+{
+    cout << "unknown error" << endl;
+}
+```
+– any type
+
+can be thrown any type:
+```C++
+throw 42;
+throw "Oops";
+throw nullptr;
+```
+
+#### rethrow
+
+```C++
+try
+{
+    runServer();
+}
+catch (const NetworkError& error)
+{
+    cerr << "network error: " << error.what() << endl;
+    throw;
+}
+catch (...)
+{
+    cerr << "unknown error" << endl;
+    throw;
+}
+```
+– throw; throws the same exception further
+
+```C++
+throw error;
+```
+– creates a new error, leads to slicing if error was caught as base type
+
+### exceptions and destructors
+
+```C++
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+class Tracer
+{
+private:
+    string name_;
+
+public:
+    explicit Tracer(const string& name)
+        : name_(name)
+    {
+        cout << "construct " << name_ << endl;
+    }
+
+    ~Tracer()
+    {
+        cout << "destruct " << name_ << endl;
+    }
+};
+
+void f()
+{
+    Tracer a("a");
+    Tracer b("b");
+
+    throw runtime_error("error");
+
+    Tracer c("c");
+}
+
+int main()
+{
+    try
+    {
+        f();
+    }
+    catch (const runtime_error& error)
+    {
+        cout << "caught: " << error.what() << endl;
+    }
+
+    return 0;
+}
+```
+```output
+construct a
+construct b
+destruct b
+destruct a
+caught: error
+```
+
+```C++
+void f()
+{
+    int* array = new int[100];
+
+    throw runtime_error("error");
+
+    delete[] array;
+}
+```
+– no delete, memory leak
+
+### RAII – Resource Acquisition Is Initialization
+
+ресурс берём в конструкторе,
+освобождаем в деструкторе.
+
+```C++
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+class IntArray
+{
+private:
+    int* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit IntArray(size_t size)
+        : data_(new int[size])
+        , size_(size)
+    {
+    }
+
+    ~IntArray()
+    {
+        delete[] data_;
+    }
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+};
+
+void f()
+{
+    IntArray array(100);
+
+    throw runtime_error("error");
+}
+```
+
+exceptions in constructor with RAII field:
+```C++
+#include <vector>
+
+using namespace std;
+
+class AudioEffect
+{
+private:
+    vector<float> buffer_;
+
+public:
+    explicit AudioEffect(const char* effect)
+        : buffer_(1024)
+    {
+        checkSupported(effect);
+    }
+};
+```
+
+destructors mustn't throw exceptions
+
+### exception guarantees
+
+#### I. no-throw guarantee
+
+```C++
+void swap(Matrix& other) noexcept
+{
+    using std::swap;
+
+    swap(rows_, other.rows_);
+    swap(cols_, other.cols_);
+    swap(data_, other.data_);
+}
+```
+– using noexcept we say that this func won't throw an exception
+
+#### II. strong guarantee
+
+```C++
+Matrix& operator=(const Matrix& other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    double* newData = new double[other.rows_ * other.cols_];
+
+    for (size_t i = 0; i < other.rows_ * other.cols_; ++i)
+    {
+        newData[i] = other.data_[i];
+    }
+
+    delete[] data_;
+
+    rows_ = other.rows_;
+    cols_ = other.cols_;
+    data_ = newData;
+
+    return *this;
+}
+```
+
+#### III. basic guarantee
+
+Если исключение произошло, объект остаётся в валидном, но не обязательно прежнем состоянии.
+
+Например, после неудачной операции контейнер может быть не тем же самым, но его можно безопасно уничтожить, вызвать методы, присвоить новое значение.
+
+#### IV. no guarantee
+
+После исключения состояние объекта неизвестно, кроме минимального “программа ещё не в UB” — такого лучше избегать.
+
+### copy-and-swap (CAS) idiom
+
+pattern for strong guarantee:
+```C++
+class Matrix
+{
+private:
+    size_t rows_ = 0;
+    size_t cols_ = 0;
+    double* data_ = nullptr;
+
+public:
+    Matrix() = default;
+
+    Matrix(const Matrix& other)
+        : rows_(other.rows_)
+        , cols_(other.cols_)
+        , data_(new double[other.rows_ * other.cols_])
+    {
+        for (size_t i = 0; i < rows_ * cols_; ++i)
+        {
+            data_[i] = other.data_[i];
+        }
+    }
+
+    ~Matrix()
+    {
+        delete[] data_;
+    }
+
+    void swap(Matrix& other) noexcept
+    {
+        using std::swap;
+
+        swap(rows_, other.rows_);
+        swap(cols_, other.cols_);
+        swap(data_, other.data_);
+    }
+
+    Matrix& operator=(Matrix other)
+    {
+        swap(other);
+        return *this;
+    }
+};
+```
+
+### better to catch by link
+```C++
+catch (const AppError& error)
+{
+}
+```
+
+```
+no slicing
+no copy
+```
+
+RULE:
+```
+throw by value,
+catch by const reference.
+```
+
+### corner cases
+
+already all corner cases were shown
+
+---
+
+## Ticket 11 – cout/cin in C++
 
