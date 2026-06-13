@@ -4830,3 +4830,820 @@ already all corner cases were shown
 
 ## Ticket 11 – cout/cin in C++
 
+```
+cin       стандартный ввод
+cout      стандартный вывод
+cerr      стандартный вывод ошибок
+
+ifstream  чтение из файла
+ofstream  запись в файл
+fstream   чтение/запись файла
+
+istringstream чтение из строки как из потока
+ostringstream запись в строку как в поток
+stringstream  чтение/запись строки
+```
+
+```shell
+./app > output.txt 2> errors.txt
+```
+
+### classes hierarchy
+
+![hierarchy](images_cpp/hierarchy.png)
+```
+ios_base
+  ↓
+basic_ios<char>
+  ↓
+basic_istream<char>   basic_ostream<char>
+        ↓                    ↓
+      istream              ostream
+```
+### operator>>,<< overload
+
+```C++
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+class Rational
+{
+private:
+    int numerator_ = 0;
+    int denominator_ = 1;
+
+public:
+    Rational() = default;
+
+    Rational(int numerator, int denominator)
+        : numerator_(numerator)
+        , denominator_(denominator)
+    {
+        if (denominator_ == 0)
+        {
+            throw invalid_argument("zero denominator");
+        }
+    }
+
+    int numerator() const
+    {
+        return numerator_;
+    }
+
+    int denominator() const
+    {
+        return denominator_;
+    }
+};
+
+ostream& operator<<(ostream& out, const Rational& value)
+{
+    out << value.numerator() << "/" << value.denominator();
+    return out;
+}
+
+int main()
+{
+    Rational r(3, 4);
+
+    cout << "r = " << r << endl;
+
+    return 0;
+}
+```
+
+### threads conditions
+
+```
+goodbit  всё хорошо
+eofbit   достигнут конец файла
+failbit  операция ввода/вывода логически не удалась
+badbit   серьёзная ошибка потока/буфера
+```
+
+check:
+```C++
+if (cin)
+{
+    // поток в хорошем состоянии
+}
+
+if (!cin)
+{
+    // failbit или badbit
+}
+```
+
+helpful commands:
+```C++
+cin.clear(); // read next
+cin.ignore(10000, '\n'); // ignore smth
+```
+
+```
+clear()   сбросить failbit
+ignore()  удалить мусор из входного буфера
+```
+
+read full string instead ending on whitespaces:
+```C++
+getline(cin, name);
+```
+
+```C++
+cin >> age;
+cin.ignore(numeric_limits<streamsize>::max(), '\n');
+getline(cin, name);
+```
+
+`eof()` становится true только после попытки чтения за концом файла. Поэтому можно обработать старое значение `x` лишний раз
+
+### flags
+```
+ios::in      чтение
+ios::out     запись
+ios::app     дозапись в конец
+ios::trunc   очистить файл при открытии
+ios::binary  бинарный режим
+ios::ate     открыть и сразу перейти в конец
+```
+
+#### setw, setprecision, fixed
+
+```C++
+#include <iomanip>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    double pi = 3.1415926535;
+
+    cout << pi << endl;
+    cout << fixed << setprecision(2) << pi << endl;
+
+    cout << setw(10) << 42 << endl;
+
+    return 0;
+}
+```
+```output
+3.14159
+3.14
+        42
+```
+
+### manipulators in iomanip
+
+```
+setw(n)          ширина следующего поля
+setprecision(n)  точность
+fixed            фиксированное число знаков после точки
+scientific       научная запись
+left/right       выравнивание
+setfill(c)       символ заполнения
+```
+
+### format flags
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int x = 255;
+
+    cout << dec << x << endl;
+    cout << hex << x << endl;
+    cout << oct << x << endl;
+
+    cout << boolalpha << true << endl;
+    cout << noboolalpha << true << endl;
+
+    return 0;
+}
+```
+```output
+255
+ff
+377
+true
+1
+```
+
+### save flags
+
+```C++
+void printHex(ostream& out, int value)
+{
+    ios::fmtflags oldFlags = out.flags();
+
+    out << hex << value;
+
+    out.flags(oldFlags);
+}
+```
+
+setprecision:
+```C++
+streamsize oldPrecision = out.precision();
+out << setprecision(3) << value;
+out.precision(oldPrecision);
+```
+
+### exceptions in threads
+
+```C++
+ifstream input("data.txt");
+
+input.exceptions(ios::failbit | ios::badbit);
+```
+– throws ios_base::failure during error
+
+example:
+```C++
+#include <fstream>
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+int main()
+{
+    try
+    {
+        ifstream input("missing.txt");
+
+        input.exceptions(ios::failbit | ios::badbit);
+
+        int x = 0;
+        input >> x;
+    }
+    catch (const ios_base::failure& error)
+    {
+        cerr << "I/O error: " << error.what() << endl;
+    }
+
+    return 0;
+}
+```
+### binary cin/cout
+
+```C++
+#include <fstream>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    {
+        ofstream output("number.bin", ios::binary);
+
+        int x = 123456;
+
+        output.write(reinterpret_cast<const char*>(&x), sizeof(x));
+    }
+
+    {
+        ifstream input("number.bin", ios::binary);
+
+        int x = 0;
+
+        input.read(reinterpret_cast<char*>(&x), sizeof(x));
+
+        cout << x << endl;
+    }
+
+    return 0;
+}
+```
+```careful
+1. Бинарный формат зависит от endian-ности.
+2. Размер int может отличаться.
+3. Нельзя безопасно так писать объекты со string/vector/pointers.
+4. Нельзя просто write(&object, sizeof(object)) для сложного класса.
+```
+
+```C++
+class User
+{
+private:
+    string name_;
+    int age_;
+};
+
+User user;
+
+output.write(reinterpret_cast<const char*>(&user), sizeof(user)); // плохо
+```
+– `string` внутри хранит указатель/буфер/размер/allocator. Ты запишешь внутреннее представление, а не текст имени.
+
+### C++20: `<format>`, C++23: `<print>`
+
+```C++
+#include <format>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    string text = format("x = {}, y = {}", 10, 20);
+
+    cout << text << endl;
+
+    return 0;
+}
+```
+
+C++23:
+```C++
+#include <print>
+
+using namespace std;
+
+int main()
+{
+    print("x = {}, y = {}\n", 10, 20);
+
+    return 0;
+}
+```
+
+### corner cases
+
+endl at the end
+```C++
+for (int i = 0; i < 1000000; ++i)
+{
+    cout << i << endl;
+}
+```
+– flushes every time
+better:
+```C++
+for (int i = 0; i < 1000000; ++i)
+{
+    cout << i << '\n';
+}
+```
+
+---
+
+## Ticket 12 – type casting
+
+### C-style cast
+
+```C
+int x = (int)3.14;
+int* p = (int*)ptr;
+```
+
+В C++ их стараются не использовать, потому что C-style cast умеет слишком много и плохо показывает намерение программиста.`(int*)p`, `(float)42`, `(int)myBigInt` — это C-style cast, и в C++ его принято не использовать; вместо этого есть четыре специализированных оператора: `static_cast`, `reinterpret_cast`, `const_cast`, `dynamic_cast`
+
+```C++
+const int value = 42;
+
+int* p = (int*)&value;
+
+*p = 100; // UB
+```
+– c-style deleted const
+
+```C++
+double d = 3.14;
+
+int* p = (int*)&d;
+
+cout << *p << endl; // UB / бессмысленная интерпретация памяти
+```
+
+### static cast
+
+`static_cast` умеет всё, что умеют неявные (implicit) приведения, downcast от указателя на базовый класс к указателю на наследника и преобразование `void*` к другому указателю; он лучше выражает намерение программиста.
+
+number:
+```C++
+double d = 3.14;
+
+int x = static_cast<int>(d);
+
+cout << x << endl; // 3
+```
+
+#### explicit conversion operator call
+```C++
+class Rational
+{
+private:
+    int numerator_ = 0;
+    int denominator_ = 1;
+
+public:
+    Rational(int numerator, int denominator)
+        : numerator_(numerator)
+        , denominator_(denominator)
+    {
+    }
+
+    explicit operator double() const
+    {
+        return static_cast<double>(numerator_) / denominator_;
+    }
+};
+
+int main()
+{
+    Rational r(1, 2);
+
+    double x = static_cast<double>(r);
+
+    cout << x << endl;
+}
+```
+
+#### upcast
+```C++
+class Base
+{
+public:
+    virtual ~Base()
+    {
+    }
+};
+
+class Derived : public Base
+{
+};
+
+Derived* d = new Derived();
+
+Base* b = static_cast<Base*>(d);
+```
+– but upcast is implicit, so not necessary
+
+#### downcast
+```C++
+Base* b = new Derived();
+
+Derived* d = static_cast<Derived*>(b);
+```
+
+but doesn't checks runtime-type:
+```C++
+class Other : public Base
+{
+};
+
+Base* b = new Other();
+
+Derived* d = static_cast<Derived*>(b);
+
+d->someDerivedMethod(); // UB
+```
+
+#### void* ->/<-
+```C++
+int x = 42;
+
+void* raw = &x;
+
+int* p = static_cast<int*>(raw);
+
+cout << *p << endl;
+```
+– OK
+
+```C++
+double d = 3.14;
+
+void* raw = &d;
+
+int* p = static_cast<int*>(raw);
+
+cout << *p << endl; // UB
+```
+
+### reinterpret cast
+
+`reinterpret_cast<T>(x)` — низкоуровневое переосмысление битов/адреса.
+
+Он почти всегда опасен.
+
+```C++
+int x = 42;
+
+char* bytes = reinterpret_cast<char*>(&x);
+```
+– nice if u want to see bytes of an object
+
+but:
+```C++
+double d = 3.14;
+
+int* p = reinterpret_cast<int*>(&d);
+
+cout << *p << endl; // UB / strict aliasing issue
+```
+
+`reinterpret_cast` не “конвертирует значение” математически. Он говорит:
+
+> рассмотри эти биты/адрес как другой тип.
+
+it's necessary if:
+```
+1. системное программирование;
+2. работа с memory-mapped I/O;
+3. сериализация байтов;
+4. взаимодействие с C API;
+5. низкоуровневые структуры протоколов;
+6. плагины/dlsym/GetProcAddress.
+```
+
+### const cast
+
+`const_cast<T>(x)` добавляет или убирает `const`/`volatile`.
+
+```C++
+void print(char* text)
+{
+    cout << text << endl;
+}
+
+int main()
+{
+    const char* text = "hello";
+
+    print(const_cast<char*>(text)); // опасно, если print изменит строку
+}
+```
+
+В лекциях: `const_cast` позволяет добавить или убрать константность у указателя/ссылки, но модифицировать изначально `const`-объект — undefined behavior; чаще всего он нужен для реализации парных const/non-const методов.
+
+```C++
+const int x = 42;
+
+int& r = const_cast<int&>(x);
+
+r = 100; // UB
+```
+
+```C++
+int x = 42;
+
+const int& cr = x;
+
+int& r = const_cast<int&>(cr);
+
+r = 100; // OK
+```
+
+Потому что исходный объект `x` не был `const`. Просто у нас был const-доступ к нему.
+
+#### const/non-const methods
+```C++
+template <typename Key, typename Value>
+class map
+{
+public:
+    const Value& at(const Key& key) const
+    {
+        // поиск в дереве
+    }
+
+    Value& at(const Key& key)
+    {
+        return const_cast<Value&>(
+            const_cast<const map&>(*this).at(key)
+        );
+    }
+};
+```
+
+### dynamic cast
+
+`dynamic_cast<T>(x)` используется для безопасных приведений в полиморфных иерархиях.
+
+`dynamic_cast` — безопасное приведение указателя/ссылки на базовый класс к указателю/ссылке на наследника; если приведение указателя некорректно, возвращается нулевой указатель, а для ссылки бросается `std::bad_cast`
+
+#### for pointers
+```C++
+#include <iostream>
+
+using namespace std;
+
+class Animal
+{
+public:
+    virtual ~Animal()
+    {
+    }
+};
+
+class Dog : public Animal
+{
+public:
+    void bark() const
+    {
+        cout << "woof" << endl;
+    }
+};
+
+class Cat : public Animal
+{
+public:
+    void meow() const
+    {
+        cout << "meow" << endl;
+    }
+};
+
+void makeSound(Animal* animal)
+{
+    Dog* dog = dynamic_cast<Dog*>(animal);
+
+    if (dog != nullptr)
+    {
+        dog->bark();
+        return;
+    }
+
+    Cat* cat = dynamic_cast<Cat*>(animal);
+
+    if (cat != nullptr)
+    {
+        cat->meow();
+        return;
+    }
+
+    cout << "unknown animal" << endl;
+}
+
+int main()
+{
+    Dog dog;
+    Cat cat;
+
+    makeSound(&dog);
+    makeSound(&cat);
+
+    return 0;
+}
+```
+
+#### for links
+```C++
+void process(Animal& animal)
+{
+    try
+    {
+        Dog& dog = dynamic_cast<Dog&>(animal);
+        dog.bark();
+    }
+    catch (const bad_cast& error)
+    {
+        cout << "not a dog" << endl;
+    }
+}
+```
+
+#### cross cast in multi inheritance
+```C++
+class Readable
+{
+public:
+    virtual void read() = 0;
+
+    virtual ~Readable()
+    {
+    }
+};
+
+class Writable
+{
+public:
+    virtual void write() = 0;
+
+    virtual ~Writable()
+    {
+    }
+};
+
+class File : public Readable, public Writable
+{
+public:
+    void read() override
+    {
+    }
+
+    void write() override
+    {
+    }
+};
+
+int main()
+{
+    File file;
+
+    Readable* readable = &file;
+
+    Writable* writable = dynamic_cast<Writable*>(readable);
+
+    if (writable != nullptr)
+    {
+        writable->write();
+    }
+
+    return 0;
+}
+```
+
+### RTTI – Run-Time Type Information
+
+Это механизм C++, который хранит информацию о динамическом типе полиморфного объекта.
+
+for:
+```
+dynamic_cast
+typeid
+```
+
+```
+object
+  ↓ vptr
+vtable
+  ↓
+type_info
+```
+
+#### typeid
+
+typeid(x) returns type_info:
+```C++
+#include <iostream>
+#include <typeinfo>
+
+using namespace std;
+
+class Base
+{
+public:
+    virtual ~Base()
+    {
+    }
+};
+
+class Derived : public Base
+{
+};
+
+int main()
+{
+    Derived d;
+    Base& b = d;
+
+    cout << typeid(b).name() << endl;
+    cout << typeid(d).name() << endl;
+
+    return 0;
+}
+```
+
+если тип полиморфный и выражение — ссылка/разыменованный указатель, `typeid` может дать динамический тип.
+
+```C++
+Base& b = d;
+
+typeid(b) == typeid(Derived)
+```
+
+Если тип не полиморфный, `typeid` работает по статическому тип
+
+```C++
+Base* p = nullptr;
+
+cout << typeid(*p).name() << endl;
+```
+
+Если `Base` полиморфный, `typeid(*p)` при `p == nullptr` бросит `bad_typeid`.
+
+### corner cases
+
+```C++
+Base* p = nullptr;
+
+cout << typeid(*p).name() << endl;
+```
+– for polymorph base returns bad_typeid
+
+---
+
+## Ticket 13 – sequence containers
+
+
