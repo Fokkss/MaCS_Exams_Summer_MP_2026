@@ -2023,6 +2023,409 @@ static                сущность не привязана к конкрет
 
 ### const
 
+```C++
+int x;
+const int& ref = x;
+
+ref = 20; // UB
+x = 20; //OK
+```
+
+```C++
+int a = 10;
+int b = 20;
+
+const int* p = &a;
+
+// *p = 30; // нельзя
+p = &b;     // можно
+```
+
+```C++
+int a = 10;
+int b = 20;
+
+int* const p = &a;
+
+*p = 30;    // можно
+// p = &b;  // нельзя
+```
+
+```C++
+void printMatrix(const Matrix& matrix)
+{
+    matrix.print(cout);
+}
+```
+```C++
+void bad(Matrix matrix);          // копирует
+void good(const Matrix& matrix);  // не копирует и не меняет
+```
+
+константные методы можно вызывать только у константных, аналог для неконст
+
+```C++
+class Array
+{
+private:
+    vector<int> data_;
+
+public:
+    int& at(size_t index)
+    {
+        return data_.at(index);
+    }
+
+    const int& at(size_t index) const
+    {
+        return data_.at(index);
+    }
+};
+```
+```C++
+Array a;
+a.at(0) = 42;
+
+const Array b;
+cout << b.at(0) << endl;
+// b.at(0) = 42; // нельзя
+```
+```explain
+неконстантный объект  → можно вернуть T&
+константный объект    → можно вернуть const T&
+```
+
+### mutable
+
+instrument for lazy loading, mutex, caches
+
+```C++
+class Text
+{
+private:
+    string data_;
+    mutable bool cached_ = false;
+    mutable size_t cachedLength_ = 0;
+
+public:
+    explicit Text(const string& data)
+        : data_(data)
+    {
+    }
+
+    size_t length() const
+    {
+        if (!cached_)
+        {
+            cachedLength_ = data_.size();
+            cached_ = true;
+        }
+
+        return cachedLength_;
+    }
+};
+```
+
+### functions overload
+
+could be:
+```C++
+int maxValue(int x, int y)
+{
+    return x > y ? x : y;
+}
+
+int maxValue(int x, int y, int z)
+{
+    return maxValue(maxValue(x, y), z);
+}
+
+double maxValue(double x, double y)
+{
+    return x > y ? x : y;
+}
+```
+
+error:
+```C++
+int get();
+double get(); // ошибка
+```
+– function call doesn't give compiler any insstructions (signature is the same)
+also error:
+```C++
+double x = get();
+```
+
+### Overload resolution
+
+compiler picks by conversion ranking:
+```
+maxValue(int, int)
+maxValue(int, int, int)
+maxValue(double, double)
+...
+```
+```C++
+void f(int x)
+{
+    cout << "int" << endl;
+}
+
+void f(double x)
+{
+    cout << "double" << endl;
+}
+
+int main()
+{
+    f(10);    // int
+    f(3.14);  // double
+}
+```
+
+but:
+```C++
+void f(long x)
+{
+}
+
+void f(double x)
+{
+}
+
+int main()
+{
+    f(10); // может быть ambiguous в зависимости от набора overloads
+}
+```
+
+list of ranks:
+**1 (Lowest)**`bool
+**2** signed char`, `unsigned char`, `char
+**3** short int`, `unsigned short int
+**4**int`, `unsigned int
+**5**long int`, `unsigned long int
+**6** (Highest)**`long long int`, `unsigned long long int`
+
+### name mangling
+
+```C++
+int max(int x, int y);
+int max(int x, int y, int z);
+double max(double x, double y);
+```
+
+for example on linux:
+
+```bash
+readelf -s file.o
+```
+
+```shell
+_Z3maxii
+_Z3maxiii
+_Z3maxdd
+```
+
+for C to exclude name mangling for compatibility with C ABI:
+```C++
+extern "C"
+{
+    void plugin_init();
+}
+```
+
+### default arguments
+
+error:
+```C++
+void f(int x = 10, int y);
+```
+
+OK – from right to left:
+```C++
+void f(int x, int y = 10);
+void g(int x, int y = 10, int z = 20);
+```
+
+could be described in `.hpp`, and then u can write without them in `.cpp`, as compiler sets default values in a place of calling
+
+**default arguments + overload = shit**
+
+```C++
+void log(int level, const string& message = "empty")
+{
+}
+
+void log(int level)
+{
+}
+```
+```C++
+log(1);
+```
+– wtf?
+
+### static
+
+#### static local variable
+
+```C++
+int nextId()
+{
+    static int id = 0;
+
+    ++id;
+
+    return id;
+}
+```
+– static local variable lives between callings:
+```C++
+cout << nextId() << endl; // 1
+cout << nextId() << endl; // 2
+cout << nextId() << endl; // 3
+```
+```
+id хранится не на стеке каждого вызова,
+а в static storage duration области программы
+```
+– initializes ones.
+
+C++>=11 static local variable initialization is thread-safe: 
+
+#### static field
+
+```C++
+class Object
+{
+private:
+    static size_t count_;
+    string name_;
+
+public:
+    Object(const string& name)
+        : name_(name)
+    {
+        ++count_;
+    }
+
+    ~Object()
+    {
+        --count_;
+    }
+
+    static size_t count()
+    {
+        return count_;
+    }
+};
+
+size_t Object::count_ = 0;
+```
+– name_ is static field that is one for all class
+
+C++11/14
+static field is defined at .cpp cause memory is allocated at translation unit, otherwise – linking error:
+```
+undefined reference to Object::count_
+```
+
+C++>=17:
+```C++
+class Object
+{
+private:
+    inline static size_t count_ = 0;
+};
+```
+– could be defined at .hpp
+
+#### static class method
+
+```C++
+class Object
+{
+private:
+    static size_t count_;
+    string name_;
+
+public:
+    static size_t count()
+    {
+        return count_;
+    }
+};
+```
+```explanation
+не имеет this
+не привязан к конкретному объекту
+не может обращаться к нестатическим полям напрямую
+```
+– also one for the whole class
+
+error:
+```C++
+static void printName()
+{
+    cout << name_ << endl; // ошибка
+}
+```
+
+static methods call could be for all class or for one object of this class – callings are the same due to uniqueness of static method for one class
+
+#### internal linkage
+
+on file/namespace level is seen only in this translation unit
+
+anonymus namespace:
+```C++
+namespace
+{
+    void helper()
+    {
+    }
+}
+```
+
+### corner cases
+
+```C++
+const int x = 42;
+
+int* p = const_cast<int*>(&x);
+
+*p = 67; // UB
+```
+
+#### static object initialization order fiasco
+
+order of initialization between global/static is not guaranteed:
+
+bad:
+```C++
+// Logger.cpp
+Logger globalLogger;
+
+// Config.cpp
+Config globalConfig(globalLogger);
+```
+
+solution:
+```C++
+Logger& logger()
+{
+    static Logger instance;
+    return instance;
+}
+```
+
+---
+
+## Ticket 7 – inheritance: parts
+
+
 
 
 
