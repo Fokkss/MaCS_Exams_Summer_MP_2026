@@ -2425,12 +2425,1756 @@ Logger& logger()
 
 ## Ticket 7 – inheritance: parts
 
+### C-style approach
 
+```
+void*
+размер элемента
+function pointer
+ручное приведение типов
+```
 
+```C++
+#include <cstdlib>
+#include <iostream>
 
+using namespace std;
 
+struct Point
+{
+    int x;
+    int y;
+};
 
+int comparePoints(const void* left, const void* right)
+{
+    const Point* a = static_cast<const Point*>(left);
+    const Point* b = static_cast<const Point*>(right);
 
+    int distA = a->x * a->x + a->y * a->y;
+    int distB = b->x * b->x + b->y * b->y;
 
+    if (distA < distB)
+    {
+        return -1;
+    }
 
+    if (distA > distB)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+int main()
+{
+    Point points[3] = {
+        {3, 4},
+        {1, 1},
+        {10, 0}
+    };
+
+    qsort(points, 3, sizeof(Point), comparePoints);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        cout << points[i].x << " " << points[i].y << endl;
+    }
+
+    return 0;
+}
+```
+
+```pros
+1. Работает в C.
+2. Можно использовать для разных типов.
+3. Не требует наследования.
+4. Можно сортировать даже примитивные типы.
+```
+```cons
+compiler doesn't checks
+void* стирает тип;
+нужны ручные cast'ы;
+легко ошибиться в sizeof;
+function pointer обычно мешает inline;
+нет нормальной работы с объектами C++ и исключениями;
+сложнее писать безопасный код.
+```
+```C++
+int numbers[3] = {3, 1, 2};
+
+qsort(numbers, 3, sizeof(int), comparePoints);
+
+// int (*)(const void*, const void*)
+// => UB
+```
+
+### OOP-style approach
+
+```C++
+// interface
+class Comparable
+{
+public:
+    virtual int compare(const Comparable* other) const = 0;
+
+    virtual ~Comparable()
+    {
+    }
+};
+
+// inherit
+class Point : public Comparable
+{
+private:
+    int x_ = 0;
+    int y_ = 0;
+
+public:
+    Point(int x, int y)
+        : x_(x)
+        , y_(y)
+    {
+    }
+
+    int compare(const Comparable* other) const override
+    {
+        const Point* point = static_cast<const Point*>(other);
+
+        int thisDistance = x_ * x_ + y_ * y_;
+        int otherDistance = point->x_ * point->x_ + point->y_ * point->y_;
+
+        if (thisDistance < otherDistance)
+        {
+            return -1;
+        }
+
+        if (thisDistance > otherDistance)
+        {
+            return 1;
+        }
+
+        return 0;
+    }
+};
+
+// sort
+void sortComparable(Comparable** array, size_t size)
+{
+    for (size_t i = 0; i < size; ++i)
+    {
+        for (size_t j = i + 1; j < size; ++j)
+        {
+            if (array[j]->compare(array[i]) < 0)
+            {
+                Comparable* tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+            }
+        }
+    }
+}
+
+// usage
+int main()
+{
+    Comparable* points[3];
+
+    points[0] = new Point(3, 4);
+    points[1] = new Point(1, 1);
+    points[2] = new Point(10, 0);
+
+    sortComparable(points, 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        delete points[i];
+    }
+
+    return 0;
+}
+```
+```pros
+1. Есть общий интерфейс.
+2. Можно работать с разными наследниками единообразно.
+3. Можно добавлять новые классы без переписывания sort.
+4. Хорошо подходит для runtime polymorphism:
+   GUI widgets, game entities, plugins, interfaces.
+```
+```cons
+Нужно хранить объекты через указатели или ссылки.
+```
+```C++
+Point points[10];
+sortComparable(points, 10); // не то
+```
+```cons
+Нужны virtual calls.
+
+Virtual call труднее заинлайнить.
+
+Примитивные типы неудобны.
+Типобезопасность всё ещё неполная
+```
+
+### Template-style approach
+
+```C++
+template <typename T>
+void sortArray(T* array, size_t size)
+{
+    for (size_t i = 0; i < size; ++i)
+    {
+        for (size_t j = i + 1; j < size; ++j)
+        {
+            if (array[j] < array[i])
+            {
+                T tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+            }
+        }
+    }
+}
+```
+```C++
+int numbers[3] = {3, 1, 2};
+sortArray(numbers, 3);
+
+double values[3] = {3.5, 1.5, 2.5};
+sortArray(values, 3);
+```
+```C++
+class Point
+{
+private:
+    int x_ = 0;
+    int y_ = 0;
+
+public:
+    Point() = default;
+
+    Point(int x, int y)
+        : x_(x)
+        , y_(y)
+    {
+    }
+
+    int distanceSquared() const
+    {
+        return x_ * x_ + y_ * y_;
+    }
+
+    bool operator<(const Point& other) const
+    {
+        return distanceSquared() < other.distanceSquared();
+    }
+
+    void print() const
+    {
+        cout << x_ << " " << y_ << endl;
+    }
+};
+
+int main()
+{
+    Point points[3] = {
+        Point(3, 4),
+        Point(1, 1),
+        Point(10, 0)
+    };
+
+    sortArray(points, 3);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        points[i].print();
+    }
+
+    return 0;
+}
+```
+```pros
+1. Типобезопасно.
+2. Работает с примитивными типами.
+3. Не требует базового класса.
+4. Не требует virtual.
+5. Компилятор может inline-ить comparator/operator<.
+6. Часто быстрее runtime polymorphism.
+7. Удобно для STL.
+```
+```cons
+1. Код должен быть виден компилятору, поэтому шаблоны обычно в headers.
+2. Ошибки компиляции могут быть длинными.
+3. Может увеличивать размер бинарника из-за разных instantiations.
+4. Не даёт runtime polymorphism сам по себе.
+```
+
+### comparison
+```
+C-style:
+  универсальность через void*
+  типы почти не проверяются
+  ручные cast'ы
+  function pointer
+  может привести к UB
+  C-compatible
+
+OOP-style:
+  универсальность через общий базовый класс
+  runtime polymorphism
+  virtual calls
+  нужен pointer/reference
+  удобно для интерфейсов и плагинов
+  не идеально для примитивов и value-semantics
+
+Template-style:
+  универсальность через compile-time type parameter
+  типобезопасность
+  inline и оптимизация
+  отлично для STL и алгоритмов
+  код обычно в headers
+  нет runtime polymorphism без дополнительных техник
+```
+
+### public/private/protected
+
+```C++
+class Derived : public Base
+{
+};
+
+class Derived : protected Base
+{
+};
+
+class Derived : private Base
+{
+};
+```
+
+по умолчанию private
+
+#### public
+
+```C++
+class Shape
+{
+public:
+    void move(double dx, double dy)
+    {
+    }
+
+protected:
+    double x_ = 0.0;
+    double y_ = 0.0;
+
+private:
+    int internalId_ = 0;
+};
+
+class Circle : public Shape
+{
+public:
+    void print()
+    {
+        cout << x_ << " " << y_ << endl; // OK
+        // cout << internalId_ << endl; // ошибка
+    }
+};
+
+int main()
+{
+    Circle circle;
+    circle.move(1.0, 2.0); // OK, move остался public
+}
+```
+
+```
+public    → public в Derived
+protected → protected в Derived
+private   → недоступно напрямую в Derived
+```
+
+#### protected
+
+```
+public Base members    → protected в Derived
+protected Base members → protected в Derived
+private Base members   → недоступны напрямую
+```
+
+```C++
+class Base
+{
+public:
+    void foo()
+    {
+    }
+};
+
+class Derived : protected Base
+{
+};
+
+int main()
+{
+    Derived d;
+
+    // d.foo(); // ошибка: foo стал protected
+}
+
+class MoreDerived : public Derived
+{
+public:
+    void bar()
+    {
+        foo(); // OK
+    }
+};
+```
+
+#### private
+
+```
+public Base members    → private в Derived
+protected Base members → private в Derived
+private Base members   → недоступны напрямую
+```
+
+```C++
+class Engine
+{
+public:
+    void start()
+    {
+        cout << "engine start" << endl;
+    }
+};
+
+class Car : private Engine
+{
+public:
+    void drive()
+    {
+        start();
+        cout << "drive" << endl;
+    }
+};
+
+int main()
+{
+    Car car;
+
+    car.drive(); // OK
+    // car.start(); // ошибка
+}
+```
+
+composition is better:
+```C++
+class Car
+{
+private:
+    Engine engine_;
+
+public:
+    void drive()
+    {
+        engine_.start();
+        cout << "drive" << endl;
+    }
+};
+```
+
+```table
+Base member      public inheritance   protected inheritance   private inheritance
+
+public           public               protected               private
+protected        protected            protected               private
+private          недоступно напрямую   недоступно напрямую     недоступно напрямую
+```
+```further
+public inheritance:
+  Derived is a Base
+
+private inheritance:
+  Derived implemented in terms of Base
+
+protected inheritance:
+  почти как private, но доступ сохраняется для дальнейших наследников
+```
+
+### C++11: override/final
+
+#### override
+
+```C++
+class Button
+{
+public:
+    virtual void draw()
+    {
+    }
+};
+
+class ColoredButton : public Button
+{
+public:
+    void draw() override
+    {
+    }
+};
+```
+
+#### name hiding/ using
+
+```C++
+class Base
+{
+public:
+    virtual void foo(int x)
+    {
+        cout << "Base int" << endl;
+    }
+
+    virtual void foo(double x)
+    {
+        cout << "Base double" << endl;
+    }
+};
+
+class Derived : public Base
+{
+public:
+    void foo(int x) override
+    {
+        cout << "Derived int" << endl;
+    }
+};
+
+int main()
+{
+    Derived d;
+
+    d.foo(10);   // Derived int
+    d.foo(3.14); // неожиданно?
+}
+```
+
+better:
+```C++
+class Derived : public Base
+{
+public:
+    using Base::foo;
+
+    void foo(int x) override
+    {
+        cout << "Derived int" << endl;
+    }
+};
+```
+
+#### final
+
+```C++
+class Token final
+{
+};
+
+class SpecialToken : public Token
+{
+}; // UB
+```
+
+virtual-method:
+```C++
+class Base
+{
+public:
+    virtual void run()
+    {
+    }
+};
+
+class Derived : public Base
+{
+public:
+    void run() final
+    {
+    }
+};
+
+class MoreDerived : public Derived
+{
+public:
+    // void run() override {} // ошибка
+};
+```
+
+#### override final together
+
+```C++
+class Derived : public Base
+{
+public:
+    void run() override final
+    {
+    }
+};
+
+void run() final override
+{
+}
+```
+```explanation
+override: я переопределяю базовый virtual method
+final: дальше переопределять нельзя
+```
+
+### public inheritance vs composition
+
+bad:
+```C++
+class Vector
+{
+public:
+    void push_back(int value)
+    {
+    }
+};
+
+class Stack : public Vector
+{
+};
+```
+
+good:
+```C++
+class Stack
+{
+private:
+    Vector data_;
+
+public:
+    void push(int value)
+    {
+        data_.push_back(value);
+    }
+
+    void pop()
+    {
+        // ...
+    }
+};
+```
+
+public = Derived is a Base
+```
+Circle is a Shape
+SavingsAccount is an Account
+File is a Readable
+File is a Writable
+```
+
+composition > private
+
+### compile time vs run time polymorphism
+
+runtime
+```C++
+class Shape
+{
+public:
+    virtual double area() const = 0;
+
+    virtual ~Shape()
+    {
+    }
+};
+
+double totalArea(const vector<unique_ptr<Shape>>& shapes)
+{
+    double result = 0.0;
+
+    for (size_t i = 0; i < shapes.size(); ++i)
+    {
+        result += shapes[i]->area();
+    }
+
+    return result;
+}
+```
+```pros
+можно хранить разные типы в одной коллекции через Base*
+можно загружать плагины
+можно добавлять новые наследники без пересборки части кода
+```
+```cons
+virtual call
+heap/pointer/reference
+сложнее ownership
+object slicing risk
+```
+
+compile time
+```C++
+template <typename Shape>
+double totalArea(const vector<Shape>& shapes)
+{
+    double result = 0.0;
+
+    for (size_t i = 0; i < shapes.size(); ++i)
+    {
+        result += shapes[i].area();
+    }
+
+    return result;
+}
+```
+```pros
+нет virtual call
+можно inline
+работает value-semantics
+типобезопасно
+```
+```cons
+нельзя легко хранить Circle и Rectangle в одном vector<Shape>
+код должен быть известен на compile-time
+может раздувать binary
+```
+
+### C++20 – concepts
+
+C++11/14/17 error:
+```C++
+template <typename T>
+void printArea(const T& object)
+{
+    cout << object.area() << endl;
+}
+```
+
+у int нет area()
+
+C++20:
+```C++
+template <typename T>
+concept HasArea = requires(const T& object)
+{
+    { object.area() };
+};
+
+template <HasArea T>
+void printArea(const T& object)
+{
+    cout << object.area() << endl;
+}
+```
+
+### corner cases
+
+```C++
+class Shape
+{
+public:
+    virtual void draw()
+    {
+    }
+};
+
+class Circle : Shape
+{
+public:
+    void draw() override
+    {
+    }
+};
+```
+– private inherit $\Rightarrow$ error
+```C++
+Circle circle;
+Shape* shape = &circle; // ошибка
+```
+
+```C++
+class Base
+{
+public:
+    ~Base()
+    {
+    }
+};
+
+class Derived : public Base
+{
+private:
+    int* data_;
+
+public:
+    Derived()
+        : data_(new int[100])
+    {
+    }
+
+    ~Derived()
+    {
+        delete[] data_;
+    }
+};
+
+Base* ptr = new Derived();
+delete ptr; // UB
+```
+
+---
+
+## Ticket 8 – inheritance
+
+В лекции это прямо отмечено: при множественном наследовании приведение указателя к базовому классу может потребовать сдвинуть указатель.
+
+```
+MemoryFile object:
++----------------------+
+| Readable subobject   |
+|   vptr Readable      |
++----------------------+
+| Writable subobject   |
+|   vptr Writable      |
++----------------------+
+| MemoryFile fields    |
+|   data_              |
+|   position_          |
++----------------------+
+```
+```C++
+MemoryFile file;
+
+MemoryFile* p0 = &file;
+Readable* p1 = &file;
+Writable* p2 = &file;
+
+cout << p0 << endl;
+cout << p1 << endl;
+cout << p2 << endl;
+```
+```output
+MemoryFile*  0x1000
+Readable*    0x1000
+Writable*    0x1008
+```
+
+### name conflicts
+
+```C++
+class Readable
+{
+protected:
+    size_t totalBytes_ = 0;
+
+public:
+    size_t totalBytes() const
+    {
+        return totalBytes_;
+    }
+};
+
+class Writable
+{
+protected:
+    size_t totalBytes_ = 0;
+
+public:
+    size_t totalBytes() const
+    {
+        return totalBytes_;
+    }
+};
+
+class File : public Readable, public Writable
+{
+};
+```
+– ambigous
+
+use:
+```C++
+cout << file.Readable::totalBytes() << endl;
+cout << file.Writable::totalBytes() << endl;
+```
+or:
+```C++
+class File : public Readable, public Writable
+{
+public:
+    size_t bytesRead() const
+    {
+        return Readable::totalBytes_;
+    }
+
+    size_t bytesWritten() const
+    {
+        return Writable::totalBytes_;
+    }
+};
+```
+
+### interface inheritance
+
+```C++
+class User : public Hashable, public Comparable
+{
+private:
+    int id_ = 0;
+    string name_;
+
+public:
+    User(int id, const string& name)
+        : id_(id)
+        , name_(name)
+    {
+    }
+
+    size_t hash() const override
+    {
+        return static_cast<size_t>(id_);
+    }
+
+    bool equals(const Comparable& other) const override
+    {
+        const User* user = dynamic_cast<const User*>(&other);
+
+        if (user == nullptr)
+        {
+            return false;
+        }
+
+        return id_ == user->id_;
+    }
+};
+```
+– normal, Java and C# allows only this inheritance
+
+#### Diamond problem
+
+```C++
+class IOBase
+{
+protected:
+    size_t totalBytes_ = 0;
+};
+
+class Readable : public IOBase
+{
+};
+
+class Writable : public IOBase
+{
+};
+
+class File : public Readable, public Writable
+{
+};
+```
+```result
+        IOBase
+       /      \
+ Readable    Writable
+       \      /
+        File
+```
+```problem
+File содержит два IOBase-подобъекта:
+1. IOBase внутри Readable
+2. IOBase внутри Writable
+```
+
+если оба базовых класса сами наследуются от одного общего класса, возникает diamond problem; без виртуального наследования у обоих базовых классов будет своя копия подобъекта `IOBase`, значит в `File` будут два подобъекта `IOBase`
+
+### virtual inheritance
+
+one IOBase:
+```C++
+class Readable : public virtual IOBase
+{
+};
+
+class Writable : public virtual IOBase
+{
+};
+```
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+class IOBase
+{
+protected:
+    size_t totalBytes_ = 0;
+
+public:
+    void addBytes(size_t bytes)
+    {
+        totalBytes_ += bytes;
+    }
+
+    size_t totalBytes() const
+    {
+        return totalBytes_;
+    }
+};
+
+class Readable : public virtual IOBase
+{
+public:
+    void read()
+    {
+        addBytes(10);
+    }
+};
+
+class Writable : public virtual IOBase
+{
+public:
+    void write()
+    {
+        addBytes(20);
+    }
+};
+
+class File : public Readable, public Writable
+{
+};
+
+int main()
+{
+    File file;
+
+    file.read();
+    file.write();
+
+    cout << file.totalBytes() << endl;
+
+    return 0;
+}
+```
+– diamond problem solution
+
+without virtual:
+```
+File:
++---------------------------+
+| Readable                  |
+|   IOBase                  |
+|     totalBytes_           |
++---------------------------+
+| Writable                  |
+|   IOBase                  |
+|     totalBytes_           |
++---------------------------+
+```
+with virtual:
+```
+File:
++---------------------------+
+| Readable                  |
+|   pointer/offset to IOBase |
++---------------------------+
+| Writable                  |
+|   pointer/offset to IOBase |
++---------------------------+
+| File fields               |
++---------------------------+
+| shared IOBase             |
+|   totalBytes_             |
++---------------------------+
+```
+
+#### virtual inheritance constructors
+
+```C++
+class IOBase
+{
+private:
+    int flags_ = 0;
+
+public:
+    explicit IOBase(int flags)
+        : flags_(flags)
+    {
+        cout << "IOBase" << endl;
+    }
+};
+
+class Readable : public virtual IOBase
+{
+public:
+    Readable()
+        : IOBase(1)
+    {
+        cout << "Readable" << endl;
+    }
+};
+
+class Writable : public virtual IOBase
+{
+public:
+    Writable()
+        : IOBase(2)
+    {
+        cout << "Writable" << endl;
+    }
+};
+
+class File : public Readable, public Writable
+{
+public:
+    File()
+        : IOBase(3)
+        , Readable()
+        , Writable()
+    {
+        cout << "File" << endl;
+    }
+};
+```
+
+IOBase is constructed by File (the most derived class):
+```C++
+File()
+    : IOBase(3)
+```
+
+порядок:
+```
+1. virtual bases, если есть
+2. обычные base classes в порядке объявления в списке наследования
+3. поля класса
+4. тело конструктора
+```
+
+в общем случае приведение указателя на наследника к указателю на базовый класс — нетривиальная операция; при множественном наследовании может потребоваться сдвинуть указатель, а при виртуальном наследовании — прочитать из памяти адрес базового подобъекта.
+
+### corner cases
+
+```C++
+Derived* derivedArray[10];
+
+Base** baseArray = derivedArray; // нельзя, use by each element casting
+```
+
+один из нескольких типов:
+```C++
+variant<Circle, Rectangle, Triangle> shape;
+```
+
+---
+
+## Ticket 9 – templates
+
+### C-style
+
+if to try C-preprocesses:
+```
+1. Макрос — это простая текстовая подстановка.
+2. Препроцессор не знает типы.
+3. Препроцессор не знает области видимости.
+4. Ошибки хуже читаются.
+5. Отладка хуже.
+6. Можно легко получить странные конфликты имён.
+```
+
+### templates
+
+```C++
+#include <cstddef>
+#include <stdexcept>
+#include <iostream>
+
+using namespace std;
+
+template <typename T>
+class Array
+{
+private:
+    T* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit Array(size_t size)
+        : data_(new T[size])
+        , size_(size)
+    {
+    }
+
+    ~Array()
+    {
+        delete[] data_;
+    }
+
+    size_t size() const
+    {
+        return size_;
+    }
+
+    T& operator[](size_t index)
+    {
+        if (index >= size_)
+        {
+            throw out_of_range("Array index is out of range");
+        }
+
+        return data_[index];
+    }
+
+    const T& operator[](size_t index) const
+    {
+        if (index >= size_)
+        {
+            throw out_of_range("Array index is out of range");
+        }
+
+        return data_[index];
+    }
+};
+
+int main()
+{
+    Array<int> numbers(3);
+
+    numbers[0] = 10;
+    numbers[1] = 20;
+    numbers[2] = 30;
+
+    cout << numbers[1] << endl;
+
+    Array<string> words(2);
+
+    words[0] = "hello";
+    words[1] = "templates";
+
+    cout << words[1] << endl;
+
+    return 0;
+}
+```
+
+then compiler do instancing – creating Array_* for each new object implemented
+
+#### typename vs class
+
+next are equivalent:
+```C++
+template <typename T>
+class Array
+{
+};
+
+template <class T>
+class Array
+{
+};
+```
+, but can not do struct T
+
+### template funcs, methods
+
+inner:
+```C++
+template <typename T>
+class Array
+{
+public:
+    T& operator[](size_t index)
+    {
+        return data_[index];
+    }
+};
+```
+
+defined in, implemented out:
+```C++
+template <typename T>
+class Array
+{
+private:
+    T* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit Array(size_t size);
+    ~Array();
+
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
+};
+
+template <typename T>
+Array<T>::Array(size_t size)
+    : data_(new T[size])
+    , size_(size)
+{
+}
+
+template <typename T>
+Array<T>::~Array()
+{
+    delete[] data_;
+}
+
+template <typename T>
+T& Array<T>::operator[](size_t index)
+{
+    if (index >= size_)
+    {
+        throw out_of_range("Array index is out of range");
+    }
+
+    return data_[index];
+}
+
+template <typename T>
+const T& Array<T>::operator[](size_t index) const
+{
+    if (index >= size_)
+    {
+        throw out_of_range("Array index is out of range");
+    }
+
+    return data_[index];
+}
+```
+
+if u want in .cpp:
+```C++
+// Array.cpp
+#include "Array.h"
+
+template <typename T>
+Array<T>::Array(size_t size)
+{
+}
+
+template class Array<int>;
+template class Array<double>;
+```
+
+### template functions
+
+swap:
+```C++
+template <typename T>
+void mySwap(T& a, T& b)
+{
+    T temp = a;
+    a = b;
+    b = temp;
+}
+```
+```C++
+int x = 10;
+int y = 20;
+
+mySwap<int>(x, y);
+```
+
+parameters:
+```C++
+template <typename T, typename U>
+auto maxValue(const T& a, const U& b)
+{
+    if (a < b)
+    {
+        return b;
+    }
+
+    return a;
+}
+```
+
+#### default params
+
+```C++
+template <typename T = double>
+class Vector3
+{
+private:
+    T x_ = {};
+    T y_ = {};
+    T z_ = {};
+
+public:
+    Vector3() = default;
+
+    Vector3(const T& x, const T& y, const T& z)
+        : x_(x)
+        , y_(y)
+        , z_(z)
+    {
+    }
+};
+```
+```C++
+Vector3<> a;       // Vector3<double>
+Vector3<int> b;    // Vector3<int>
+Vector3<float> c;  // Vector3<float>
+```
+
+#### non-type params
+```C++
+template <typename T, size_t N>
+class StaticArray
+{
+private:
+    T data_[N];
+
+public:
+    size_t size() const
+    {
+        return N;
+    }
+
+    T& operator[](size_t index)
+    {
+        return data_[index];
+    }
+
+    const T& operator[](size_t index) const
+    {
+        return data_[index];
+    }
+};
+```
+– size is in compile-time
+
+```pros
+не нужна heap allocation
+размер известен компилятору
+можно оптимизировать
+объект сам содержит массив
+```
+```cons
+размер нельзя поменять runtime
+StaticArray<int, 10> и StaticArray<int, 20> — разные типы
+```
+
+C++11:
+```types
+целочисленные значения
+enum
+указатели/ссылки с external linkage
+```
+```nowadays
+C++17: auto non-type template parameters
+C++20: structural class types как NTTP в некоторых условиях
+```
+```C++
+template <auto Value>
+class Constant
+{
+public:
+    static constexpr auto value = Value;
+};
+
+Constant<42> x;
+Constant<'a'> y;
+```
+
+### template template
+
+```C++
+template <typename T, template <typename> class Container>
+class Stack
+{
+private:
+    Container<T> data_;
+
+public:
+    void push(const T& value)
+    {
+        data_.push_back(value);
+    }
+
+    bool empty() const
+    {
+        return data_.empty();
+    }
+
+    T pop()
+    {
+        T value = data_.back();
+        data_.pop_back();
+        return value;
+    }
+};
+```
+```C++
+Stack<int, vector> stack;
+```
+
+### type aliases: typedef, using
+standard alias:
+```C++
+using IntArray = Array<int>;
+
+IntArray a(10); // = Array<int> a(10);
+```
+
+template alias:
+```C++
+template <typename T>
+using Matrix = vector<vector<T>>;
+```
+```C++
+Matrix<int> m;
+Matrix<double> d;
+```
+– not a new type, псевдоним – nickname
+
+### specialization
+
+#### full
+```C++
+template <typename T>
+class TypeName
+{
+public:
+    static string name()
+    {
+        return "unknown";
+    }
+};
+```
+
+int:
+```C++
+template <>
+class TypeName<int>
+{
+public:
+    static string name()
+    {
+        return "int";
+    }
+};
+```
+
+double:
+```C++
+template <>
+class TypeName<double>
+{
+public:
+    static string name()
+    {
+        return "double";
+    }
+};
+```
+
+```C++
+cout << TypeName<int>::name() << endl;    // int
+cout << TypeName<char>::name() << endl;   // unknown
+```
+
+#### partial
+
+```C++
+template <typename T>
+struct IsPointer
+{
+    static const bool value = false;
+};
+
+template <typename T>
+struct IsPointer<T*>
+{
+    static const bool value = true;
+};
+```
+```C++
+cout << IsPointer<int>::value << endl;   // 0
+cout << IsPointer<int*>::value << endl;  // 1
+```
+
+for class:
+```C++
+template <typename T>
+class Array
+{
+public:
+    static string kind()
+    {
+        return "Array<T>";
+    }
+};
+
+template <typename T>
+class Array<T*>
+{
+public:
+    static string kind()
+    {
+        return "Array<T*>";
+    }
+};
+```
+```C++
+cout << Array<int>::kind() << endl;   // Array<T>
+cout << Array<int*>::kind() << endl;  // Array<T*>
+```
+
+partial for functions is prohibited:
+```C++
+template <typename T>
+void print(T value)
+{
+}
+
+template <typename T>
+void print<T*>(T* value) // нельзя
+{
+}
+```
+
+use overload instead:
+```C++
+template <typename T>
+void print(T value)
+{
+    cout << value << endl;
+}
+
+template <typename T>
+void print(T* value)
+{
+    if (value == nullptr)
+    {
+        cout << "null" << endl;
+    }
+    else
+    {
+        cout << *value << endl;
+    }
+}
+```
+
+#### dependency names
+```C++
+template <typename Container>
+void printFirst(const Container& container)
+{
+    typename Container::value_type x = container[0];
+
+    cout << x << endl;
+}
+```
+
+```C++
+template <typename Parser>
+void parse(Parser& parser)
+{
+    parser.template read<int>();
+}
+```
+
+### C++14 – variable templates
+
+```C++
+template <typename T>
+constexpr T pi = T(3.1415926535897932385);
+
+double x = pi<double>;
+float y = pi<float>;
+```
+```C++
+is_integral<T>::value
+is_integral_v<T> // same
+```
+
+### C++11 – variadic templates
+```C++
+template <typename... Args>
+void printAll(const Args&... args)
+{
+    // C++17 fold expression:
+    ((cout << args << " "), ...);
+    cout << endl;
+}
+```
+
+no fold expressions, so recursion:
+```C++
+void printAll()
+{
+    cout << endl;
+}
+
+template <typename T, typename... Args>
+void printAll(const T& first, const Args&... rest)
+{
+    cout << first << " ";
+    printAll(rest...);
+}
+```
+
+C++17 – fold expressions:
+```C++
+template <typename... Args>
+auto sum(const Args&... args)
+{
+    return (args + ...);
+}
+```
+
+### CTAD – class template argument deduction
+C++11:
+```C++
+pair<int, string> p(1, "one");
+```
+C++17:
+```C++
+pair p(1, string("one"));
+vector v = {1, 2, 3};
+```
+
+### corner cases
+
+```C++
+template <typename T>
+class Array
+{
+private:
+    T* data_;
+
+public:
+    explicit Array(size_t size)
+        : data_(new T[size])
+    {
+    }
+};
+```
+– bad, new T[] must be default constructible
+
+```C++
+class NoDefault
+{
+public:
+    explicit NoDefault(int value)
+    {
+    }
+};
+```
+```C++
+Array<NoDefault> a(10);
+```
+– wont compile, compile-time error
+
+---
+
+## Ticket 10 – exceptions
 
