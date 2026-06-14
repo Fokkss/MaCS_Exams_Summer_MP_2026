@@ -9866,6 +9866,541 @@ void printContainer(const T& container)
 
 ### process
 
+```
+Process A:
+  memory: [code][heap][stack][globals]
 
+Process B:
+  memory: [code][heap][stack][globals]
+```
 
+### thread
 
+every thread has it's own
+```
+стек;
+регистры CPU;
+текущая инструкция;
+состояние выполнения.
+```
+
+of one process:
+```
+heap;
+глобальные переменные;
+статические переменные;
+открытые файлы;
+адресное пространство.
+```
+
+model:
+```
+Process:
+  heap: shared
+  globals: shared
+
+  Thread 1:
+    stack 1
+    registers 1
+
+  Thread 2:
+    stack 2
+    registers 2
+```
+
+### context switching
+
+**Переключение контекста** — это когда ОС останавливает выполнение одного потока и продолжает выполнение другого.
+
+ОС должна сохранить состояние старого потока:
+
+```
+регистры;
+instruction pointer;
+stack pointer;
+служебную информацию.
+```
+
+И восстановить состояние другого потока.
+
+если результат выполнения программы зависит от порядка, в котором выполнялись инструкции в разных потоках, это называется race condition.
+
+```C++
+#include <iostream>
+#include <thread>
+#include <vector>
+
+using namespace std;
+
+void hello()
+{
+    cout << "Hello from " << this_thread::get_id() << endl;
+}
+
+int main()
+{
+    vector<thread> threads;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        threads.emplace_back(hello);
+    }
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    return 0;
+}
+```
+
+если один поток пишет в некоторую память, а одновременно один или несколько потоков эту память читают, это data race; в общем случае результат data race — неопределённое поведение. Там же подчёркивается, что операции языка часто компилируются в несколько инструкций CPU, а оптимизации компилятора могут менять порядок инструкций.
+
+```C++
+#include <iostream>
+#include <thread>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    int counter = 0;
+
+    vector<thread> threads;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        threads.emplace_back([&counter]()
+        {
+            for (int j = 0; j < 1000; ++j)
+            {
+                ++counter;
+            }
+        });
+    }
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    cout << counter << endl;
+
+    return 0;
+}
+```
+
+`thread` — объект стандартной библиотеки C++, управляющий отдельным потоком выполнения
+
+```C++
+#include <iostream>
+#include <thread>
+
+using namespace std;
+
+void hello()
+{
+    cout << "Hello from thread" << endl;
+}
+
+int main()
+{
+    thread t(hello);
+
+    t.join();
+
+    return 0;
+}
+```
+```
+thread t(hello);
+  создаёт новый поток, который выполняет hello
+
+t.join();
+  main ждёт завершения потока t
+```
+
+```C++
+#include <iostream>
+#include <string>
+#include <thread>
+
+using namespace std;
+
+void printMessage(string message)
+{
+    cout << message << endl;
+}
+
+int main()
+{
+    thread t(printMessage, "hello");
+
+    t.join();
+
+    return 0;
+}
+```
+
+```C++
+#include <iostream>
+#include <thread>
+#include <functional>
+
+using namespace std;
+
+void increment(int& x)
+{
+    ++x;
+}
+
+int main()
+{
+    int value = 0;
+
+    thread t(increment, ref(value));
+
+    t.join();
+
+    cout << value << endl;
+
+    return 0;
+}
+```
+
+thread – move only
+
+### mutex
+
+`mutex` = mutual exclusion.
+
+```C++
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    int counter = 0;
+    mutex counterMutex;
+
+    vector<thread> threads;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        threads.emplace_back([&counter, &counterMutex]()
+        {
+            for (int j = 0; j < 1000; ++j)
+            {
+                counterMutex.lock();
+                ++counter;
+                counterMutex.unlock();
+            }
+        });
+    }
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    cout << counter << endl;
+
+    return 0;
+}
+```
+
+```C++
+mutex.lock();
+
+dangerousOperation();
+
+mutex.unlock();
+```
+– dangerous if exception was thrown $\Rightarrow$ use RAII
+
+`lock_guard` — RAII-обёртка над mutex.
+
+```C++
+#include <iostream>
+#include <mutex>
+#include <thread>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    int counter = 0;
+    mutex counterMutex;
+
+    vector<thread> threads;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        threads.emplace_back([&counter, &counterMutex]()
+        {
+            for (int j = 0; j < 1000; ++j)
+            {
+                lock_guard<mutex> lock(counterMutex);
+
+                ++counter;
+            }
+        });
+    }
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    cout << counter << endl;
+
+    return 0;
+}
+```
+
+`unique_lock` похож на `lock_guard`, но гибче.
+
+```
+unique_lock<mutex> lock(m);
+```
+
+Он позволяет:
+
+```
+отложить lock;
+вручную unlock;
+перемещать lock;
+использовать condition_variable.
+```
+
+Для базового билета чаще достаточно `lock_guard`, но полезно знать:
+
+```
+lock_guard:  
+	простой RAII lock/unlock
+unique_lock:
+  более гибкий lock, нужен для condition_variable и сложных сценариев
+```
+
+deadlock
+
+```C++
+mutex firstMutex;
+mutex secondMutex;
+
+void f()
+{
+    lock_guard<mutex> firstLock(firstMutex);
+    lock_guard<mutex> secondLock(secondMutex);
+}
+
+void g()
+{
+    lock_guard<mutex> secondLock(secondMutex);
+    lock_guard<mutex> firstLock(firstMutex);
+}
+```
+
+В C++17 есть `scoped_lock`, который может захватить несколько mutex безопаснее:
+
+```C++
+scoped_lock lock(firstMutex, secondMutex);
+```
+
+### atomic
+
+`atomic<int>` позволяет делать некоторые операции атомарно без обычного mutex.
+
+```C++
+#include <atomic>
+#include <iostream>
+#include <thread>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    atomic<int> counter = 0;
+
+    vector<thread> threads;
+
+    for (int i = 0; i < 5; ++i)
+    {
+        threads.emplace_back([&counter]()
+        {
+            for (int j = 0; j < 1000; ++j)
+            {
+                ++counter;
+            }
+        });
+    }
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+
+    cout << counter << endl;
+
+    return 0;
+}
+```
+
+`condition_variable` — это примитив синхронизации, который позволяет одному потоку **уснуть до наступления условия**, а другому потоку — **разбудить его**.
+
+```C++
+#include <condition_variable>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
+
+using namespace std;
+
+class TaskQueue
+{
+private:
+    queue<int> tasks_;
+    mutex mutex_;
+    condition_variable condition_;
+
+public:
+    void push(int task)
+    {
+        {
+            lock_guard<mutex> lock(mutex_);
+
+            tasks_.push(task);
+        }
+
+        condition_.notify_one();
+    }
+
+    int pop()
+    {
+        unique_lock<mutex> lock(mutex_);
+
+        condition_.wait(lock, [this]()
+        {
+            return !tasks_.empty();
+        });
+
+        int task = tasks_.front();
+        tasks_.pop();
+
+        return task;
+    }
+};
+
+int main()
+{
+    TaskQueue queue;
+
+    thread producer([&queue]()
+    {
+        queue.push(42);
+    });
+
+    thread consumer([&queue]()
+    {
+        cout << queue.pop() << endl;
+    });
+
+    producer.join();
+    consumer.join();
+
+    return 0;
+}
+```
+
+### futex
+
+**futex** = **fast userspace mutex**.
+
+Это низкоуровневый механизм ядра Linux, на котором часто строятся более высокоуровневые примитивы синхронизации: mutex, condition variable, semaphore и т.п.
+
+```
+atomic<int> state = 0;
+
+lock:
+  если state удалось поменять 0 -> 1:
+    lock взят без syscall
+  иначе:
+    futex_wait(&state, 1)
+
+unlock:
+  state = 0
+  futex_wake(&state, 1)
+```
+
+---
+---
+
+## bonus Ticket 22 – web, misc
+
+### EBO - empty base optimization
+
+В C++ пустой класс обычно имеет размер хотя бы 1 байт:
+
+```C++
+struct Empty
+{
+};
+
+cout << sizeof(Empty) << endl; // обычно 1
+```
+
+```C++
+struct Empty
+{
+};
+
+struct MatrixStorage : private Empty
+{
+    int rows;
+    int cols;
+};
+```
+
+Компилятор может сделать так, что пустая база `Empty` не занимает отдельное место внутри `MatrixStorage`
+
+### attributes
+
+```C++
+[[nodiscard]]
+int compute();
+
+[[maybe_unused]]
+int debugValue = 42;
+
+[[deprecated]]
+void oldFunction();
+
+struct Storage
+{
+    [[no_unique_address]] Empty empty;
+};
+```
+```
+[[nodiscard]]
+  предупреждать, если результат функции проигнорирован
+
+[[maybe_unused]]
+  не предупреждать, что переменная не используется
+
+[[deprecated]]
+  предупреждать, что сущность устарела
+
+[[no_unique_address]]
+  разрешить полю не иметь уникального адреса
+```
+
+---
