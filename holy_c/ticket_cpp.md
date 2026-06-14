@@ -6117,3 +6117,488 @@ A и C физически не переехали.
 
 ## Ticket 14 – associative containers
 
+ассоциативные контейнеры хранят элементы “по-особому” для быстрого поиска. Упорядоченные контейнеры `set`, `multiset`, `map`, `multimap` обычно реализуются как красно-чёрное дерево и требуют отношение порядка, например `operator<`; операции выполняются за `O(log N)`. Неупорядоченные контейнеры `unordered_set`, `unordered_map` и их multi-варианты реализуются как хеш-таблицы с закрытой адресацией, требуют хеш-функцию и работают за `O(1)` в среднем, но за `O(N)` в худшем случае.
+
+### set
+
+```C++
+#include <iostream>
+#include <set>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    set<string> names;
+
+    names.insert("Alice");
+    names.insert("Bob");
+    names.insert("Alice");
+
+    cout << names.size() << endl;
+
+    for (auto it = names.begin(); it != names.end(); ++it)
+    {
+        cout << *it << endl;
+    }
+
+    return 0;
+}
+```
+```output
+2
+Alice
+Bob
+```
+
+comparator `less<T>`:
+```C++
+set<int> values;
+
+values.insert(30);
+values.insert(10);
+values.insert(20);
+```
+
+operations:
+```
+insert(value)       вставка
+erase(value)        удаление по ключу
+erase(iterator)     удаление по итератору
+find(value)         поиск
+count(value)        0 или 1 для set
+lower_bound(value)  первый элемент >= value
+upper_bound(value)  первый элемент > value
+equal_range(value)  пара lower_bound/upper_bound
+```
+
+complexity: `O(log N)`
+
+### multiset
+
+```C++
+#include <iostream>
+#include <set>
+
+using namespace std;
+
+int main()
+{
+    multiset<int> values;
+
+    values.insert(10);
+    values.insert(10);
+    values.insert(20);
+
+    cout << values.count(10) << endl;
+
+    for (auto it = values.begin(); it != values.end(); ++it)
+    {
+        cout << *it << endl;
+    }
+
+    return 0;
+}
+```
+```output
+2
+10
+10
+20
+```
+
+```difference
+set:
+  каждый ключ максимум один раз
+
+multiset:
+  одинаковый ключ может встречаться несколько раз
+```
+
+### map
+
+```
+key -> value
+```
+```C++
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    map<string, int> age;
+
+    age["Alice"] = 20;
+    age["Bob"] = 19;
+
+    cout << age["Alice"] << endl;
+
+    return 0;
+}
+```
+```output
+20
+```
+
+contains:
+```C++
+pair<const string, int>
+```
+
+key - const
+
+Если не хочешь создавать элемент при поиске, используй `find`:
+
+```
+auto it = m.find("unknown");if (it != m.end()){    cout << it->second << endl;}
+```
+
+Или `at`:
+
+```
+cout << m.at("unknown") << endl;
+```
+
+`at` бросит исключение, если ключа нет.
+
+operations:
+```
+insert(pair)
+operator[]
+at(key)
+find(key)
+erase(key)
+erase(iterator)
+count(key)
+lower_bound(key)
+upper_bound(key)
+equal_range(key)
+```
+
+complexity: `O(log N)`
+
+### multimap
+
+`multimap<Key, Value>` — это `map`, где один ключ может соответствовать нескольким значениям.
+
+```C++
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    multimap<string, int> grades;
+
+    grades.insert(make_pair("Alice", 90));
+    grades.insert(make_pair("Alice", 95));
+    grades.insert(make_pair("Bob", 80));
+
+    auto range = grades.equal_range("Alice");
+
+    for (auto it = range.first; it != range.second; ++it)
+    {
+        cout << it->first << " " << it->second << endl;
+    }
+
+    return 0;
+}
+```
+```output
+Alice 90
+Alice 95
+```
+
+### structure
+
+red black tree with nodes:
+```C++
+template <typename T>
+struct Node
+{
+    T value;
+    Node* left;
+    Node* right;
+    Node* parent;
+    bool color;
+};
+```
+```complexity
+find    O(log N)
+insert  O(log N)
+erase   O(log N)
+```
+
+```equivalent_elements_if
+!(a < b) && !(b < a)
+```
+
+### own comparator
+
+```C++
+#include <iostream>
+#include <set>
+#include <string>
+
+using namespace std;
+
+struct LengthCompare
+{
+    bool operator()(const string& left, const string& right) const
+    {
+        if (left.size() != right.size())
+        {
+            return left.size() < right.size();
+        }
+
+        return left < right;
+    }
+};
+
+int main()
+{
+    set<string, LengthCompare> words;
+
+    words.insert("aaaa");
+    words.insert("b");
+    words.insert("ccc");
+    words.insert("dd");
+
+    for (auto it = words.begin(); it != words.end(); ++it)
+    {
+        cout << *it << endl;
+    }
+
+    return 0;
+}
+```
+
+### unordered_set
+
+`unordered_set<T>` — хеш-множество уникальных элементов.
+
+```C++
+#include <iostream>
+#include <string>
+#include <unordered_set>
+
+using namespace std;
+
+int main()
+{
+    unordered_set<string> words;
+
+    words.insert("cat");
+    words.insert("dog");
+    words.insert("cat");
+
+    cout << words.size() << endl;
+
+    if (words.find("dog") != words.end())
+    {
+        cout << "found dog" << endl;
+    }
+
+    return 0;
+}
+```
+
+```
+unordered_set:
+  быстрый поиск в среднем
+  порядок элементов не отсортирован
+```
+
+#### structure
+```
+buckets:
+0: nullptr
+1: [cat] -> [car]
+2: nullptr
+3: [dog]
+4: [apple] -> [angle]
+```
+```find
+1. считаем hash(key)
+2. берём bucket_index = hash % bucket_count
+3. ищем внутри бакета
+```
+
+неупорядоченные контейнеры реализуются как хеш-таблица с закрытой адресацией, требуют функцию, вычисляющую хеш, и имеют `O(1)` в среднем, `O(N)` в худшем случае
+
+```terminology
+bucket       ячейка таблицы
+collision    два ключа попали в один bucket
+chain        цепочка элементов в bucket
+rehash       перестройка таблицы с новым числом bucket'ов
+load_factor  size / bucket_count
+```
+
+### unordered_map
+
+```C++
+#include <iostream>
+#include <string>
+#include <unordered_map>
+
+using namespace std;
+
+int main()
+{
+    unordered_map<string, int> count;
+
+    count["cat"] = 3;
+    count["dog"] = 5;
+
+    ++count["cat"];
+
+    cout << count["cat"] << endl;
+
+    return 0;
+}
+```
+```complexity
+find/insert/erase:
+  O(1) в среднем
+  O(N) в худшем случае
+```
+
+for own types:
+```C++
+#include <iostream>
+#include <string>
+#include <unordered_set>
+
+using namespace std;
+
+class Point
+{
+private:
+    int x_ = 0;
+    int y_ = 0;
+
+public:
+    Point() = default;
+
+    Point(int x, int y)
+        : x_(x)
+        , y_(y)
+    {
+    }
+
+    int x() const
+    {
+        return x_;
+    }
+
+    int y() const
+    {
+        return y_;
+    }
+};
+
+bool operator==(const Point& left, const Point& right)
+{
+    return left.x() == right.x() && left.y() == right.y();
+}
+
+struct PointHash
+{
+    size_t operator()(const Point& point) const
+    {
+        size_t h1 = hash<int>()(point.x());
+        size_t h2 = hash<int>()(point.y());
+
+        return h1 * 239017 + h2;
+    }
+};
+
+int main()
+{
+    unordered_set<Point, PointHash> points;
+
+    points.insert(Point(1, 2));
+    points.insert(Point(1, 2));
+    points.insert(Point(3, 4));
+
+    cout << points.size() << endl;
+
+    return 0;
+}
+```
+
+### operator invalidation
+
+```
+insert:
+  обычно не инвалидирует существующие итераторы/ссылки
+
+erase:
+  инвалидирует только итераторы/ссылки на удалённые элементы
+```
+
+Потому что узлы дерева обычно живут отдельно в памяти. При балансировке дерева связи между узлами меняются, но сами узлы не переезжают.
+
+unordered:
+```
+insert:
+  если rehash не произошёл — итераторы обычно остаются;
+  если rehash произошёл — итераторы инвалидируются.
+
+erase:
+  инвалидирует итератор на удалённый элемент.
+
+references/pointers:
+  обычно ссылки на элементы не инвалидируются при rehash,
+  потому что сами узлы остаются, меняются bucket'ы.
+```
+
+### bounds
+```
+lower_bound(x):
+  первый элемент >= x
+
+upper_bound(x):
+  первый элемент > x
+
+equal_range(x):
+  пара {lower_bound(x), upper_bound(x)}
+```
+
+```C++
+set<int> s = {10, 20, 30, 40};
+
+auto it1 = s.lower_bound(25);
+auto it2 = s.upper_bound(30);
+
+cout << *it1 << endl; // 30
+cout << *it2 << endl; // 40
+```
+
+### insert, emplace, try_emplace
+
+try in C++17
+```
+operator[]:
+  найти или создать default Value
+
+insert:
+  вставить пару, если ключа нет
+
+emplace:
+  сконструировать элемент на месте
+
+try_emplace:
+  не конструировать значение, если ключ уже есть
+```
+
+---
+
+## Ticket 15 – algos
+
