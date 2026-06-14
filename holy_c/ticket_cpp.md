@@ -6602,3 +6602,1359 @@ try_emplace:
 
 ## Ticket 15 – algos
 
+### functor/functional object
+
+В C++ “функтором” часто называют **функциональный объект** — объект класса, у которого перегружен `operator()`
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+struct Add
+{
+    int operator()(int x, int y) const
+    {
+        return x + y;
+    }
+};
+
+int main()
+{
+    Add add;
+
+    cout << add(3, 4) << endl;
+
+    return 0;
+}
+```
+
+#### predicates
+
+**Предикат** — это функция/функциональный объект, возвращающий `bool`
+
+```C++
+struct IsEven
+{
+    bool operator()(int x) const
+    {
+        return x % 2 == 0;
+    }
+};
+```
+
+```
+унарный предикат:
+  bool pred(x)
+
+бинарный предикат:
+  bool pred(x, y)
+```
+
+#### mutable functional object
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+struct Accumulator
+{
+    int sum = 0;
+
+    void operator()(int x)
+    {
+        sum += x;
+    }
+};
+
+int main()
+{
+    Accumulator acc;
+
+    acc(10);
+    acc(25);
+    acc(32);
+
+    cout << acc.sum << endl;
+
+    return 0;
+}
+```
+
+### std algorithms
+
+in
+```C++
+#include <algorithm>
+```
+
+#### swap
+```C++
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int a = 10;
+    int b = 20;
+
+    swap(a, b);
+
+    cout << a << " " << b << endl;
+
+    return 0;
+}
+```
+```output
+20 10
+```
+
+```C++
+template <typename T>
+void mySwap(T& x, T& y)
+{
+    T tmp = x;
+    x = y;
+    y = tmp;
+}
+```
+
+with move-semantics:
+```C++
+template <typename T>
+void mySwap(T& x, T& y)
+{
+    T tmp = move(x);
+    x = move(y);
+    y = move(tmp);
+}
+```
+
+#### iter_swap
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v = {10, 20, 30};
+
+    iter_swap(v.begin(), v.begin() + 2);
+
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        cout << v[i] << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+```output
+30 20 10
+```
+
+```C++
+template <typename It>
+void myIterSwap(It a, It b)
+{
+    swap(*a, *b);
+}
+```
+
+#### find
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v = {10, 20, 30, 40};
+
+    auto it = find(v.begin(), v.end(), 30);
+
+    if (it != v.end())
+    {
+        cout << "found: " << *it << endl;
+    }
+    else
+    {
+        cout << "not found" << endl;
+    }
+
+    return 0;
+}
+```
+– if not found, returns `end`
+
+```C++
+template <typename It, typename T>
+It myFind(It begin, It end, const T& value)
+{
+    for (It it = begin; it != end; ++it)
+    {
+        if (*it == value)
+        {
+            return it;
+        }
+    }
+
+    return end;
+}
+```
+
+```
+итератор должен поддерживать:
+  !=
+  ++it
+  *it
+
+элемент должен поддерживать:
+  operator==
+```
+
+#### copy
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> from = {1, 2, 3};
+    vector<int> to(3);
+
+    copy(from.begin(), from.end(), to.begin());
+
+    for (size_t i = 0; i < to.size(); ++i)
+    {
+        cout << to[i] << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+
+```C++
+vector<int> to;
+
+copy(from.begin(), from.end(), back_inserter(to));
+```
+
+`back_inserter` создаёт output iterator, который вызывает `push_back`
+
+```C++
+template <typename InputIt, typename OutputIt>
+OutputIt myCopy(InputIt begin, InputIt end, OutputIt out)
+{
+    for (InputIt it = begin; it != end; ++it)
+    {
+        *out = *it;
+        ++out;
+    }
+
+    return out;
+}
+```
+
+```
+InputIt:
+  !=, ++, *
+
+OutputIt:
+  *, ++, присваивание в *out
+```
+
+#### sort
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v = {5, 1, 4, 2, 3};
+
+    sort(v.begin(), v.end());
+
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        cout << v[i] << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+
+sort with comparator
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Point
+{
+    int x;
+    int y;
+};
+
+struct LessByX
+{
+    bool operator()(const Point& left, const Point& right) const
+    {
+        return left.x < right.x;
+    }
+};
+
+int main()
+{
+    vector<Point> points = {
+        {3, 10},
+        {1, 20},
+        {2, 30}
+    };
+
+    sort(points.begin(), points.end(), LessByX());
+
+    for (size_t i = 0; i < points.size(); ++i)
+    {
+        cout << points[i].x << " " << points[i].y << endl;
+    }
+
+    return 0;
+}
+```
+
+`sort` требует random access iterators, не работает с list
+instead use method:
+```C++
+list<int> values;
+
+values.sort();
+```
+
+#### unique
+
+`unique(begin, end)` удаляет **соседние дубликаты логически**, но не меняет размер контейнера.
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v = {1, 1, 2, 2, 2, 3, 1, 1};
+
+    auto newEnd = unique(v.begin(), v.end());
+
+    for (auto it = v.begin(); it != newEnd; ++it)
+    {
+        cout << *it << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+```output
+1 2 3 1
+```
+
+doesn't change container's size
+#### remove_if
+
+`remove_if(begin, end, pred)` логически удаляет элементы, удовлетворяющие предикату.
+
+doesn't change container's size
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct IsEven
+{
+    bool operator()(int x) const
+    {
+        return x % 2 == 0;
+    }
+};
+
+int main()
+{
+    vector<int> v = {1, 2, 3, 4, 5, 6};
+
+    auto newEnd = remove_if(v.begin(), v.end(), IsEven());
+
+    v.erase(newEnd, v.end());
+
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        cout << v[i] << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+
+```under_the_hood
+исходно:
+[1][2][3][4][5][6]
+
+remove_if even:
+[1][3][5][?][?][?]
+          ^
+       newEnd
+```
+
+#### lower_bound
+
+`lower_bound(begin, end, value)` работает на **отсортированном диапазоне** и возвращает первый элемент, который `>= value`
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v = {10, 20, 30, 40};
+
+    auto it = lower_bound(v.begin(), v.end(), 25);
+
+    if (it != v.end())
+    {
+        cout << *it << endl;
+    }
+
+    return 0;
+}
+```
+```output
+30
+```
+
+bad:
+```C++
+vector<int> v = {30, 10, 40, 20};
+
+auto it = lower_bound(v.begin(), v.end(), 25); // логически неверно
+```
+
+```C++
+template <typename It, typename T>
+It myLowerBound(It begin, It end, const T& value)
+{
+    while (begin < end)
+    {
+        It middle = begin + (end - begin) / 2;
+
+        if (*middle < value)
+        {
+            begin = middle + 1;
+        }
+        else
+        {
+            end = middle;
+        }
+    }
+
+    return begin;
+}
+```
+
+### realization of algorithms through iterators
+
+#### myCount
+
+```C++
+template <typename It, typename T>
+size_t myCount(It begin, It end, const T& value)
+{
+    size_t result = 0;
+
+    for (It it = begin; it != end; ++it)
+    {
+        if (*it == value)
+        {
+            ++result;
+        }
+    }
+
+    return result;
+}
+```
+
+#### myCountIf
+
+```C++
+template <typename It, typename Pred>
+size_t myCountIf(It begin, It end, Pred pred)
+{
+    size_t result = 0;
+
+    for (It it = begin; it != end; ++it)
+    {
+        if (pred(*it))
+        {
+            ++result;
+        }
+    }
+
+    return result;
+}
+```
+
+#### myRemoveIf
+
+```C++
+template <typename It, typename Pred>
+It myRemoveIf(It begin, It end, Pred pred)
+{
+    It out = begin;
+
+    for (It it = begin; it != end; ++it)
+    {
+        if (!pred(*it))
+        {
+            *out = *it;
+            ++out;
+        }
+    }
+
+    return out;
+}
+```
+
+### categories of iterators
+
+```
+find:
+  достаточно input/forward-итератора
+
+copy:
+  input iterator + output iterator
+
+sort:
+  нужен random access iterator
+
+lower_bound:
+  логически binary search;
+  эффективно на random access,
+  но стандартно может работать шире
+
+unique/remove_if:
+  нужен forward iterator и возможность записи в элементы
+```
+
+forward iterator умеет `*it` и `++it`, 
+bidirectional iterator ещё `--it`,
+random access iterator ещё `it += n` и `it -= n`; 
+
+итераторы по `vector/deque` — random access, 
+по `list/set/map` — bidirectional, 
+по `forward_list` — forward.
+
+### corner cases
+
+how to delete all duplicates:
+```C++
+sort(v.begin(), v.end());
+
+auto newEnd = unique(v.begin(), v.end());
+
+v.erase(newEnd, v.end());
+```
+
+```C++
+auto newEnd = remove_if(v.begin(), v.end(), IsEven());
+
+v.erase(newEnd, v.end());
+
+// старые итераторы после erase могут быть инвалидированы
+```
+
+---
+
+## Ticket 16 – realization of own iterator and algos
+
+### own iterator
+
+```C++
+#include <cstddef>
+#include <iostream>
+
+using namespace std;
+
+class IntArray
+{
+private:
+    int* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit IntArray(size_t size)
+        : data_(new int[size])
+        , size_(size)
+    {
+        for (size_t i = 0; i < size_; ++i)
+        {
+            data_[i] = 0;
+        }
+    }
+
+    ~IntArray()
+    {
+        delete[] data_;
+    }
+
+    IntArray(const IntArray& other) = delete;
+    IntArray& operator=(const IntArray& other) = delete;
+
+    size_t size() const
+    {
+        return size_;
+    }
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+
+    const int& operator[](size_t index) const
+    {
+        return data_[index];
+    }
+};
+```
+
+```C++
+class IntArray
+{
+public:
+    class Iterator
+    {
+    private:
+        int* ptr_ = nullptr;
+
+    public:
+        explicit Iterator(int* ptr)
+            : ptr_(ptr)
+        {
+        }
+
+        int& operator*() const
+        {
+            return *ptr_;
+        }
+
+        Iterator& operator++()
+        {
+            ++ptr_;
+            return *this;
+        }
+
+        bool operator==(const Iterator& other) const
+        {
+            return ptr_ == other.ptr_;
+        }
+
+        bool operator!=(const Iterator& other) const
+        {
+            return !(*this == other);
+        }
+    };
+
+private:
+    int* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit IntArray(size_t size)
+        : data_(new int[size])
+        , size_(size)
+    {
+        for (size_t i = 0; i < size_; ++i)
+        {
+            data_[i] = 0;
+        }
+    }
+
+    ~IntArray()
+    {
+        delete[] data_;
+    }
+
+    IntArray(const IntArray& other) = delete;
+    IntArray& operator=(const IntArray& other) = delete;
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+
+    Iterator begin()
+    {
+        return Iterator(data_);
+    }
+
+    Iterator end()
+    {
+        return Iterator(data_ + size_);
+    }
+};
+```
+
+prefix:
+```C++
+Iterator& operator++()
+{
+    ++ptr_;
+    return *this;
+}
+```
+
+postfix:
+```C++
+Iterator operator++(int)
+{
+    Iterator old = *this;
+    ++(*this);
+    return old;
+}
+```
+
+#### const_iterator
+
+if object const – value can not be returned, we need const iter:
+```C++
+class ConstIterator
+{
+private:
+    const int* ptr_ = nullptr;
+
+public:
+    explicit ConstIterator(const int* ptr)
+        : ptr_(ptr)
+    {
+    }
+
+    const int& operator*() const
+    {
+        return *ptr_;
+    }
+
+    ConstIterator& operator++()
+    {
+        ++ptr_;
+        return *this;
+    }
+
+    ConstIterator operator++(int)
+    {
+        ConstIterator old = *this;
+        ++(*this);
+        return old;
+    }
+
+    bool operator==(const ConstIterator& other) const
+    {
+        return ptr_ == other.ptr_;
+    }
+
+    bool operator!=(const ConstIterator& other) const
+    {
+        return !(*this == other);
+    }
+};
+```
+
+```C++
+Iterator begin()
+{
+    return Iterator(data_);
+}
+
+Iterator end()
+{
+    return Iterator(data_ + size_);
+}
+
+ConstIterator begin() const
+{
+    return ConstIterator(data_);
+}
+
+ConstIterator end() const
+{
+    return ConstIterator(data_ + size_);
+}
+```
+
+### value_type, iterator_category
+
+```C++
+using value_type = int;
+using iterator_category = forward_iterator_tag;
+```
+
+в `iterator_traits` и в самих классах итераторов указывается категория итератора; например `list::iterator` может иметь `using iterator_category = bidirectional_iterator_tag`, а для указателей есть специализация `iterator_traits<T*>`, где категория — random access
+
+`value_type` — тип элемента, на который указывает итератор
+
+```C++
+vector<int>::iterator
+```
+has:
+```C++
+value_type = int
+```
+
+for what? needable type can be created:
+```C++
+typename iterator_traits<It>::value_type tmp = *it;
+```
+
+#### iterator_category
+
+`iterator_category` — категория итератора
+
+```examples
+forward_iterator_tag
+bidirectional_iterator_tag
+random_access_iterator_tag
+```
+
+hierarchy:
+```C++
+struct forward_iterator_tag {};
+struct bidirectional_iterator_tag : forward_iterator_tag {};
+struct random_access_iterator_tag : bidirectional_iterator_tag {};
+```
+
+```C++
+class Iterator
+{
+private:
+    int* ptr_ = nullptr;
+
+public:
+    using value_type = int;
+    using difference_type = ptrdiff_t;
+    using pointer = int*;
+    using reference = int&;
+    using iterator_category = forward_iterator_tag;
+
+    explicit Iterator(int* ptr)
+        : ptr_(ptr)
+    {
+    }
+
+    int& operator*() const
+    {
+        return *ptr_;
+    }
+
+    Iterator& operator++()
+    {
+        ++ptr_;
+        return *this;
+    }
+
+    Iterator operator++(int)
+    {
+        Iterator old = *this;
+        ++(*this);
+        return old;
+    }
+
+    bool operator==(const Iterator& other) const
+    {
+        return ptr_ == other.ptr_;
+    }
+
+    bool operator!=(const Iterator& other) const
+    {
+        return !(*this == other);
+    }
+};
+```
+
+now we can:
+```C++
+iterator_traits<IntArray::Iterator>::value_type
+iterator_traits<IntArray::Iterator>::iterator_category
+```
+
+#### iterator_traits
+
+`iterator_traits<It>` — это шаблон, который достаёт информацию об итераторе.
+
+`std::iterator_traits<It>` предоставляет информацию об итераторе — категорию, `value_type` и т.д.; по умолчанию берёт информацию из самого типа итератора, но содержит специализации для указателей
+
+```C++
+template <typename It>
+void f(It it)
+{
+    typename iterator_traits<It>::value_type x = *it;
+}
+```
+
+specialization:
+```C++
+template <typename T>
+struct iterator_traits<T*>
+{
+    using value_type = T;
+    using difference_type = ptrdiff_t;
+    using pointer = T*;
+    using reference = T&;
+    using iterator_category = random_access_iterator_tag;
+};
+```
+
+`iterator_traits<T*>` задаёт категорию `random_access_iterator_tag`
+
+### std::advance
+
+`advance(it, n)` сдвигает итератор на `n` элементов
+
+```C++
+vector<int> v = {10, 20, 30, 40};
+
+auto it = v.begin();
+
+advance(it, 2);
+
+cout << *it << endl; // 30
+```
+```C++
+list<int> l = {10, 20, 30, 40};
+
+auto it = l.begin();
+
+advance(it, 2);
+
+cout << *it << endl; // 30
+```
+
+```C++
+template <typename It>
+void myAdvance(It& it, int n)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        ++it;
+    }
+}
+```
+
+#### tag dispatching
+
+перегружаются функции для разных тегов; например для bidirectional итератора сдвиг делается циклом `++it`, а для random access — сразу `it += n`
+
+```C++
+#include <iterator>
+#include <list>
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+template <typename It>
+void myAdvanceImpl(It& it, int n, forward_iterator_tag)
+{
+    for (int i = 0; i < n; ++i)
+    {
+        ++it;
+    }
+}
+
+template <typename It>
+void myAdvanceImpl(It& it, int n, bidirectional_iterator_tag)
+{
+    if (n >= 0)
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            ++it;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < -n; ++i)
+        {
+            --it;
+        }
+    }
+}
+
+template <typename It>
+void myAdvanceImpl(It& it, int n, random_access_iterator_tag)
+{
+    it += n;
+}
+
+template <typename It>
+void myAdvance(It& it, int n)
+{
+    using Category = typename iterator_traits<It>::iterator_category;
+
+    myAdvanceImpl(it, n, Category());
+}
+
+int main()
+{
+    vector<int> v = {10, 20, 30, 40};
+    list<int> l = {10, 20, 30, 40};
+
+    auto vit = v.begin();
+    auto lit = l.begin();
+
+    myAdvance(vit, 2);
+    myAdvance(lit, 2);
+
+    cout << *vit << endl;
+    cout << *lit << endl;
+
+    return 0;
+}
+```
+
+### std::distance
+
+`distance(first, last)` возвращает, на сколько надо сдвинуть `first`, чтобы получить `last`
+
+```C++
+vector<int> v = {10, 20, 30, 40};
+
+cout << distance(v.begin(), v.end()) << endl; // 4
+```
+```C++
+list<int> l = {10, 20, 30, 40};
+
+cout << distance(l.begin(), l.end()) << endl; // 4
+```
+
+```C++
+template <typename It>
+int myDistance(It first, It last)
+{
+    int result = 0;
+
+    while (first != last)
+    {
+        ++first;
+        ++result;
+    }
+
+    return result;
+}
+```
+
+#### tag dispatching
+
+```C++
+#include <iterator>
+
+using namespace std;
+
+template <typename It>
+typename iterator_traits<It>::difference_type myDistanceImpl(
+    It first,
+    It last,
+    forward_iterator_tag
+)
+{
+    typename iterator_traits<It>::difference_type result = 0;
+
+    while (first != last)
+    {
+        ++first;
+        ++result;
+    }
+
+    return result;
+}
+
+template <typename It>
+typename iterator_traits<It>::difference_type myDistanceImpl(
+    It first,
+    It last,
+    random_access_iterator_tag
+)
+{
+    return last - first;
+}
+
+template <typename It>
+typename iterator_traits<It>::difference_type myDistance(It first, It last)
+{
+    using Category = typename iterator_traits<It>::iterator_category;
+
+    return myDistanceImpl(first, last, Category());
+}
+```
+
+Почему нет отдельной версии для bidirectional?
+
+Можно, но не обязательно. `bidirectional_iterator_tag` наследуется от `forward_iterator_tag`, поэтому версия для forward подходит
+
+### random access for IntArray
+```C++
+#include <cstddef>
+#include <iostream>
+#include <iterator>
+
+using namespace std;
+
+class IntArray
+{
+public:
+    class Iterator
+    {
+    private:
+        int* ptr_ = nullptr;
+
+    public:
+        using value_type = int;
+        using difference_type = ptrdiff_t;
+        using pointer = int*;
+        using reference = int&;
+        using iterator_category = random_access_iterator_tag;
+
+        explicit Iterator(int* ptr)
+            : ptr_(ptr)
+        {
+        }
+
+        int& operator*() const
+        {
+            return *ptr_;
+        }
+
+        int* operator->() const
+        {
+            return ptr_;
+        }
+
+        Iterator& operator++()
+        {
+            ++ptr_;
+            return *this;
+        }
+
+        Iterator operator++(int)
+        {
+            Iterator old = *this;
+            ++(*this);
+            return old;
+        }
+
+        Iterator& operator--()
+        {
+            --ptr_;
+            return *this;
+        }
+
+        Iterator operator--(int)
+        {
+            Iterator old = *this;
+            --(*this);
+            return old;
+        }
+
+        Iterator& operator+=(difference_type n)
+        {
+            ptr_ += n;
+            return *this;
+        }
+
+        Iterator& operator-=(difference_type n)
+        {
+            ptr_ -= n;
+            return *this;
+        }
+
+        Iterator operator+(difference_type n) const
+        {
+            Iterator copy = *this;
+            copy += n;
+            return copy;
+        }
+
+        Iterator operator-(difference_type n) const
+        {
+            Iterator copy = *this;
+            copy -= n;
+            return copy;
+        }
+
+        difference_type operator-(const Iterator& other) const
+        {
+            return ptr_ - other.ptr_;
+        }
+
+        int& operator[](difference_type n) const
+        {
+            return *(ptr_ + n);
+        }
+
+        bool operator==(const Iterator& other) const
+        {
+            return ptr_ == other.ptr_;
+        }
+
+        bool operator!=(const Iterator& other) const
+        {
+            return !(*this == other);
+        }
+
+        bool operator<(const Iterator& other) const
+        {
+            return ptr_ < other.ptr_;
+        }
+
+        bool operator>(const Iterator& other) const
+        {
+            return other < *this;
+        }
+
+        bool operator<=(const Iterator& other) const
+        {
+            return !(other < *this);
+        }
+
+        bool operator>=(const Iterator& other) const
+        {
+            return !(*this < other);
+        }
+    };
+
+private:
+    int* data_ = nullptr;
+    size_t size_ = 0;
+
+public:
+    explicit IntArray(size_t size)
+        : data_(new int[size])
+        , size_(size)
+    {
+        for (size_t i = 0; i < size_; ++i)
+        {
+            data_[i] = 0;
+        }
+    }
+
+    ~IntArray()
+    {
+        delete[] data_;
+    }
+
+    IntArray(const IntArray& other) = delete;
+    IntArray& operator=(const IntArray& other) = delete;
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+
+    size_t size() const
+    {
+        return size_;
+    }
+
+    Iterator begin()
+    {
+        return Iterator(data_);
+    }
+
+    Iterator end()
+    {
+        return Iterator(data_ + size_);
+    }
+};
+
+int main()
+{
+    IntArray a(5);
+
+    for (size_t i = 0; i < a.size(); ++i)
+    {
+        a[i] = static_cast<int>(i * 10);
+    }
+
+    auto it = a.begin();
+
+    it += 3;
+
+    cout << *it << endl;        // 30
+    cout << it[-1] << endl;     // 20
+    cout << a.end() - a.begin() << endl; // 5
+
+    return 0;
+}
+```
+
+### corner cases
+
+```C++
+int& operator*() const
+{
+    int value = *ptr_;
+    return value; // UB
+}
+```
+– temporary link
+```C++
+int& operator*() const
+{
+	return *ptr_;
+}
+```
+
+```C++
+vector<int> a = {1, 2};
+vector<int> b = {1, 2};
+
+cout << (a.begin() == b.begin()) << endl; // логически неверно
+```
+– iterators must belong to one container
+
+---
+## Ticket 17 – C++11: misc
+
