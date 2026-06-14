@@ -7958,3 +7958,1914 @@ cout << (a.begin() == b.begin()) << endl; // логически неверно
 ---
 ## Ticket 17 – C++11: misc
 
+### anonymous functions and captures
+
+#### lambda
+
+Лямбда — это анонимная функция, которую можно написать прямо в месте использования.
+
+```C++
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+    vector<int> values = {5, -1, 3, -10, 2};
+
+    sort(values.begin(), values.end(), [](int left, int right)
+    {
+        return abs(left) < abs(right);
+    });
+
+    for (size_t i = 0; i < values.size(); ++i)
+    {
+        cout << values[i] << " ";
+    }
+
+    cout << endl;
+
+    return 0;
+}
+```
+
+В лекции лямбды показываются как удобный способ писать компараторы и предикаты прямо в вызове алгоритма: например, сортировать по модулю или найти элемент, кратный 8. Компилятор превращает лямбду в функциональный объект с `operator()`
+
+##### lambda syntax
+
+```C++
+[capture](parameters) -> return_type
+{
+    body
+}
+```
+
+```C++
+auto sqr = [](int x) -> int
+{
+    return x * x;
+};
+```
+or if compiler does it himself:
+```C++
+auto sqr = [](int x)
+{
+    return x * x;
+};
+```
+
+under the hood:
+```C++
+auto sqr = [](int x)
+{
+    return x * x;
+};
+
+// equivalent to
+
+struct SqrLambda
+{
+    int operator()(int x) const
+    {
+        return x * x;
+    }
+};
+
+SqrLambda sqr;
+```
+
+#### captures (захваты)
+
+Лямбда может использовать переменные снаружи через **capture list**
+
+```C++
+int border = 10;
+
+auto lessThanBorder = [border](int x)
+{
+    return x < border;
+};
+```
+– this copies border into lambda
+
+у лямбд есть список захвата; переменную можно захватить по значению `[x]`, тогда внутри лямбды будет копия, или по ссылке `[&x]`, тогда внутри будет ссылка на исходную переменную
+
+```C++
+int border = 10;
+
+auto pred = [border](int x)
+{
+    return x < border;
+};
+
+border = 100;
+
+cout << pred(50) << endl; // false
+```
+– Потому что лямбда запомнила старое значение `border == 10`
+
+```C++
+int border = 10;
+
+auto pred = [&border](int x)
+{
+    return x < border;
+};
+
+border = 100;
+
+cout << pred(50) << endl; // true
+```
+
+mixed:
+```C++
+int count = 0;
+int border = 10;
+
+auto pred = [&count, border](int x)
+{
+    ++count;
+    return x < border;
+};
+```
+
+`std::partition(begin, end, [&count, ref](int x){ ++count; return x < ref; });`; эквивалентный код без лямбды — структура с полем-ссылкой `int& count` и полем-копией `int ref`
+
+#### auto capture
+
+```C++
+auto f1 = [=](int x)
+{
+    return x < border;
+};
+```
+– `[=]` — автоматически захватить используемые переменные по значению
+
+```C++
+auto f2 = [&](int x)
+{
+    return x < border;
+};
+```
+– `[&]` — автоматически захватить по ссылке.
+
+could be mixed
+
+#### C++14 – init-capture
+
+```C++
+int border = 10;
+
+auto f = [limit = border * 2](int x)
+{
+    return x < limit;
+};
+```
+
+### auto
+
+```C++
+auto x = 10;      // int
+auto y = 3.14;    // double
+auto s = "hello"; // const char*
+```
+
+usage:
+```C++
+map<string, vector<int>> m;
+
+for (map<string, vector<int>>::const_iterator it = m.begin(); it != m.end(); ++it)
+{
+}
+```
+
+`auto` убирает ссылку и top-level const
+
+```C++
+const int x = 10;
+
+auto a = x; // int, не const int
+
+auto& r = x; // const int&
+
+
+
+int value = 10;
+int* p = &value;
+
+auto x = *p;  // int, копия
+auto& y = *p; // int&, ссылка на value
+```
+
+range-based for
+
+```C++
+vector<string> words = {"cat", "dog", "elephant"};
+
+for (auto word : words)
+{
+    // word — копия
+}
+
+for (const auto& word : words)
+{
+    // word — ссылка, без копирования, нельзя менять
+}
+
+for (auto& word : words)
+{
+    // можно менять элементы
+}
+```
+
+rule:
+```
+для чтения больших объектов:
+  const auto&
+
+для изменения:
+  auto&
+
+для маленьких типов int/double:
+  auto можно
+```
+
+### decltype
+
+`decltype(expr)` возвращает тип выражения
+
+```C++
+decltype(10) x = 20;      // int
+decltype(1 + 2.5) y = 0;  // double
+```
+
+```C++
+int* p = ...;
+
+decltype(p + 10) q = ...; // int*
+decltype(p[10]) r = ...;  // int&
+```
+
+```C++
+int x = 10;
+
+decltype(x) a = x;   // int
+decltype((x)) b = x; // int&
+```
+```
+decltype(x):
+  если x — просто имя переменной, берётся объявленный тип
+
+decltype((x)):
+  (x) — lvalue-выражение, поэтому получается int&
+```
+
+```C++
+template <typename T, typename U>
+auto add(const T& a, const U& b) -> decltype(a + b)
+{
+    return a + b;
+}
+```
+C++14:
+```C++
+template <typename T, typename U>
+auto add(const T& a, const U& b)
+{
+    return a + b;
+}
+```
+
+### initializer_list
+
+синтаксис `Type x = {a, b, c}` может вызвать конструктор от этих аргументов, агрегатно инициализировать поля, инициализировать массив или вызвать конструктор от `std::initializer_list`
+
+`initializer_list<T>` — специальный объект, который позволяет принять список значений из фигурных скобок
+
+```C++
+#include <initializer_list>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+class IntVector
+{
+private:
+    vector<int> data_;
+
+public:
+    IntVector(initializer_list<int> values)
+    {
+        for (auto it = values.begin(); it != values.end(); ++it)
+        {
+            data_.push_back(*it);
+        }
+    }
+
+    void print() const
+    {
+        for (size_t i = 0; i < data_.size(); ++i)
+        {
+            cout << data_[i] << " ";
+        }
+
+        cout << endl;
+    }
+};
+
+int main()
+{
+    IntVector v = {1, 2, 3, 4};
+
+    v.print();
+
+    return 0;
+}
+```
+
+`std::initializer_list<T>` обычно ссылается на массив элементов, созданный компилятором; у него есть `begin`, `end`, `data`, `size`, `empty`, и все стандартные контейнеры имеют такие конструкторы
+
+```C++
+vector<int> a(10);  // 10 нулей
+vector<int> b{10};  // один элемент 10
+
+vector<int> c(10, 5); // 10 элементов со значением 5
+vector<int> d{10, 5}; // два элемента: 10 и 5
+```
+
+### unique_ptr usage
+
+```C++
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class User
+{
+public:
+    void hello() const
+    {
+        cout << "hello" << endl;
+    }
+};
+
+int main()
+{
+    unique_ptr<User> user(new User());
+
+    user->hello();
+
+    return 0;
+}
+```
+
+`unique_ptr` нельзя копировать, но можно перемещать; он позволяет передавать владение, и только один `unique_ptr` указывает на объект
+
+C++14:
+```C++
+auto user = make_unique<User>(); // = unique_ptr<User> user(new User());
+```
+
+```C++
+unique_ptr<User> a(new User());
+
+// unique_ptr<User> b = a; // ошибка
+
+unique_ptr<User> b = move(a); // OK
+```
+```after
+b владеет объектом
+a пустой
+```
+
+#### polymorphism with unique_ptr
+
+```C++
+#include <iostream>
+#include <memory>
+#include <vector>
+
+using namespace std;
+
+class Shape
+{
+public:
+    virtual double area() const = 0;
+
+    virtual ~Shape()
+    {
+    }
+};
+
+class Circle : public Shape
+{
+private:
+    double radius_ = 0.0;
+
+public:
+    explicit Circle(double radius)
+        : radius_(radius)
+    {
+    }
+
+    double area() const override
+    {
+        return 3.141592653589793 * radius_ * radius_;
+    }
+};
+
+int main()
+{
+    vector<unique_ptr<Shape>> shapes;
+
+    shapes.push_back(unique_ptr<Shape>(new Circle(10.0)));
+
+    for (size_t i = 0; i < shapes.size(); ++i)
+    {
+        cout << shapes[i]->area() << endl;
+    }
+
+    return 0;
+}
+```
+C++14:
+```C++
+shapes.push_back(make_unique<Circle>(10.0));
+```
+
+### shared_ptr usage
+
+```C++
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class User
+{
+public:
+    ~User()
+    {
+        cout << "destroy User" << endl;
+    }
+};
+
+int main()
+{
+    shared_ptr<User> a(new User());
+
+    {
+        shared_ptr<User> b = a;
+
+        cout << a.use_count() << endl; // 2
+    }
+
+    cout << a.use_count() << endl; // 1
+
+    return 0;
+}
+```
+
+```C++
+auto user = make_shared<User>(); // = shared_ptr<User> user(new User());
+```
+
+bad:
+```C++
+struct Node
+{
+    shared_ptr<Node> next;
+    shared_ptr<Node> prev;
+};
+```
+
+better:
+```C++
+struct Node
+{
+    shared_ptr<Node> next;
+    weak_ptr<Node> prev;
+};
+```
+
+### corner cases
+
+capture of link lives longer than variable:
+```C++
+function<bool(int)> makePredicate()
+{
+    int border = 10;
+
+    return [&border](int x)
+    {
+        return x < border;
+    };
+}
+```
+
+better:
+```C++
+function<bool(int)> makePredicate()
+{
+    int border = 10;
+
+    return [border](int x)
+    {
+        return x < border;
+    };
+}
+```
+
+dangling reference if auto capture in long-living lambda:
+```C++
+auto callback = [&]()
+{
+    cout << local << endl;
+};
+```
+
+save initializer_list:
+```C++
+class Bad
+{
+private:
+    initializer_list<int> values_;
+
+public:
+    Bad(initializer_list<int> values)
+        : values_(values)
+    {
+    }
+};
+```
+`initializer_list` обычно ссылается на массив, созданный компилятором. Не стоит хранить его как долгоживущее поле. Лучше скопировать в `vector`
+
+---
+
+## Ticket 18 – move semantics
+
+move-семантика нужна для типов, которые дорого или невозможно копировать: большие динамические массивы, файлы, сетевые сокеты, обёртки ресурсов; даже если копирование возможно, оно создаёт накладные расходы.
+
+### rvalue and lvalue
+
+**lvalue** — выражение, которое обозначает объект, живущий дольше одного выражения
+```
+именованная переменная
+разыменованный указатель
+элемент массива
+обращение по ссылке
+```
+```C++
+int x = 10;
+
+x = 20;, // x - lvalue
+```
+
+`rvalue` – temporary value
+```C++
+42
+x + 1
+string("hello")
+Buffer(100)
+```
+
+lvalue — именованные переменные, разыменование указателя, обращение по индексу массива и по ссылке; они существуют вне выражения и имеют адрес. rvalue — временные значения, уничтожаемые после вычисления выражения
+
+```help
+lvalue:
+  можно спросить "где это лежит?"
+
+rvalue:
+  временный результат вычисления
+```
+
+то не абсолютное правило. В современном C++ есть ещё `xvalue`, `glvalue`, `prvalue`, но для экзамена обычно хватает базового понимания `lvalue/rvalue`. Лекция тоже отмечает, что точные правила сложнее, но в большинстве случаев достаточно базового деления.
+
+### addition: xvalue, glvalue, prvalue
+
+before new C++:
+```
+lvalue = объект с именем / объект, у которого есть место
+rvalue = временное значение
+```
+
+now:
+```
+expression
+├── glvalue
+│   ├── lvalue
+│   └── xvalue
+└── prvalue
+```
+```
+glvalue = has identity
+prvalue = pure temporary value
+xvalue  = expiring object
+```
+
+```C++
+int x = 10;
+
+x;      // lvalue
+*xPtr;  // lvalue
+arr[0]; // lvalue
+
+string s = "hello";
+
+s; // lvalue
+
+// prvalues
+42
+x + 1
+string("hello")
+makeString()
+
+string s = "hello";
+
+move(s); // xvalue
+
+string makeString()
+{
+    return "hello";
+}
+
+string&& r = makeString();
+// connected with rvalue link may be xvalue, but:
+
+void f(string&& s)
+{
+    string a = s;       // s — lvalue, потому что у него есть имя
+    string b = move(s); // move(s) — xvalue
+}
+
+// rvalue = prvalue или xvalue
+```
+
+### rvalue links
+
+Обычная ссылка:
+
+```
+int& r = x;
+```
+
+обычно привязывается к lvalue.
+
+`const`-ссылка может привязаться к временному:
+
+```
+const int& r = 42;
+```
+
+Но через `const int&` нельзя “украсть ресурс”, потому что объект `const`
+
+rvalue links:
+```C++
+int&& r = 42;
+
+Buffer&& r = Buffer(100);
+```
+
+`T&&` в обычном нешаблонном контексте означает:
+
+> ссылка на временный объект, из которого можно безопасно забрать ресурсы.
+
+### move constructor
+
+```C++
+Buffer(const Buffer& other);
+Buffer(Buffer&& other);
+```
+```explanation
+const Buffer& other:
+  копирование, источник должен остаться таким же
+
+Buffer&& other:
+  перемещение, можно забрать ресурс у источника
+```
+
+`move constructor`:
+
+```C++
+#include <cstddef>
+#include <iostream>
+#include <utility>
+
+using namespace std;
+
+class Buffer
+{
+private:
+    size_t size_ = 0;
+    int* data_ = nullptr;
+
+public:
+    Buffer() = default;
+
+    explicit Buffer(size_t size)
+        : size_(size)
+        , data_(new int[size])
+    {
+        cout << "constructor" << endl;
+
+        for (size_t i = 0; i < size_; ++i)
+        {
+            data_[i] = 0;
+        }
+    }
+
+    Buffer(const Buffer& other)
+        : size_(other.size_)
+        , data_(new int[other.size_])
+    {
+        cout << "copy constructor" << endl;
+
+        for (size_t i = 0; i < size_; ++i)
+        {
+            data_[i] = other.data_[i];
+        }
+    }
+
+    Buffer(Buffer&& other) noexcept
+        : size_(other.size_)
+        , data_(other.data_)
+    {
+        cout << "move constructor" << endl;
+
+        other.size_ = 0;
+        other.data_ = nullptr;
+    }
+
+    ~Buffer()
+    {
+        delete[] data_;
+    }
+
+    size_t size() const
+    {
+        return size_;
+    }
+};
+```
+```explanation
+this забрал size_ и data_ у other;
+other оставили пустым;
+теперь this владеет массивом;
+other больше не удалит этот массив.
+```
+
+Если не сделать:
+
+```
+other.data_ = nullptr;
+```
+
+то будет double delete:
+
+```
+новый объект удалит data_;
+старый объект тоже удалит тот же data_;
+```
+
+`move assignment`:
+Move constructor создаёт новый объект из временного.
+
+Move assignment присваивает уже существующему объекту.
+
+```C++
+Buffer& operator=(Buffer&& other) noexcept
+{
+    cout << "move assignment" << endl;
+
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    delete[] data_;
+
+    size_ = other.size_;
+    data_ = other.data_;
+
+    other.size_ = 0;
+    other.data_ = nullptr;
+
+    return *this;
+}
+```
+```order
+1. если это самоприсваивание — выйти;
+2. освободить свой старый ресурс;
+3. забрать ресурс у other;
+4. занулить other;
+5. вернуть *this.
+```
+
+### std::move
+
+Самое важное:
+
+> `std::move` ничего не перемещает сам.
+
+Он только превращает выражение в rvalue.
+
+```
+Buffer a(10);
+Buffer b = move(a);
+```
+
+`move(a)` говорит компилятору:
+
+> я больше не рассчитываю на старое содержимое `a`; 
+> можно вызвать move constructor.
+
+То есть:
+
+```
+move(a) не переносит данные;
+move(a) разрешает вызвать move-конструктор/assignment.
+```
+
+example:
+```C++
+unique_ptr<int> p(new int(42));
+
+unique_ptr<int> q = move(p);
+```
+```afterwards
+q владеет int;
+p пустой.
+```
+
+### TRAP!
+
+```C++
+void consume(Buffer&& buffer)
+{
+    Buffer a = buffer;       // copy
+    Buffer b = move(buffer); // move
+}
+```
+
+Почему первая строка — copy?
+
+Потому что `buffer` имеет имя.
+
+А любое именованное выражение — lvalue.
+
+Даже если тип переменной:
+
+```
+Buffer&&
+```
+
+само выражение:
+
+```
+buffer
+```
+
+является lvalue.
+
+Поэтому внутри move constructor/assignment для полей часто тоже нужно писать `move`.
+
+```C++
+#include <iostream>
+#include <memory>
+#include <utility>
+
+using namespace std;
+
+int main()
+{
+    unique_ptr<int> a(new int(42));
+
+    // unique_ptr<int> b = a; // ошибка
+
+    unique_ptr<int> b = move(a);
+
+    if (!a)
+    {
+        cout << "a is empty" << endl;
+    }
+
+    cout << *b << endl;
+
+    return 0;
+}
+```
+
+### Rule of five or zero
+
+Если класс вручную владеет ресурсом, обычно нужны пять функций:
+
+```
+destructor
+copy constructor
+copy assignment
+move constructor
+move assignment
+```
+
+Это называется **Rule of Five**.
+
+```C++
+class Buffer
+{
+public:
+    ~Buffer();
+
+    Buffer(const Buffer& other);
+    Buffer& operator=(const Buffer& other);
+
+    Buffer(Buffer&& other) noexcept;
+    Buffer& operator=(Buffer&& other) noexcept;
+};
+```
+
+Но лучше, если возможно, **Rule of Zero**:
+
+> не владеть сырым ресурсом напрямую, а использовать `vector`, `string`, `unique_ptr`, `shared_ptr`.
+
+Тогда компилятор сам сгенерирует корректные copy/move/destructor.
+
+Например:
+
+```C++
+class BetterBuffer
+{
+private:
+    vector<int> data_;
+};
+```
+
+Здесь не нужен свой destructor/copy/move.
+
+#### noexcept with move
+
+Контейнеры вроде `vector` при расширении памяти должны перенести элементы в новое место.
+
+Если move может бросить исключение, `vector` может предпочесть copy, чтобы сохранить strong exception guarantee.
+
+Поэтому правило:
+
+```
+move constructor — желательно noexcept;move assignment — желательно noexcept;swap — желательно noexcept.
+```
+
+```C++
+Buffer makeBuffer()
+{
+    Buffer buffer(100);
+
+    return move(buffer);
+}
+
+
+// BETTER
+Buffer makeBuffer()
+{
+    Buffer buffer(100);
+
+    return buffer;
+}
+```
+
+Компилятор может применить NRVO — создать `buffer` сразу в месте результата.
+
+Если написать `return move(buffer);`, можно помешать NRVO.
+
+В лекции про copy elision: NRVO позволяет создать локальный объект сразу на месте возвращаемого значения; общее название таких оптимизаций — copy elision, а начиная с C++17 часть случаев обязательна.
+
+### NRVO, copy elision
+
+Copy elision — это когда компилятор убирает лишнее копирование/перемещение и строит объект сразу там, где он нужен.
+
+```C++
+Buffer makeBuffer()
+{
+    return Buffer(100);
+}
+
+Buffer b = makeBuffer();
+```
+```compiler_may_do
+создать Buffer сразу в b
+```
+
+RVO/URVO: временный объект, который сразу должен быть возвращён, можно создать прямо на месте возвращаемого значения. Общее название таких оптимизаций — copy elision; с C++17 URVO стал обязательным в соответствующих случаях
+
+NRVO — Named Return Value Optimization
+
+```C++
+Buffer makeBuffer()
+{
+    Buffer buffer(100);
+
+    return buffer;
+}
+```
+– `buffer` — named object, поэтому это NRVO.
+
+idea is the same like with URVO
+
+### corner cases
+
+```C++
+void f(const Buffer&& buffer)
+{
+}
+```
+– not necessary
+
+```move_is_helpful_if
+heap memory
+file
+socket
+large vector/string
+unique_ptr
+```
+
+---
+
+## Ticket 19 – Metaprogramming I
+
+### C-style approach
+
+Перед компиляцией C++-код проходит через препроцессор.
+
+Препроцессор обрабатывает директивы:
+
+```
+#include
+#define
+#ifdef
+#ifndef
+#if
+#else
+#endif
+```
+```
+препроцессор не понимает C++ типы;
+он делает текстовые подстановки;
+работает до настоящей компиляции.
+```
+
+```C
+#define BUFFER_SIZE 1024
+
+char buffer[BUFFER_SIZE];
+
+//after preprocess
+char buffer[1024];
+```
+```problem
+нет типа;
+нет области видимости как у обычной переменной;
+может конфликтовать с другими именами.
+```
+
+C++:
+```C++
+constexpr size_t BufferSize = 1024;
+```
+
+#### macros
+
+```C
+#define SQUARE(x) ((x) * (x))
+
+int a = SQUARE(5); // 25
+
+// problem:
+int x = 5;
+
+int y = SQUARE(++x);
+```
+– ++ multiple times
+
+C++:
+```C++
+template <typename T>
+constexpr T square(T x)
+{
+    return x * x;
+}
+```
+
+templates with C-style and preprocessor:
+```C
+#define Array(T) class Array_##T { \
+private: \
+    T* data; \
+    size_t size; \
+public: \
+    T& operator[](size_t index) { \
+        return data[index]; \
+    } \
+};
+```
+
+```C
+Array(int)
+Array(float)
+// ->
+Array_int
+Array_float
+```
+
+это простая текстовая подстановка, неудобно отлаживается, а `Array_int` и `Array_float` никак не связаны между собой. В C++ вместо этого используют настоящие шаблоны, где подстановку делает компилятор, знающий типы и области видимости
+
+#### token pasting
+
+```C
+Array_##T
+```
+– clays tokens
+
+```C
+#define MAKE_VARIABLE(name) int variable_##name = 0
+
+MAKE_VARIABLE(count);
+```
+
+DEBUG-macros
+```C++
+#ifdef DEBUG
+#define DBG(x) do { cout << "DEBUG: " << x << endl; } while (false)
+#else
+#define DBG(x) do {} while (false)
+#endif
+```
+
+#### include guards
+
+```C++
+// array.h
+#ifndef ARRAY_H
+#define ARRAY_H
+
+class Array
+{
+};
+
+#endif
+```
+
+now:
+```C++
+#pragma once
+```
+
+### constexpr
+
+`constexpr` переменная или функция могут быть вычислены в compile-time; пример — рекурсивная `constexpr` функция `factorial`. У `constexpr`-функций есть ограничения, например они не могут быть виртуальными и не должны иметь побочных эффектов в старом смысле C++11.
+
+```C++
+constexpr int square(int x)
+{
+    return x * x;
+}
+
+int main()
+{
+    constexpr int x = square(5);
+
+    int array[x];
+
+    return 0;
+}
+```
+
+```C++
+constexpr size_t Size = 10;
+
+int data[Size];
+```
+– variable is automatically const
+
+`onstexpr` переменная будет автоматически `const`; `consteval` функция всегда вычисляется в compile-time, а `constinit` переменная инициализируется в compile-time, но не становится автоматически `const`.
+
+func:
+```C++
+constexpr unsigned int factorial(unsigned int n)
+{
+    if (n == 0)
+    {
+        return 1;
+    }
+
+    return n * factorial(n - 1);
+}
+
+constexpr unsigned int value = factorial(5);
+
+// OR
+unsigned int x = 0;
+cin >> x;
+
+cout << factorial(x) << endl;
+```
+```
+constexpr функция может быть compile-time,
+но не обязана всегда.
+```
+
+Для “обязана всегда compile-time” есть C++20 `consteval`
+
+```
+const:
+  нельзя изменить после инициализации
+
+constexpr:
+  можно использовать как compile-time constant
+```
+
+### static_assert
+
+`static_assert` позволяет сделать compile-time проверку условия; текст ошибки опционален, есть примеры проверки `sizeof(int) == 4`, размера структуры и свойства `std::atomic<int>::is_always_lock_free`.
+
+```C++
+static_assert(sizeof(int) == 4, "unsupported platform");
+```
+
+```C++
+struct Vec3
+{
+    float x;
+    float y;
+    float z;
+};
+
+static_assert(sizeof(Vec3) == 12, "Vec3 must be 12 bytes");
+```
+
+```C++
+template <size_t N>
+class StaticArray
+{
+private:
+    int data_[N];
+
+public:
+    static_assert(N > 0, "StaticArray size must be positive");
+
+    int& operator[](size_t index)
+    {
+        return data_[index];
+    }
+};
+```
+
+before constexpr:
+```C++
+template <unsigned int N>
+struct Factorial
+{
+    static const unsigned int value = N * Factorial<N - 1>::value;
+};
+
+template <>
+struct Factorial<0>
+{
+    static const unsigned int value = 1;
+};
+```
+
+now:
+```C++
+constexpr unsigned int factorial(unsigned int n)
+{
+    if (n == 0)
+    {
+        return 1;
+    }
+
+    return n * factorial(n - 1);
+}
+```
+
+### variadic templates for functions
+
+```C++
+template <typename... Args>
+void print(const Args&... args);
+```
+
+variadic template — это шаблон функции или класса, параметризующийся произвольным списком типов; синтаксис `typename ... Args`, а к типам можно добавлять `const` и ссылки, например `const Args& ... args`.
+
+```
+template <typename... Args>void print(const Args&... args){}
+```
+
+Здесь:
+
+```
+Args — pack типов
+args — pack значений
+```
+
+Если вызвать:
+
+```
+print(10, 3.14, "hello");
+```
+
+то:
+
+```
+Args = int, double, const char*
+args = 10, 3.14, "hello"
+```
+
+C++11:
+```C++
+#include <iostream>
+
+using namespace std;
+
+void print()
+{
+    cout << endl;
+}
+
+template <typename T, typename... Args>
+void print(const T& first, const Args&... args)
+{
+    cout << first << " ";
+    print(args...);
+}
+
+int main()
+{
+    print(10, 3.14, "hello");
+
+    return 0;
+}
+```
+```explanation
+print(10, 3.14, "hello")
+  печатает 10
+  вызывает print(3.14, "hello")
+    печатает 3.14
+    вызывает print("hello")
+      печатает hello
+      вызывает print()
+        база рекурсии
+```
+
+C++17 – fold expressions:
+```C++
+template <typename... Args>
+auto sum(const Args&... args)
+{
+    return (args + ...);
+}
+```
+
+fold expressions бывают правые и левые; например `(args + ...)` превращается в `arg0 + (arg1 + (arg2 + ...))`, а `(... + args)` — в `((arg0 + arg1) + arg2) + ...`
+
+```C++
+template <typename... Args>
+void print(const Args&... args)
+{
+    (cout << ... << args);
+}
+```
+
+fabric of objects:
+```C++
+template <typename T, typename... Args>
+unique_ptr<T> makeUnique(Args&&... args)
+{
+    return unique_ptr<T>(new T(forward<Args>(args)...));
+}
+```
+
+### corner cases
+
+constexpr appeared at
+
+Плохо:
+
+```C++
+#define DOUBLE(x) x + xint y = 10 * DOUBLE(2);
+```
+
+После подстановки:
+
+```C++
+int y = 10 * 2 + 2; // 22, а не 40
+```
+
+Лучше:
+
+```C++
+#define DOUBLE(x) ((x) + (x))
+```
+
+Но ещё лучше — `constexpr` функция.
+
+для рекурсии нужна всегда отдельная база.
+
+```C++
+template <typename... Args>
+void f(const Args&... args)
+{
+    cout << args << endl; // ошибка: pack надо раскрывать
+}
+```
+
+static_assert with run-time cond:
+```C++
+int x = 0;
+cin >> x;
+
+static_assert(x > 0, "x must be positive"); // ошибка
+```
+
+### in addition
+
+```
+C++11:
+  constexpr функции с серьёзными ограничениями;
+  static_assert;
+  variadic templates;
+  рекурсивная обработка packs.
+
+C++14:
+  constexpr стал менее ограниченным;
+  больше обычного кода можно писать внутри constexpr.
+
+C++17:
+  fold expressions;
+  if constexpr.
+
+C++20:
+  consteval;
+  constinit;
+  concepts.
+```
+
+---
+
+## Ticket 20 – Metaprogramming II
+
+### type traits
+
+**Type trait** — шаблон, который сообщает информацию о типе.
+
+```C++
+is_integral<int>::value      // true
+is_integral<double>::value   // false
+is_pointer<int*>::value      // true
+is_pointer<int>::value       // false
+```
+
+`iterator_traits` приводится как пример traits: он хранит информацию об итераторе — категорию, `value_type` и т.п.; такие шаблоны, содержащие информацию о типах, называются type traits.
+
+```C++
+#include <iostream>
+
+using namespace std;
+
+template <typename T>
+struct IsVoid
+{
+    static const bool value = false;
+};
+
+template <>
+struct IsVoid<void>
+{
+    static const bool value = true;
+};
+
+int main()
+{
+    cout << IsVoid<int>::value << endl;  // 0
+    cout << IsVoid<void>::value << endl; // 1
+
+    return 0;
+}
+```
+```C++
+template <typename T>
+struct IsPointer
+{
+    static const bool value = false;
+};
+
+template <typename T>
+struct IsPointer<T*>
+{
+    static const bool value = true;
+};
+```
+```C++
+template <typename T>
+struct IsIntegral
+{
+    static const bool value = false;
+};
+
+template <>
+struct IsIntegral<bool>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<char>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<short>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<int>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<long>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<long long>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<unsigned char>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<unsigned short>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<unsigned int>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<unsigned long>
+{
+    static const bool value = true;
+};
+
+template <>
+struct IsIntegral<unsigned long long>
+{
+    static const bool value = true;
+};
+```
+
+IRL:
+```C++
+#include <type_traits>
+
+using namespace std;
+
+is_integral<int>::value
+is_integral_v<int> // C++17
+```
+
+Наша простая версия:
+
+```
+IsIntegral<const int>::value
+```
+
+даст `false`, если мы не добавили специализацию для `const int`
+
+so:
+
+```C++
+template <typename T>
+struct RemoveConst
+{
+    using type = T;
+};
+
+template <typename T>
+struct RemoveConst<const T>
+{
+    using type = T;
+};
+
+template <typename T>
+struct IsIntegralFixed
+{
+    static const bool value = IsIntegral<typename RemoveConst<T>::type>::value;
+};
+```
+
+type transformations вроде `add/remove_const`, `add/remove_pointer`, `make_signed/unsigned`; их результат — не значение, а тип, и для них есть `_t`-алиасы.
+
+### SFINAE
+
+SFINAE = Substitution Failure Is Not An Error.
+
+если при подстановке шаблонного типа в сигнатуру функции получается ошибка, компилятор не падает сразу, а просто исключает эту перегрузку; ошибка будет только если не осталось ни одной подходящей функции.
+
+```C++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+template <typename T>
+void printIteratorType(const T& value, typename T::iterator* = nullptr)
+{
+    cout << "has iterator" << endl;
+}
+
+void printIteratorType(...)
+{
+    cout << "unknown" << endl;
+}
+
+int main()
+{
+    vector<int> v;
+
+    printIteratorType(v);
+    printIteratorType(10);
+
+    return 0;
+}
+```
+
+C++11 overload test:
+```C++
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+template <typename T>
+struct HasIterator
+{
+private:
+    template <typename U>
+    static char test(typename U::iterator*);
+
+    template <typename U>
+    static long test(...);
+
+public:
+    static const bool value = sizeof(test<T>(nullptr)) == sizeof(char);
+};
+
+int main()
+{
+    cout << HasIterator<vector<int>>::value << endl; // 1
+    cout << HasIterator<int>::value << endl;         // 0
+
+    return 0;
+}
+```
+
+C++17 with void_t:
+```C++
+#include <iostream>
+#include <type_traits>
+#include <vector>
+
+using namespace std;
+
+template <typename...>
+using VoidT = void;
+
+template <typename T, typename = void>
+struct HasIterator
+{
+    static const bool value = false;
+};
+
+template <typename T>
+struct HasIterator<T, VoidT<typename T::iterator>>
+{
+    static const bool value = true;
+};
+
+int main()
+{
+    cout << HasIterator<vector<int>>::value << endl; // 1
+    cout << HasIterator<int>::value << endl; // 0
+
+    return 0;
+}
+```
+
+```
+если typename T::iterator существует:
+  VoidT<typename T::iterator> превращается в void
+  выбирается специализация true
+
+если не существует:
+  специализация не подходит
+  остаётся общий false
+```
+
+`std::enable_if` — шаблон, который помогает за счёт SFINAE специализировать функции по условию. Если условие истинно, внутри есть `type`; если ложно, `type` отсутствует, и перегрузка убирается по SFINAE.
+
+```C++
+template <bool Condition, typename T>
+struct EnableIf
+{
+    using type = T;
+};
+
+template <typename T>
+struct EnableIf<false, T>
+{
+};
+```
+```C++
+typename EnableIf<true, int>::type x;  // int
+// typename EnableIf<false, int>::type y; // нет type
+```
+
+for integral types:
+```C++
+#include <iostream>
+#include <type_traits>
+
+using namespace std;
+
+template <typename T>
+typename enable_if<is_integral<T>::value, T>::type twice(T x)
+{
+    return x * 2;
+}
+
+int main()
+{
+    cout << twice(10) << endl;
+
+    // cout << twice(3.14) << endl; // нет подходящей функции
+
+    return 0;
+}
+```
+
+В C++14/17 можно писать короче через `_t` и `_v`
+
+```C++
+#include <iostream>
+#include <type_traits>
+#include <vector>
+
+using namespace std;
+
+template <typename T>
+struct IsPrintable
+{
+private:
+    template <typename U>
+    static char test(decltype(cout << declval<U>())*);
+
+    template <typename U>
+    static long test(...);
+
+public:
+    static const bool value = sizeof(test<T>(nullptr)) == sizeof(char);
+};
+
+int main()
+{
+    cout << IsPrintable<int>::value << endl;
+    cout << IsPrintable<vector<int>>::value << endl;
+
+    return 0;
+}
+```
+```
+если выражение cout << U возможно:
+  decltype(...) существует
+  первая перегрузка подходит
+
+если невозможно:
+  первая перегрузка убирается по SFINAE
+  остаётся test(...)
+```
+
+### C++20 concepts
+
+сам концепт — по сути булевая константа, параметризованная типом, известная на момент компиляции; концепты появились в C++20 и стали аналогом SFINAE/`enable_if`, но с нормальным синтаксисом и поддержкой компилятора.
+
+```C++
+#include <type_traits>
+
+using namespace std;
+
+template <typename T>
+concept Integral = is_integral_v<T>;
+```
+
+```C++
+template <Integral T>
+T twice(T x)
+{
+    return x * 2;
+}
+```
+or:
+```C++
+template <typename T>
+requires Integral<T>
+T twice(T x)
+{
+    return x * 2;
+}
+```
+
+```C++
+template <typename T>
+concept LessComparable = requires (T left, T right)
+{
+    left < right;
+};
+```
+```C++
+template <LessComparable T>
+T minValue(T left, T right)
+{
+    if (right < left)
+    {
+        return right;
+    }
+
+    return left;
+}
+```
+`requires (T x, T y) { x < y; }` как compile-time булево выражение и `requires Condition` как ограничение шаблона.
+
+anonymous requires:
+```C++
+template <typename T>
+requires requires (T left, T right)
+{
+    left < right;
+}
+T minValue(T left, T right)
+{
+    if (right < left)
+    {
+        return right;
+    }
+
+    return left;
+}
+```
+
+for container with iterator:
+```C++
+template <typename T>
+concept HasIteratorConcept = requires
+{
+    typename T::iterator;
+};
+
+template <HasIteratorConcept T>
+void printContainer(const T& container)
+{
+    for (const auto& element : container)
+    {
+        cout << element << " ";
+    }
+
+    cout << endl;
+}
+```
+
+---
+
+## Ticket 21 – multithreading
+
+### process
+
+
+
+
