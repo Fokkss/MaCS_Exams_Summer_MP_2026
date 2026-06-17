@@ -1138,16 +1138,6 @@ $$
 
 Только 1 координата отвечает за попадание в ядро ошибки, $\Rightarrow$
 
-Подробнее про $\mathrm{ker} E$
-
-$|\mathrm{ker} \  E| = 2^{n-1}$
-
-$|\mathbb{F}_2^n| = 2^{n}$
-
-$$
-P(v \in \mathrm{ker} E \mid \mathrm{dim} \ \mathrm{ker} E = n - 1) = \frac{1}{2}
-$$
-
 $$
 P(Ev = 0 \mid E \neq 0) \le \frac{1}{2}
 $$
