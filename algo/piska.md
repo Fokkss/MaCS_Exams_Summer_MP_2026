@@ -1133,13 +1133,21 @@ $$(x_\ell - y_\ell)\delta_\ell = -\sum_{i \ne \ell} (x_i - y_i)\delta_i.$$
 Алгебра, 
 
 $$
-P(Ev = 0 \mid Ev \neq 0) = P(v \in \mathrm{ker}E ) \le P(v \in \mathrm{ker} E \mid \mathrm{dim} \ \mathrm{ker} E = n - 1)
+P(Ev = 0 \mid E \neq 0) = P(v \in \mathrm{ker}E ) \le P(v \in \mathrm{ker} E \mid \mathrm{dim} \ \mathrm{ker} E = n - 1)
 $$
 
-Только 1 координата отвечает за попадание в ядро ошибки, $\Rightarrow$
+$$
+|\mathrm{ker} E| = 2^{n-1}
+$$
 
 $$
-P(Ev = 0 \mid E \neq 0) \le \frac{1}{2}
+|\mathbb{F}_p^n| = 2^n
+$$
+
+$\Rightarrow $
+
+$$
+P(Ev = 0) \le \frac{|\mathrm{ker} \ E|}{|\mathbb{F}_p^n|} = \frac{1}{2}
 $$
 
 **Уменьшение вероятности ошибки.** Чтобы добиться $\Pr(\text{ошибка}) < \varepsilon$, достаточно запустить алгоритм $k$ раз независимо, где $k \in \mathbb{N}$ удовлетворяет $1/2^k < \varepsilon$. Если хотя бы в одном запуске ответ «нет» — вернуть «нет»; если во всех — «да» — вернуть «да». Тогда $\Pr(\text{ошибка}) \le 1/2^k < \varepsilon$.
